@@ -1,14 +1,18 @@
 from nanohttp import settings
-from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin
+from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship
 from restfulpy.taskqueue import Task
 from restfulpy.logging_ import get_logger
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table,\
-    Column
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 
 from jaguar.models.user import User
 
+
+room_member_table = Table(
+    'room_member',
+    DeclarativeBase.metadata,
+    Field('room_id', Integer, ForeignKey('room.id')),
+    Field('member_id', Integer, ForeignKey('user.id'))
+)
 
 class Target(DeclarativeBase, ModifiedMixin):
     __tablename__  = 'target'
@@ -40,12 +44,11 @@ class Room(Target):
         json = 'target_id'
     )
 
-#    members = relationship(
-#        'User',
-#        secondary=association_table ,
-#        back_populates ='rooms'
-#    )
-
+    member = relationship(
+        "User",
+        secondary=room_member_table,
+        protected=True
+    )
 
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
