@@ -1,12 +1,9 @@
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, TimestampMixin,\
-    ActivationMixin, ModifiedMixin
+    ActivationMixin, ModifiedMixin, relationship
 from restfulpy.taskqueue import Task
-from restfulpy.logging_ import get_logger
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger
-from sqlalchemy.orm import relationship
 
-# from . import assosiation
 
 class User(DeclarativeBase):
     __tablename__ = 'user'
@@ -21,27 +18,25 @@ class User(DeclarativeBase):
     user_name = Field(
         Unicode(50),
         unique=True,
-
+        index = True,
     )
 
     email = Field(
-        Unicode(50),
+        Unicode(100),
         unique=True,
         index=True,
-        nullable=True,
         json='email',
-        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',
+        watermark='Email',
+        example="user@example.com"
     )
 
-#    rooms = relationship(
-#        'Room',
-#        secondary=assosiation.association_table,
-#        back_populates='members',
-#    )
-
-    phone = Field(BigInteger, unique=True, nullable=True)
-
-
-
-
-
+    phone = Field(
+        Unicode(50),
+        nullable=True,
+        json='phone',
+        min_length=10,
+        watermark='Phone',
+        example='734 555 1212',
+        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+    )

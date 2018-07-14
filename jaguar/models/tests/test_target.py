@@ -1,18 +1,36 @@
 from jaguar.models.target import Room
+from jaguar.models.user import User
 
-# Test target model
-def test_db(db):
+def test_target_model(db):
     session = db()
     room = Room(title='example', type='room')
     session.add(room)
     session.commit()
     assert session.query(Room).count() == 1
 
-# Test members of a room
+    # Test members of a room
+    member = User(
+        title='example',
+        user_name='example',
+        email='example@example.com'
+    )
+    session.add(member)
+    room.members.append(member)
+    session.commit()
 
+    # as we have a small size of collection,
+    # lazy loading is the best strategy
+    assert room.members[0].title == 'example'
 
-# Test admins of a room
-
-# Test rooms with the same name
-
+    # Test administrators of a room
+    administrator = User(
+        title='administrator',
+        user_name='administrator',
+        email='administrator@example.com'
+    )
+    session.add(administrator)
+    session.commit()
+    room.administrators.append(administrator)
+    session.commit()
+    assert room.administrators[0].title == 'administrator'
 

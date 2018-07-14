@@ -13,6 +13,14 @@ room_member_table = Table(
     Field('room_id', Integer, ForeignKey('room.id')),
     Field('member_id', Integer, ForeignKey('user.id'))
 )
+room_administrator_table = Table(
+    'room_administrator',
+    DeclarativeBase.metadata,
+    Field('room_id', Integer, ForeignKey('room.id')),
+    Field('member_id', Integer, ForeignKey('user.id'))
+)
+
+
 
 class Target(DeclarativeBase, ModifiedMixin):
     __tablename__  = 'target'
@@ -44,10 +52,13 @@ class Room(Target):
         json = 'target_id'
     )
 
-    member = relationship(
+    members = relationship(
         "User",
         secondary=room_member_table,
-        protected=True
+    )
+    administrators = relationship(
+        "User",
+        secondary=room_administrator_table,
     )
 
     __mapper_args__ = {
@@ -68,4 +79,3 @@ class Direct(Target):
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
     }
-
