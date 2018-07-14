@@ -38,5 +38,6 @@ class User(DeclarativeBase):
         min_length=10,
         watermark='Phone',
         example='734 555 1212',
-        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
+            r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
