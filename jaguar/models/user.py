@@ -4,6 +4,8 @@ from restfulpy.orm import Field, DeclarativeBase, TimestampMixin,\
 from restfulpy.taskqueue import Task
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger
 
+from .envelop import Envelop
+
 
 class User(DeclarativeBase):
     __tablename__ = 'user'
@@ -14,6 +16,8 @@ class User(DeclarativeBase):
         Unicode(50),
         json = 'title'
     )
+
+    envelop_id = relationship('Envelop')
 
     user_name = Field(
         Unicode(50),

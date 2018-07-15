@@ -18,8 +18,8 @@ def test_target_model(db):
     room.members.append(member)
     session.commit()
 
-    # as we have a small size of collection,
-    # lazy loading is the best strategy
+    # Since the selectin loading is used to load relations,
+    # the relation is already load.
     assert room.members[0].title == 'example'
 
     # Test administrators of a room
@@ -33,4 +33,3 @@ def test_target_model(db):
     room.administrators.append(administrator)
     session.commit()
     assert room.administrators[0].title == 'administrator'
-

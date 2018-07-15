@@ -4,8 +4,8 @@ from restfulpy.taskqueue import Task
 from restfulpy.logging_ import get_logger
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 
-from jaguar.models.user import User
-
+from .user import User
+from .envelop import Envelop
 
 room_member_table = Table(
     'room_member',
@@ -21,7 +21,6 @@ room_administrator_table = Table(
 )
 
 
-
 class Target(DeclarativeBase, ModifiedMixin):
     __tablename__  = 'target'
 
@@ -35,6 +34,7 @@ class Target(DeclarativeBase, ModifiedMixin):
     type = Field(
         Unicode(25)
     )
+    envelop_id = relationship('Envelop')
 
     __mapper_args__ = {
         'polymorphic_identity' :__tablename__,
@@ -52,13 +52,24 @@ class Room(Target):
         json = 'target_id'
     )
 
+    # since the number of collections are small, the selectin strategy is
+    # more efficient for loading
     members = relationship(
         "User",
         secondary=room_member_table,
+        backref='rooms',
+        protected=True,
+        lazy='selectin'
     )
+
+    # since the number of collections are small, the selectin strategy is
+    # more efficient for loading
     administrators = relationship(
         "User",
         secondary=room_administrator_table,
+        backref='administrator_of',
+        protected=True,
+        lazy='selectin'
     )
 
     __mapper_args__ = {
