@@ -27,8 +27,8 @@ dependencies = [
 setup(
     name="jaguar",
     version=package_version,
-    author="Rhonin",
-    author_email="arash.fattahzade@carrene.com",
+    author="mkhfring",
+    author_email="mkhajezade@carrene.com",
     description="Back-end for cucumber project",
     url='https://github.com/Carrene/jaguar.git',
     install_requires=dependencies,

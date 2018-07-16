@@ -3,6 +3,8 @@ from restfulpy.orm import Field, DeclarativeBase, TimestampMixin,\
     ActivationMixin, ModifiedMixin, relationship
 from restfulpy.taskqueue import Task
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger
+from sqlalchemy.orm import backref
+from sqlalchemy.orm.collections import attribute_mapped_collection
 
 from .envelop import Envelop
 
@@ -11,6 +13,7 @@ class User(DeclarativeBase):
     __tablename__ = 'user'
 
     id = Field(Integer, primary_key=True)
+    contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
 
     title = Field(
         Unicode(50),
@@ -44,4 +47,11 @@ class User(DeclarativeBase):
         example='734 555 1212',
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
             r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+    )
+    contact = relationship(
+        'User',
+        backref=backref(
+            'contact_parent',
+            remote_side=[id],
+        )
     )

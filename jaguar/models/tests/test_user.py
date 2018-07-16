@@ -5,9 +5,9 @@ from jaguar.models.target import Room
 def test_user_model(db):
     session = db()
     user = User(
-        title='example',
-        user_name='example',
-        email='example@example.com'
+        title = 'example',
+        user_name = 'example',
+        email = 'example@example.com'
     )
     session.add(user)
     session.commit()
@@ -29,3 +29,19 @@ def test_user_model(db):
 
     assert user.administrator_of[0].title == 'example'
     assert user.administrator_of[0].id == 1
+
+    # Testing relationship between User and User ( As contactlist)
+    contact = User(
+        title = 'contact',
+        user_name = 'contact',
+        email = 'contact@example.com'
+    )
+    session.add(contact)
+    user.contact.append(contact)
+    session.commit()
+    assert len(user.contact) == 1
+
+    # Testing other side of relationship
+    contact.contact_parent = user
+    session.commit()
+    assert contact.contact_parent.title == 'example'
