@@ -1,5 +1,6 @@
 from jaguar.models.target import Room
-from jaguar.models.user import User
+from jaguar.models.membership import User
+
 
 def test_target_model(db):
     session = db()
@@ -11,6 +12,7 @@ def test_target_model(db):
     # Test members of a room
     member = User(
         title='example',
+        password = '123456',
         user_name='example',
         email='example@example.com'
     )
@@ -25,6 +27,7 @@ def test_target_model(db):
     # Test administrators of a room
     administrator = User(
         title='administrator',
+        password = '123456',
         user_name='administrator',
         email='administrator@example.com'
     )

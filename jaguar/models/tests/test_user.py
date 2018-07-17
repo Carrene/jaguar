@@ -1,11 +1,26 @@
-from jaguar.models.user import User
+import pytest
+from nanohttp import HTTPBadRequest
+
+from jaguar.models.membership import User
 from jaguar.models.target import Room
+
 
 # Test target model
 def test_user_model(db):
     session = db()
+
+    # Test password minlength
+    with pytest.raises(HTTPBadRequest):
+        user = User(
+            title = 'example',
+            password = '1234',
+            user_name = 'example',
+            email = 'example@example.com'
+        )
+
     user = User(
         title = 'example',
+        password = '1234567',
         user_name = 'example',
         email = 'example@example.com'
     )
@@ -33,6 +48,7 @@ def test_user_model(db):
     # Testing relationship between User and User ( As contactlist)
     contact = User(
         title = 'contact',
+        password = '123456',
         user_name = 'contact',
         email = 'contact@example.com'
     )

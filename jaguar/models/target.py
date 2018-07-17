@@ -4,7 +4,7 @@ from restfulpy.taskqueue import Task
 from restfulpy.logging_ import get_logger
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 
-from .user import User
+from .membership import User
 from .envelop import Envelop
 
 room_member_table = Table(
