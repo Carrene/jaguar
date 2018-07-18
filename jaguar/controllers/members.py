@@ -1,18 +1,13 @@
-from typing import Union
 import re
-import itsdangerous
+from typing import Union
 
-from nanohttp import RestController, json, HTTPNotFound, context,\
-    HTTPMethodNotAllowed, HTTPBadRequest, HTTPConflict,HTTPUnauthorized,\
-    HTTPForbidden, HTTPStatus
-from nanohttp import settings
-from restfulpy.authorization import authorize
-from restfulpy.orm import commit, DBSession
+import itsdangerous
+from nanohttp import json, context, HTTPBadRequest, HTTPStatus, settings
 from restfulpy.controllers import ModelRestController
 from restfulpy.logging_ import get_logger
+from restfulpy.orm import commit, DBSession
 
 from jaguar.models import Member, User, ActivationEmail
-from jaguar.fun import EmptyJsonResponse
 
 
 logger = get_logger('membership')
@@ -69,4 +64,65 @@ class MembersController(ModelRestController):
         )
 
         return dict()
+
+    @json
+    @commit
+    def register(self):
+
+        serializer = \
+            itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
+
+        try:
+             email = serializer.loads(
+                context.form.get('token') ,
+                max_age=settings.activation.max_age
+            )
+
+        except itsdangerous.BadSignature:
+            raise HTTPStatus(status='703 Invalid email activation token')
+
+        user = User(
+            email=email,
+            title=context.form.get('title'),
+            password=context.form.get('password')
+        )
+
+        user.is_active = True
+
+        DBSession.add(user)
+        DBSession.commit()
+
+        principal = context.application.__authenticator__.login((email,context.form.get('password')))
+
+
+        if principal is None:
+            bad()
+
+        return dict(token=principal.dump())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,5 +1,5 @@
 import pytest
-from nanohttp import HTTPBadRequest
+from nanohttp import HTTPStatus
 
 from jaguar.models.membership import User
 from jaguar.models.target import Room
@@ -10,13 +10,15 @@ def test_user_model(db):
     session = db()
 
     # Test password minlength
-    with pytest.raises(HTTPBadRequest):
+    with pytest.raises(HTTPStatus) as ex:
         user = User(
             title = 'example',
             password = '1234',
             user_name = 'example',
             email = 'example@example.com'
         )
+
+    assert '704' in str(ex.value)
 
     user = User(
         title = 'example',

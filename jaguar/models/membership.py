@@ -7,7 +7,7 @@ from sqlalchemy import Unicode, Integer, ForeignKey
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
-    context, HTTPConflict, ContextIsNotInitializedError
+    context, HTTPConflict, ContextIsNotInitializedError, HTTPStatus
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
 from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin,\
     ActivationMixin, SoftDeleteMixin, relationship, DBSession
@@ -64,10 +64,12 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     def _set_password(self, password):
         """Hash ``password`` on the fly and store its hashed version."""
+        if not isinstance(password, str):
+            raise HTT
         min_length = self.__class__.password.info['min_length']
         if len(password) < min_length:
-            raise HTTPBadRequest(
-                'Please enter at least %d characters for password.' \
+            raise HTTPStatus(
+                '704 Please enter at least %d characters for password.' \
                 % min_length
             )
         self._password = self._hash_password(password)
@@ -109,7 +111,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
             roles=self.roles,
             email=self.email,
             sessionId=session_id,
-            name=self.name
+            name=self.title
         ))
 
     def send_reset_password_token(self):
@@ -190,28 +192,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
     def exists(cls, email):
         return DBSession.query(cls.id).filter(cls.email == email).count()
 
-    def send_activation_token(self):
-        if self.is_active is True:
-            raise HTTPConflict()
-
-        return self._send_activation_token()
-
-    def _send_activation_token(self):
-        serializer = itsdangerous.URLSafeTimedSerializer(
-            settings.activation.secret
-        )
-        token = serializer.dumps(self.email)
-        # noinspection PyArgumentList
-        return ActivationEmail(
-            to=self.email,
-            subject='Activate your NueMD Coder account',
-            body={
-                'name': self.title,
-                'activation_token': token,
-                'activation_url': settings.activation.url
-            },
-        )
-
     def create_refresh_principal(self):
         return JwtRefreshToken(dict(
             id=self.id
@@ -245,6 +225,7 @@ class User(Member):
         Unicode(50),
         unique=True,
         index = True,
+        nullable = True,
     )
 
     phone = Field(
