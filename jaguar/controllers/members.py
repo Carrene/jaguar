@@ -92,7 +92,9 @@ class MembersController(ModelRestController):
         DBSession.add(user)
         DBSession.commit()
 
-        principal = context.application.__authenticator__.login((email,context.form.get('password')))
+        principal = context.application.\
+            __authenticator__.\
+            login((email,context.form.get('password')))
 
 
         if principal is None:
