@@ -1,3 +1,4 @@
+import uuid
 import re
 from typing import Union
 
@@ -6,6 +7,7 @@ from nanohttp import json, context, HTTPBadRequest, HTTPStatus, settings
 from restfulpy.controllers import ModelRestController
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import commit, DBSession
+from restfulpy.principal import JwtPrincipal
 
 from jaguar.models import Member, User, ActivationEmail
 
@@ -66,7 +68,6 @@ class MembersController(ModelRestController):
         return dict()
 
     @json
-    @commit
     def register(self):
 
         serializer = \
@@ -86,45 +87,18 @@ class MembersController(ModelRestController):
             title=context.form.get('title'),
             password=context.form.get('password')
         )
-
         user.is_active = True
 
         DBSession.add(user)
         DBSession.commit()
 
-        principal = context.application.\
-            __authenticator__.\
-            login((email,context.form.get('password')))
-
-
-        if principal is None:
-            bad()
+        principal = JwtPrincipal(dict(
+            id=user.id,
+            roles=user.roles,
+            email=user.email,
+            sessionId=str(uuid.uuid4()),
+            name=user.title
+        ))
 
         return dict(token=principal.dump())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

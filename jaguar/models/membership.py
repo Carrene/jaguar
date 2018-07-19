@@ -114,56 +114,56 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
             name=self.title
         ))
 
-    def send_reset_password_token(self):
-        serializer = itsdangerous.URLSafeTimedSerializer(
-            settings.reset_password.secret
-        )
-        token = serializer.dumps(self.email)
-
-        # noinspection PyArgumentList
-        DBSession.add(ResetPasswordEmail(
-            to=self.email,
-            subject='Reset your password',
-            body={
-                'reset_token': token,
-                'reset_url': settings.reset_password.url
-            },
-        ))
-
-    @classmethod
-    def reset_password(cls, token, password):
-        serializer = itsdangerous.URLSafeTimedSerializer(
-            settings.reset_password.secret
-        )
-
-        try:
-            email = serializer.loads(
-                token,
-                max_age=settings.reset_password.max_age
-            )
-        except itsdangerous.BadSignature:
-            raise HTTPBadRequest('Invalid Token')
-
-        member = cls.exclude_deleted().filter(cls.email == email).one_or_none()
-        if member is None:
-            raise HTTPNotFound('Invalid member')
-
-        if not member.is_active:
-            raise HTTPConflict('user-deactivated')
-
-        member.password = password
-        return member
-
-    @classmethod
-    def current(cls):
-        return cls.query.filter(cls.email == context.identity.email).one()
-
-    def change_password(self, current_password, new_password):
-        if not self.validate_password(current_password):
-            raise HTTPBadRequest('The current password is invalid.')
-
-        self.password = new_password
-
+#    def send_reset_password_token(self):
+#        serializer = itsdangerous.URLSafeTimedSerializer(
+#            settings.reset_password.secret
+#        )
+#        token = serializer.dumps(self.email)
+#
+#        # noinspection PyArgumentList
+#        DBSession.add(ResetPasswordEmail(
+#            to=self.email,
+#            subject='Reset your password',
+#            body={
+#                'reset_token': token,
+#                'reset_url': settings.reset_password.url
+#            },
+#        ))
+#
+#    @classmethod
+#    def reset_password(cls, token, password):
+#        serializer = itsdangerous.URLSafeTimedSerializer(
+#            settings.reset_password.secret
+#        )
+#
+#        try:
+#            email = serializer.loads(
+#                token,
+#                max_age=settings.reset_password.max_age
+#            )
+#        except itsdangerous.BadSignature:
+#            raise HTTPBadRequest('Invalid Token')
+#
+#        member = cls.exclude_deleted().filter(cls.email == email).one_or_none()
+#        if member is None:
+#            raise HTTPNotFound('Invalid member')
+#
+#        if not member.is_active:
+#            raise HTTPConflict('user-deactivated')
+#
+#        member.password = password
+#        return member
+#
+#    @classmethod
+#    def current(cls):
+#        return cls.query.filter(cls.email == context.identity.email).one()
+#
+#    def change_password(self, current_password, new_password):
+#        if not self.validate_password(current_password):
+#            raise HTTPBadRequest('The current password is invalid.')
+#
+#        self.password = new_password
+#
     @classmethod
     def activate(cls, token):
         serializer = itsdangerous.URLSafeTimedSerializer(
@@ -182,35 +182,37 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
         except itsdangerous.BadSignature:
             raise HTTPBadRequest('Invalid Token')
 
-        member = cls.exclude_deleted().filter(cls.email == email).one()
+        query = DBSession.query(Member)
+
+        member = cls.exclude_deleted(query).filter(cls.email == email).one()
         if member.is_active:
             raise HTTPConflict('Member is already activated.')
         member.is_active = True
         return member
-
-    @classmethod
-    def exists(cls, email):
-        return DBSession.query(cls.id).filter(cls.email == email).count()
-
+#
+#    @classmethod
+#    def exists(cls, email):
+#        return DBSession.query(cls.id).filter(cls.email == email).count()
+#
     def create_refresh_principal(self):
         return JwtRefreshToken(dict(
             id=self.id
         ))
 
-    # noinspection PyUnusedLocal
-    @staticmethod
-    def before_update(mapper, connection, target):
-        try:
-            if context.application:
-                context.application.__authenticator__\
-                    .invalidate_member(target.id)
-        except ContextIsNotInitializedError:
-            # Ignoring the invalidation, and silently returning
-            return
-
-    @classmethod
-    def __declare_last__(cls):
-        event.listen(cls, 'before_update', cls.before_update)
+#    # noinspection PyUnusedLocal
+#    @staticmethod
+#    def before_update(mapper, connection, target):
+#        try:
+#            if context.application:
+#                context.application.__authenticator__\
+#                    .invalidate_member(target.id)
+#        except ContextIsNotInitializedError:
+#            # Ignoring the invalidation, and silently returning
+#            return
+#
+#    @classmethod
+#    def __declare_last__(cls):
+#        event.listen(cls, 'before_update', cls.before_update)
 
 
 class User(Member):
