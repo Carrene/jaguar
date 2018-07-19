@@ -90,15 +90,9 @@ class MembersController(ModelRestController):
         user.is_active = True
 
         DBSession.add(user)
-        DBSession.commit()
+        DBSession.flush()
 
-        principal = JwtPrincipal(dict(
-            id=user.id,
-            roles=user.roles,
-            email=user.email,
-            sessionId=str(uuid.uuid4()),
-            name=user.title
-        ))
+        principal = user.create_jwt_principal()
 
         return dict(token=principal.dump())
 
