@@ -1,3 +1,4 @@
+
 import os
 import uuid
 from hashlib import sha256
@@ -153,7 +154,6 @@ class User(Member):
     id = Field(Integer,ForeignKey('member.id'), primary_key=True)
 
     contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
-    envelop_id = relationship('Envelop')
 
     user_name = Field(
         Unicode(50),

@@ -1,3 +1,4 @@
+
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship
 from restfulpy.taskqueue import Task
@@ -56,7 +57,7 @@ class Room(Target):
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     members = relationship(
-        "User",
+        'User',
         secondary=room_member_table,
         backref='rooms',
         protected=True,
@@ -72,6 +73,8 @@ class Room(Target):
         protected=True,
         lazy='selectin'
     )
+
+    messages = relationship('Envelop')
 
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
