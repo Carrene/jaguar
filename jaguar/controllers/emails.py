@@ -1,4 +1,7 @@
+<<<<<<< 25b75225553d9c4395dea362ee8965e8910e13a1
 
+=======
+>>>>>>> Registering and login is implemented and tested
 import re
 from typing import Union
 

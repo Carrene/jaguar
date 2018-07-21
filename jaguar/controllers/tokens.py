@@ -1,4 +1,3 @@
-
 from nanohttp import RestController, json, context, HTTPBadRequest
 from restfulpy.logging_ import get_logger
 
@@ -27,4 +26,5 @@ class TokensController(RestController):
             bad()
 
         return dict(token=principal.dump())
+
 
