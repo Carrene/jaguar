@@ -27,4 +27,3 @@ class TokensController(RestController):
 
         return dict(token=principal.dump())
 
-
