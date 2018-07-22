@@ -23,7 +23,6 @@ class Authenticator(StatefulAuthenticator):
 
     def create_principal(self, member_id=None, session_id=None):
         member = self.safe_member_lookup(Member.id == member_id)
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         return member.create_jwt_principal(session_id=session_id)
 
     def create_refresh_principal(self, member_id=None):

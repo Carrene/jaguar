@@ -17,4 +17,3 @@ class Envelop(ActivationMixin, ModifiedMixin, DeclarativeBase):
     sendder_id = Field(Integer, ForeignKey('user.id'))
     body = Field(JSONB)
 
-

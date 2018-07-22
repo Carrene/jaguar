@@ -7,6 +7,7 @@ from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 from .membership import User
 from .envelop import Envelop
 
+
 room_member_table = Table(
     'room_member',
     DeclarativeBase.metadata,
@@ -28,8 +29,8 @@ class Target(DeclarativeBase, ModifiedMixin):
 
     title = Field(
         Unicode(50),
-        nullable = True,
-        json = 'title'
+        nullable=True,
+        json='title'
     )
     type = Field(
         Unicode(25)
@@ -48,8 +49,8 @@ class Room(Target):
     id = Field (
         Integer,
         ForeignKey('target.id'),
-        primary_key = True,
-        json = 'target_id'
+        primary_key=True,
+        json='target_id'
     )
 
     # since the number of collections are small, the selectin strategy is
@@ -83,10 +84,11 @@ class Direct(Target):
     id = Field (
         Integer,
         ForeignKey('target.id'),
-        primary_key = True,
-        json = 'target_id'
+        primary_key=True,
+        json='target_id'
     )
 
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
     }
+
