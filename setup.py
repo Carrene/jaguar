@@ -12,15 +12,7 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'restfulpy',
-    'sqlalchemy-media >=0.16.0',
-
-    # deployment
-    'gunicorn',
-
-    # testing
-    'pytest',
-    'bddrest'
+    'restfulpy >= 1.0.0a0',
 ]
 
 
