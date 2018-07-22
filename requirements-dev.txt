@@ -1,0 +1,6 @@
+coverage
+coveralls
+pytest-pudb
+pytest-cov
+gunicorn
+

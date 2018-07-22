@@ -13,22 +13,14 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 dependencies = [
     'restfulpy >= 1.0.0a0',
-    'sqlalchemy-media >=0.16.0',
-
-    # deployment
-    'gunicorn',
-
-    # testing
-    'pytest',
-    'bddrest'
 ]
 
 
 setup(
     name="jaguar",
     version=package_version,
-    author="Rhonin",
-    author_email="arash.fattahzade@carrene.com",
+    author="mkhfring",
+    author_email="mkhajezade@carrene.com",
     description="Back-end for cucumber project",
     url='https://github.com/Carrene/jaguar.git',
     install_requires=dependencies,
