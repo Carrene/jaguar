@@ -12,26 +12,26 @@ def test_user_model(db):
     # Test password minlength
     with pytest.raises(HTTPStatus) as ex:
         user = User(
-            title = 'example',
-            password = '1234',
-            user_name = 'example',
-            email = 'example@example.com'
+            title='example',
+            password='1234',
+            user_name='example',
+            email='example@example.com'
         )
 
     assert '704' in str(ex.value)
 
     user = User(
-        title = 'example',
-        password = '1234567',
-        user_name = 'example',
-        email = 'example@example.com'
+        title='example',
+        password='1234567',
+        user_name='example',
+        email='example@example.com'
     )
     session.add(user)
     session.commit()
     assert session.query(User).count() == 1
 
     # Testing rooms of a user
-    room = Room(title = 'example')
+    room = Room(title='example')
     session.add(room)
     user.rooms.append(room)
     session.commit()
@@ -49,10 +49,10 @@ def test_user_model(db):
 
     # Testing relationship between User and User ( As contactlist)
     contact = User(
-        title = 'contact',
-        password = '123456',
-        user_name = 'contact',
-        email = 'contact@example.com'
+        title='contact',
+        password='123456',
+        user_name='contact',
+        email='contact@example.com'
     )
     session.add(contact)
     user.contact.append(contact)

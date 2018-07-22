@@ -13,12 +13,6 @@ class Jaguar(Application):
     __authenticator__ = Authenticator()
 
     builtin_configuration = """
-    reset_password:
-      secret: reset-password-secret
-      max_age: 3600  # seconds
-      url: http://nc.carrene.com/reset_password
-      # url: http://localhost:8080/reset_password
-
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
