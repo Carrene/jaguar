@@ -9,7 +9,7 @@ from ..controllers.root import Root
 from jaguar.authentication import Authenticator
 from jaguar.models.membership import User
 
-from .helpers import AutoDocumentationBDDTest
+from.helpers import AutoDocumentationBDDTest
 
 
 class TestMembership(AutoDocumentationBDDTest):
