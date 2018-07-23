@@ -10,10 +10,6 @@ from restfulpy.orm import commit, DBSession
 from jaguar.models import Member, ActivationEmail
 
 
-logger = get_logger('membership')
-MemberId = Union[int, str]
-
-
 class EmailsController(ModelRestController):
 
     @json

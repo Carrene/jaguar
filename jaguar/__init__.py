@@ -2,9 +2,9 @@ from os.path import join, dirname
 
 from restfulpy.application import Application
 
-
 from .authentication import Authenticator
 from .controllers.root import Root
+
 
 __version__ = '0.1.0-dev'
 
@@ -12,7 +12,23 @@ __version__ = '0.1.0-dev'
 class Jaguar(Application):
     __authenticator__ = Authenticator()
 
-    builtin_configuration = """
+    __configuration__ = """
+    
+    db:
+      url: postgresql://postgres:postgres@localhost/jaguar_dev
+      test_url: postgresql://postgres:postgres@localhost/jaguar_test
+      administrative_url: postgresql://postgres:postgres@localhost/postgres
+    
+    messaging:
+      default_messenger: restfulpy.messaging.SmtpProvider
+    
+    smtp:
+      host: mail.carrene.com
+      port: 587
+      username: nc@carrene.com
+      password: <smtp-password>
+      local_hostname: carrene.com
+
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
@@ -29,3 +45,4 @@ class Jaguar(Application):
         )
 
 jaguar = Jaguar()
+

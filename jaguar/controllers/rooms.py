@@ -1,9 +1,10 @@
 
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import commit, DBSession
-from nanohttp import json, context
+from nanohttp import json, context, validate
 
 from jaguar.models import Target, Room
+
 
 class RoomsController(ModelRestController):
     __model__ = Target

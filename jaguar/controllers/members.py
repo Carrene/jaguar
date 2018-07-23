@@ -10,23 +10,7 @@ from restfulpy.orm import DBSession
 from jaguar.models import Member
 
 
-logger = get_logger('membership')
-MemberId = Union[int, str]
-
-
 class MembersController(ModelRestController):
-    """
-
-    Activate:                   GET ?t_={token}
-    Resend Activation:          POST /me/activation
-    Fetch one:                  GET /{member_id}
-    Fetch me:                   GET /me
-    Signup:                     POST /
-    Change Password:            PUT /me/password
-    Request Reset Password:     PATCH /me/password
-    Reset Password:             DELETE /me/password
-
-    """
     __model__ = Member
 
     @json

@@ -11,7 +11,7 @@ from jaguar.models.membership import User
 
 class TestRoom(ApplicableTestCase):
     __application__ = Application(
-        'Mockup',
+        'Mockup application',
         root=Root(),
         authenticator=Authenticator()
     )

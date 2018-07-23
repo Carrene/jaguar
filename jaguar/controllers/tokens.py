@@ -1,31 +1,23 @@
 
-from nanohttp import RestController, json, context, HTTPBadRequest
-from restfulpy.logging_ import get_logger
-
-
-logger = get_logger('auth')
+from nanohttp import RestController, json, context, HTTPBadRequest, validate
 
 
 class TokensController(RestController):
 
+    @validate(
+        email=dict(
+            required=(True, '400 Invalid email and password')
+        )
+    )
     @json
     def create(self):
         email = context.form.get('email')
         password = context.form.get('password')
 
-        def bad():
-            logger.info('Login failed: %s' % email)
-            raise HTTPBadRequest('Invalid email or password')
-
-        if not (email and password):
-            bad()
-
-        logger.info('Trying to login: %s' % email)
         principal = context.application.__authenticator__.\
             login((email, password))
         if principal is None:
-            bad()
+            raise HTTPBadRequest('Invalid email or password')
 
         return dict(token=principal.dump())
-
 
