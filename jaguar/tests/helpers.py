@@ -7,7 +7,7 @@ from restfulpy.testing import ApplicableTestCase
 HERE = path.abspath(path.dirname(__file__))
 
 
-class BDDTestClass(ApplicableTestCase):
+class AutoDocumentationBDDTest(ApplicableTestCase):
 
     @classmethod
     def get_spec_filename(cls, story):

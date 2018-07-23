@@ -8,10 +8,10 @@ from ..controllers.root import Root
 from jaguar.authentication import Authenticator
 from jaguar.models.membership import User
 
-from .helpers import BDDTestClass
+from .helpers import AutoDocumentationBDDTest
 
 
-class TestRoom(BDDTestClass):
+class TestRoom(AutoDocumentationBDDTest):
     __application__ = Application(
         'Mockup application',
         root=Root(),
