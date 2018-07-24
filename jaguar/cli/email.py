@@ -1,9 +1,6 @@
-import sys
-
 import itsdangerous
-from restfulpy.cli import Launcher, RequireSubCommand
-from restfulpy.orm import DBSession
 from nanohttp import settings
+from restfulpy.cli import Launcher, RequireSubCommand
 
 from jaguar.models import ActivationEmail
 
