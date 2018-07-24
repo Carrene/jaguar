@@ -16,7 +16,7 @@ class ApiV1(Controller):
     emails = EmailsController()
     tokens = TokensController()
     rooms = RoomsController()
-    
+
     @json
     def version(self):
         return {
