@@ -25,20 +25,19 @@ class SendEmailLauncher(Launcher):  # pragma: no cover
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
 
-        args = parser.parse_args()
-
         token = serializer.dumps(self.args.email)
 
         email = ActivationEmail(
                 to=self.args.email,
-                subject='Activate your NueMD Coder account',
+                subject='Activate your Cucumber account',
                 body={
                     'activation_token': token,
                     'activation_url': settings.activation.url
                 }
         )
         email.to = self.args.email
-        email.do_ = ({})
+        email.do_({})
+
 
 class EmailLauncher(Launcher, RequireSubCommand):  # pragma: no cover
     @classmethod
@@ -50,4 +49,3 @@ class EmailLauncher(Launcher, RequireSubCommand):  # pragma: no cover
         )
         SendEmailLauncher.register(user_subparsers)
         return parser
-

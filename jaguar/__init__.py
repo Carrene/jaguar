@@ -4,7 +4,7 @@ from restfulpy.application import Application
 
 from .authentication import Authenticator
 from .controllers.root import Root
-from jaguar.cli.email import EmailLauncher
+from jaguar.cli.email import EmailLauncher, SendEmailLauncher
 
 __version__ = '0.1.0-dev'
 
@@ -20,14 +20,14 @@ class Jaguar(Application):
       administrative_url: postgresql://postgres:postgres@localhost/postgres
 
     messaging:
-      default_sender: Mohamad
+      default_messenger: restfulpy.messaging.SmtpProvider
       template_dirs:
         - %(root_path)s/jaguar/email_templates
 
     smtp:
       host: smtp.gmail.com
       username: khajezade.mohamad@gmail.com
-      password: 07212244801105946710594mkh
+      password: 072122448011059467mkh
       localhost: gmail.com
 
 
@@ -55,6 +55,7 @@ class Jaguar(Application):
 
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
+
 
 jaguar = Jaguar()
 
