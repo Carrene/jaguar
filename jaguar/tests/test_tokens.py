@@ -2,7 +2,6 @@ from bddrest.authoring import when, response, Remove, Update
 from restfulpy.orm import DBSession
 
 from jaguar.models.membership import User
-
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 

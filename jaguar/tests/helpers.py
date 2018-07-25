@@ -47,6 +47,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 
     @classmethod
     def get_markdown_filename(cls, story):
+
         filename =\
             f'{story.base_call.verb}-' \
             f'{story.base_call.url.split("/")[2]}({story.title})'
@@ -60,7 +61,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 
     def given(self, title, dump=True, *args, **kwargs):
         return super().given(
-            title = title,
+            title=title,
             autodump=dump and self.get_spec_filename,
             autodoc=dump and self.get_markdown_filename,
             *args,

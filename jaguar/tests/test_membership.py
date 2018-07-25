@@ -4,7 +4,6 @@ from nanohttp import settings
 from restfulpy.orm import DBSession
 
 from jaguar.models.membership import User
-
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
