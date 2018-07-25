@@ -32,8 +32,8 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
     def given(self, title, dump=True, *args, **kwargs):
         return super().given(
             title = title,
-            autodump=self.get_spec_filename if dump else False,
-            autodoc=self.get_markdown_filename if dump else False,
+            autodump=dump and self.get_spec_filename,
+            autodoc=dump and self.get_markdown_filename,
             *args,
             **kwargs
         )
