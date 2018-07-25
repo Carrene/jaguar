@@ -9,11 +9,7 @@ from ..controllers.root import Root
 from jaguar.authentication import Authenticator
 from jaguar.models.membership import User
 
-<<<<<<< 844a6eef16af2142a7e0de8413b9fb2541d09577
 from.helpers import AutoDocumentationBDDTest
-=======
-from .helpers import AutoDocumentationBDDTest
->>>>>>> Fixing test calss name, closes #50
 
 
 class TestMembership(AutoDocumentationBDDTest):
