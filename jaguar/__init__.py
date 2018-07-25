@@ -27,8 +27,8 @@ class Jaguar(Application):
 
     smtp:
       host: smtp.gmail.com
-      username: khajezade.mohamad@gmail.com
-      password: 072122448011059467mkh
+      username: sombodynothing666@gmail.com
+      password: Hellooldfriend
       localhost: gmail.com
 
 
