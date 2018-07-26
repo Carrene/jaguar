@@ -1,22 +1,13 @@
 
 from bddrest.authoring import response, when, Remove, Update
-from restfulpy.application import Application
 from restfulpy.orm import DBSession
-from restfulpy.testing import ApplicableTestCase
 
-from ..controllers.root import Root
-from jaguar.authentication import Authenticator
 from jaguar.models.membership import User
 
-from .helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
 class TestRoom(AutoDocumentationBDDTest):
-    __application__ = Application(
-        'Mockup application',
-        root=Root(),
-        authenticator=Authenticator()
-    )
 
     def test_create_room(self):
         with self.given(
@@ -27,4 +18,3 @@ class TestRoom(AutoDocumentationBDDTest):
         ):
 
             assert response.status == '200 OK'
-

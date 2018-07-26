@@ -1,13 +1,37 @@
 from os import path, makedirs
 
+from restfulpy.application import Application
 from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 
+from jaguar.authentication import Authenticator
+from jaguar.controllers.root import Root
 
 HERE = path.abspath(path.dirname(__file__))
 
 
 class AutoDocumentationBDDTest(ApplicableTestCase):
+
+    __application__ = Application(
+        'Mockup',
+        root=Root(),
+        authenticator=Authenticator()
+    )
+
+    __configuration__ = '''
+    db:
+      url: postgresql://postgres:postgres@localhost/jaguar_dev
+      test_url: postgresql://postgres:postgres@localhost/jaguar_test
+      administrative_url: postgresql://postgres:postgres@localhost/postgres
+
+
+    activation:
+      secret: activation-secret
+      max_age: 86400  # seconds
+      url: http://nc.carrene.com/activate
+      # url: http://localhost:8080/activate
+
+    '''
 
     @classmethod
     def get_spec_filename(cls, story):
