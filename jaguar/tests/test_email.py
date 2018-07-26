@@ -1,28 +1,12 @@
 from bddrest.authoring import response, when, Remove, Update
-from restfulpy.application import Application
 from restfulpy.orm import DBSession
-from restfulpy.testing import ApplicableTestCase
 
-from ..controllers.root import Root
-from jaguar.authentication import Authenticator
 from jaguar.models.membership import User
 
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
-class TestEmail(ApplicableTestCase):
-    __application__ = Application(
-        'Mockup',
-        root=Root(),
-        authenticator=Authenticator()
-    )
 
-    __configuration__ = '''
-
-    activation:
-      secret: activation-secret
-      max_age: 86400  # seconds
-      url: http://nc.carrene.com/activate
-      # url: http://localhost:8080/activate
-    '''
+class TestEmail(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
