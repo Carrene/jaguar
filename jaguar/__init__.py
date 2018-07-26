@@ -35,7 +35,7 @@ class Jaguar(Application):
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
-      url: http://nc.carrene.com/activate
+      url: http://ecample.com/activate
 
     '''
 
