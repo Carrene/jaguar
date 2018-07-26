@@ -21,7 +21,7 @@ class Jaguar(Application):
       administrative_url: postgresql://postgres:postgres@localhost/postgres
 
     messaging:
-      default_messenger: restfulpy.messaging.SmtpProvider
+      default_messenger: restfulpy.messaging.ConsoleMessenger
       template_dirs:
         - %(root_path)s/jaguar/email_templates
 

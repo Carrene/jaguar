@@ -29,28 +29,33 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
       secret: activation-secret
       max_age: 86400  # seconds
       url: http://nc.carrene.com/activate
-      # url: http://localhost:8080/activate
 
     '''
 
     @classmethod
     def get_spec_filename(cls, story):
-        filename = f'{story.base_call.verb}-' \
-                   f'{story.base_call.url.split("/")[2]}({story.title})'
-        target = path.abspath(path.join(HERE, '../../data/specifications'))
+        filename =\
+            f'{story.base_call.verb}-' \
+            f'{story.base_call.url.split("/")[2]}({story.title})'
+        target =\
+            path.abspath(path.join(HERE, '../../data/specifications'))
         if not path.exists(target):
             makedirs(target, exist_ok=True)
-        filename = path.join(target, f'{filename}.yml')
+        filename =\
+            path.join(target, f'{filename}.yml')
         return filename
 
     @classmethod
     def get_markdown_filename(cls, story):
-        filename = f'{story.base_call.verb}-' \
-                   f'{story.base_call.url.split("/")[2]}({story.title})'
-        target = path.abspath(path.join(HERE, '../../data/documentation'))
+        filename =\
+            f'{story.base_call.verb}-' \
+            f'{story.base_call.url.split("/")[2]}({story.title})'
+        target =\
+            path.abspath(path.join(HERE, '../../data/documentation'))
         if not path.exists(target):
             makedirs(target, exist_ok=True)
-        filename = path.join(target, f'{filename}.md')
+        filename =\
+            path.join(target, f'{filename}.md')
         return filename
 
     def given(self, title, dump=True, *args, **kwargs):
