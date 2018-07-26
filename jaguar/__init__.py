@@ -27,8 +27,8 @@ class Jaguar(Application):
 
     smtp:
       host: smtp.gmail.com
-      username: sombodynothing666@gmail.com
-      password: Hellooldfriend
+      username: user@example.com
+      password: <smtp-password>
       localhost: gmail.com
 
 
@@ -36,8 +36,6 @@ class Jaguar(Application):
       secret: activation-secret
       max_age: 86400  # seconds
       url: http://nc.carrene.com/activate
-      # url: http://localhost:8080/activate
-
 
     '''
 
