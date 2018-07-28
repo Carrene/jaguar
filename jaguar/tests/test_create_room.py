@@ -17,4 +17,20 @@ class TestRoom(AutoDocumentationBDDTest):
         ):
 
             assert response.status == '200 OK'
+            assert response.json['title'] == 'example'
+            when(
+                'The room title is less than minimum',
+                form=Update(title='min')
+            )
+            assert response.status ==\
+                '703 Must be greater than minimum length'
+
+            when(
+                'The room title is less than minimum',
+                form=\
+                Update(
+                    title=\
+                    'the room title should not be more than 32 charecters')
+            )
+            assert response.status == '704 Exceed max length'
 
