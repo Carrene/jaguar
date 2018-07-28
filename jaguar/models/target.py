@@ -1,6 +1,6 @@
 
 from nanohttp import settings
-from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, relationship
+from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship
 from restfulpy.taskqueue import RestfulpyTask
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
@@ -109,3 +109,4 @@ class Direct(Target):
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
+
