@@ -11,8 +11,9 @@ class RoomsController(ModelRestController):
 
     @validate(
         title=dict(
-            min_length=(4, '703 Must be greater than minimum length'),
-            max_length=(32, '704 Exceed max length'),
+            min_length=(4, '701 Must be greater than minimum length'),
+            max_length=(32, '702 Exceed max length'),
+            required=(True, '703 Room title is required'),
         )
     )
     @json
