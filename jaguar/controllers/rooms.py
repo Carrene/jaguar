@@ -8,6 +8,7 @@ from jaguar.models import Target, Room
 
 class RoomsController(ModelRestController):
     __model__ = Target
+
     @validate(
         title=dict(
             min_length=(4, '703 Must be greater than minimum length'),
@@ -17,8 +18,7 @@ class RoomsController(ModelRestController):
     @json
     def create(self):
         title = context.form.get('title')
-        room = Room(title = title)
+        room = Room(title=title)
         DBSession.add(room)
 
         return room
-
