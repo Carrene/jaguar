@@ -7,17 +7,6 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 class TestMembership(AutoDocumentationBDDTest):
 
-    @classmethod
-    def mockup(cls):
-        user = User(
-            email='already.added@example.com',
-            title = 'example',
-            password = '123456',
-        )
-        user.is_active = True
-        DBSession.add(user)
-        DBSession.commit()
-
     def test_login(self):
         with self.given(
             'Login user',

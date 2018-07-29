@@ -136,6 +136,10 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
             id=self.id
         ))
 
+    @classmethod
+    def current(cls):
+        return DBSession.query(cls).filter(cls.email == context.identity.email).one()
+
 
 class User(Member):
     __tablename__ = 'user'

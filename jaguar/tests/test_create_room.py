@@ -1,6 +1,8 @@
 
-from bddrest.authoring import response, when, Remove, Update
 from restfulpy.orm import DBSession
+from restfulpy.principal import JwtPrincipal, JwtRefreshToken
+from nanohttp import context
+from bddrest.authoring import response, when, Update, Remove
 
 from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
@@ -9,11 +11,17 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest
 class TestRoom(AutoDocumentationBDDTest):
 
     def test_create_room(self):
+        self.login(
+            email='already.added@example.com',
+            password='123456',
+            url='/apiv1/token',
+            verb='CREATE'
+        )
         with self.given(
             'Create a room',
             url='/apiv1/rooms',
             verb='CREATE',
-            form=dict(title='example')
+            form=dict(title='example'),
         ):
 
             assert response.status == '200 OK'
@@ -25,17 +33,12 @@ class TestRoom(AutoDocumentationBDDTest):
             assert response.status ==\
                 '701 Must Be Greater Than 4 Charecters'
 
-            when(
-                'The Room Title Is Less Than Minimum',
-                form=\
-                Update(
-                    title=\
-                    'The room title should not be more than 32 charecters')
-            )
+            when('The Room Title Is Less Than Minimum',
+                 form=Update(
+                title='The room title should not be more than 32 charecters'
+                 )
+             )
             assert response.status == '702 Must Be Less Than 32 Charecters'
-            when(
-                'title is required',
-                form = Remove('title')
-            )
+            when('title is required', form=Remove('title')
+                 )
             assert response.status == '703 Room Title Is Required'
-
