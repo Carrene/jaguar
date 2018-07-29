@@ -6,7 +6,7 @@ from nanohttp import json, context, validate
 from jaguar.models import Target, Room
 
 
-class RoomsController(ModelRestController):
+class RoomController(ModelRestController):
     __model__ = Target
 
     @validate(

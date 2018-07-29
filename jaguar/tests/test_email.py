@@ -21,7 +21,7 @@ class TestEmail(AutoDocumentationBDDTest):
     def test_claim_email(self):
         with self.given(
             'claim a user',
-            url='/apiv1/emails',
+            url='/apiv1/email',
             verb='CLAIM',
             form=dict(email='test@example.com')
         ):
