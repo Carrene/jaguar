@@ -26,6 +26,7 @@ class TestRoom(AutoDocumentationBDDTest):
 
             assert response.status == '200 OK'
             assert response.json['title'] == 'example'
+            assert response.json['owner_id'] == 1
             when(
                 'The room title is less than minimum',
                 form=Update(title='min')

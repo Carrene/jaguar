@@ -24,6 +24,7 @@ class RoomController(ModelRestController):
         room = Room(title=title)
         member = User.current()
         room.administrators.append(member)
+        room.owner = member
         DBSession.add(room)
         DBSession.commit()
 

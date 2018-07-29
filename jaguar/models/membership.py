@@ -173,6 +173,7 @@ class User(Member):
             remote_side=[id],
         )
     )
+    my_room = relationship('Room', backref='owner')
 
 
     __mapper_args__ = {

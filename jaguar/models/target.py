@@ -74,6 +74,7 @@ class Room(Target):
         protected=True,
         lazy='selectin'
     )
+    owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
 
     def to_dict(self):
         member_ids = [member.id for member in self.members]
@@ -85,6 +86,7 @@ class Room(Target):
             type=self.type,
             member_ids=member_ids,
             administrator_ids = administrator_ids,
+            owner_id = self.owner_id
         )
 
     messages = relationship('Envelop')
