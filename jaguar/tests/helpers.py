@@ -76,4 +76,3 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             autodoc=dump and self.get_markdown_filename,
             **kwargs
         )
-
