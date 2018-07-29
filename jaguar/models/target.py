@@ -1,6 +1,6 @@
 
 from nanohttp import settings
-from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship
+from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, relationship
 from restfulpy.taskqueue import RestfulpyTask
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
@@ -89,6 +89,18 @@ class Room(Target):
             owner_id = self.owner_id
         )
 
+    def to_dict(self):
+        member_ids = [member.id for member in self.members]
+        administrator_ids =\
+            [administrator.id for administrator in self.administrators]
+        return dict(
+            id=self.id,
+            title=self.title,
+            type=self.type,
+            member_ids=member_ids,
+            administrator_ids = administrator_ids,
+        )
+
     messages = relationship('Envelop')
 
     __mapper_args__ = {
@@ -109,4 +121,3 @@ class Direct(Target):
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
-
