@@ -89,18 +89,6 @@ class Room(Target):
             owner_id = self.owner_id
         )
 
-    def to_dict(self):
-        member_ids = [member.id for member in self.members]
-        administrator_ids =\
-            [administrator.id for administrator in self.administrators]
-        return dict(
-            id=self.id,
-            title=self.title,
-            type=self.type,
-            member_ids=member_ids,
-            administrator_ids = administrator_ids,
-        )
-
     messages = relationship('Envelop')
 
     __mapper_args__ = {
