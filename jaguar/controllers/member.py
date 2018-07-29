@@ -10,7 +10,7 @@ from restfulpy.orm import DBSession
 from jaguar.models import Member
 
 
-class MembersController(ModelRestController):
+class MemberController(ModelRestController):
     __model__ = Member
 
     @json

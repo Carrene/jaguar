@@ -2,7 +2,7 @@
 from nanohttp import RestController, json, context, HTTPBadRequest, validate
 
 
-class TokensController(RestController):
+class TokenController(RestController):
     @validate(
         email=dict(
             required=(True, '400 Invalid email or password')

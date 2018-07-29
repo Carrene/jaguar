@@ -10,7 +10,7 @@ from restfulpy.orm import commit, DBSession
 from jaguar.models import Member, ActivationEmail
 
 
-class EmailsController(ModelRestController):
+class EmailController(ModelRestController):
 
     @json
     @commit

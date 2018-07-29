@@ -4,18 +4,18 @@ from restfulpy.controllers import RootController
 
 import jaguar
 
-from .members import MembersController
-from .emails import EmailsController
-from .tokens import TokensController
-from .rooms import RoomsController
+from .member import MemberController
+from .email import EmailController
+from .token import TokenController
+from .rooms import RoomController
 
 
 class ApiV1(Controller):
 
-    members = MembersController()
-    emails = EmailsController()
-    tokens = TokensController()
-    rooms = RoomsController()
+    member = MemberController()
+    email = EmailController()
+    token = TokenController()
+    rooms = RoomController()
 
     @json
     def version(self):
