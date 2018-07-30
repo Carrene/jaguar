@@ -48,9 +48,12 @@ class TestRoom(AutoDocumentationBDDTest):
             when(
                 'The Room Title Is Less Than Minimum',
                 form=Update(
-                    title='The room title should not be more than 32 charecters'
+                    title=\
+                    'The room title should not be more than 32 charecters'
                 )
             )
             assert status == '702 Must Be Less Than 32 Charecters'
+
             when('Title is required', form=Remove('title'))
             assert status == '703 Room Title Is Required'
+

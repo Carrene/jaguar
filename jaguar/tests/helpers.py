@@ -80,33 +80,34 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
         DBSession.add(user)
         DBSession.commit()
 
-#    @classmethod
-#    def get_spec_filename(cls, story):
-#        filename =\
-#            f'{story.base_call.verb}-' \
-#            f'{story.base_call.url.split("/")[2]}({story.title})'
-#        target =\
-#            path.abspath(path.join(HERE, '../../data/specifications'))
-#        if not path.exists(target):
-#            makedirs(target, exist_ok=True)
-#        filename =\
-#            path.join(target, f'{filename}.yml')
-#        return filename
-#
-#    @classmethod
-#    def get_markdown_filename(cls, story):
-#
-#        filename =\
-#            f'{story.base_call.verb}-' \
-#            f'{story.base_call.url.split("/")[2]}({story.title})'
-#        target =\
-#            path.abspath(path.join(HERE, '../../data/documentation'))
-#        if not path.exists(target):
-#            makedirs(target, exist_ok=True)
-#        filename =\
-#            path.join(target, f'{filename}.md')
-#        return filename
-#
+    @classmethod
+    def get_spec_filename(cls, story):
+        filename =\
+            f'{story.base_call.verb}-' \
+            f'{story.base_call.url.split("/")[2]}({story.title})'
+        target =\
+            path.abspath(path.join(HERE, '../../data/specifications'))
+        if not path.exists(target):
+            makedirs(target, exist_ok=True)
+        filename =\
+            path.join(target, f'{filename}.yml')
+        return filename
+
+    @classmethod
+    def get_markdown_filename(cls, story):
+
+        filename =\
+            f'{story.base_call.verb}-' \
+            f'{story.base_call.url.split("/")[2]}({story.title})'
+        target =\
+            path.abspath(path.join(HERE, '../../data/documentation'))
+        if not path.exists(target):
+            makedirs(target, exist_ok=True)
+        filename =\
+            path.join(target, f'{filename}.md')
+        return filename
+
+# FIXME The given should be checked again
 #    def given(self, dump=True, *args, **kwargs):
 #        return super().given(
 #            autodump=dump and self.get_spec_filename,
@@ -114,4 +115,4 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 #            *args,
 #            **kwargs
 #        )
-#
+
