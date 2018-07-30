@@ -65,3 +65,6 @@ def test_user_model(db):
     contact.contact_parent = user
     session.commit()
     assert contact.contact_parent.title == 'example'
+    user.blocked_users.append(contact)
+
+

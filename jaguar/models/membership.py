@@ -4,7 +4,7 @@ import uuid
 from hashlib import sha256
 
 import itsdangerous
-from sqlalchemy import Unicode, Integer, ForeignKey, Boolean
+from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
@@ -16,6 +16,14 @@ from sqlalchemy.orm import backref
 
 from .envelop import Envelop
 from .messaging import ActivationEmail
+
+
+blocked_user = Table(
+    'blocked_user',
+    DeclarativeBase.metadata,
+    Field('blocked_user_id', Integer, ForeignKey('user.id')),
+    Field('Blocked_user_reference_id', Integer, ForeignKey('user.id'))
+)
 
 
 class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
@@ -148,6 +156,8 @@ class User(Member):
     add_to_room = Field(Boolean, default=True)
 
     contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
+    blocked_id = Field(Integer, ForeignKey('user.id'), nullable=True)
+
 
     user_name = Field(
         Unicode(50),
@@ -175,6 +185,15 @@ class User(Member):
         )
     )
     user_room = relationship('Room', backref='owner')
+    blocked_users = relationship(
+        'User',
+        secondary=blocked_user,
+        foreign_keys=[blocked_id],
+        backref='blocked_reference',
+        lazy='selectin',
+        protected=True,
+    )
+
 
 
     __mapper_args__ = {

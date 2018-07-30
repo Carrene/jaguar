@@ -68,7 +68,7 @@ class Room(Target):
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(
-        "User",
+        'User',
         secondary=room_administrator_table,
         backref='administrator_of',
         protected=True,
