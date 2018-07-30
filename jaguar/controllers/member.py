@@ -20,10 +20,10 @@ class MemberController(ModelRestController):
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
 
         try:
-             email = serializer.loads(
-                context.form.get('token') ,
-                max_age=settings.activation.max_age
-            )
+            email = serializer.loads(
+               context.form.get('token'),
+               max_age=settings.activation.max_age
+                )
 
         except itsdangerous.BadSignature:
             raise HTTPStatus(status='703 Invalid email activation token')

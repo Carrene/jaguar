@@ -13,8 +13,8 @@ class TestMembership(AutoDocumentationBDDTest):
     def mockup(cls):
         user = User(
             email='already.added@example.com',
-            title = 'example',
-            password = '123456',
+            title='example',
+            password='123456',
         )
         user.is_active = True
         DBSession.add(user)
