@@ -7,14 +7,14 @@ import jaguar
 from .member import MemberController
 from .email import EmailController
 from .token import TokenController
-from .rooms import RoomController
+from .room import RoomController
 
 
 class ApiV1(Controller):
 
-    member = MemberController()
-    email = EmailController()
-    token = TokenController()
+    members = MemberController()
+    emails = EmailController()
+    tokens = TokenController()
     rooms = RoomController()
 
     @json

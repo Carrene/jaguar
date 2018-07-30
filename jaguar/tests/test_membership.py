@@ -28,7 +28,7 @@ class TestMembership(AutoDocumentationBDDTest):
         with self.given(
             'Invalid password format',
             verb='REGISTER',
-            url='/apiv1/member',
+            url='/apiv1/members',
             form=dict(token=token, password='1234', title='test member')
         ):
             assert response.status == 704

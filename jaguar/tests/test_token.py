@@ -11,7 +11,7 @@ class TestMembership(AutoDocumentationBDDTest):
         with self.given(
             'Login user',
             verb='CREATE',
-            url='/apiv1/token',
+            url='/apiv1/tokens',
             form=dict(email='already.added@example.com', password='123456')
         ):
             assert response.status == 200

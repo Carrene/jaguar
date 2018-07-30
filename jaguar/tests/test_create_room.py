@@ -25,7 +25,7 @@ class TestRoom(AutoDocumentationBDDTest):
         self.login(
             email='already.added@example.com',
             password='123456',
-            url='/apiv1/token',
+            url='/apiv1/tokens',
             verb='CREATE'
         )
         with self.given(

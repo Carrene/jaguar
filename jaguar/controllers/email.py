@@ -3,14 +3,14 @@ from typing import Union
 
 import itsdangerous
 from nanohttp import json, context, HTTPBadRequest, HTTPStatus, settings
-from restfulpy.controllers import ModelRestController
+from restfulpy.controllers import RestController
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import commit, DBSession
 
 from jaguar.models import Member, ActivationEmail
 
 
-class EmailController(ModelRestController):
+class EmailController(RestController):
 
     @json
     @commit
