@@ -21,15 +21,12 @@ class RoomController(ModelRestController):
     )
     def create(self):
         title = context.form.get('title')
-
         room = Room(title=title)
         member = User.current()
         room.administrators.append(member)
         room.members.append(member)
         room.owner = member
-
         DBSession.add(room)
         DBSession.commit()
-
         return room.to_dict()
 

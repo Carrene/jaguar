@@ -24,7 +24,6 @@ class MemberController(ModelRestController):
                 context.form.get('token'),
                 max_age=settings.activation.max_age
         )
-
         except itsdangerous.BadSignature:
             raise HTTPStatus(status='703 Invalid email activation token')
 
@@ -34,14 +33,12 @@ class MemberController(ModelRestController):
             password=context.form.get('password')
         )
         member.is_active = True
-
         DBSession.add(member)
         DBSession.commit()
-
         principal = member.create_jwt_principal()
         context.response_headers.add_header(
             'X-New-JWT-Token',
             principal.dump().decode('utf-8')
         )
-
         return member
+
