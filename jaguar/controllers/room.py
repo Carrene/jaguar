@@ -1,7 +1,7 @@
 from nanohttp import json, context, validate
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
-from restfulpy.orm import DBSession, commit
+from restfulpy.orm import DBSession
 
 from jaguar.models import Target, Room
 from jaguar.models import User
@@ -12,8 +12,6 @@ class RoomController(ModelRestController):
 
     @authorize
     @json
-    @Room.expose
-    @commit
     @validate(
         title=dict(
             min_length=(4, '701 Must Be Greater Than 4 Charecters'),
@@ -23,11 +21,15 @@ class RoomController(ModelRestController):
     )
     def create(self):
         title = context.form.get('title')
+
         room = Room(title=title)
         member = User.current()
         room.administrators.append(member)
         room.members.append(member)
         room.owner = member
+
         DBSession.add(room)
-        return room
+        DBSession.commit()
+
+        return room.to_dict()
 
