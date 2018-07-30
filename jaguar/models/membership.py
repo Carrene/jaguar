@@ -4,7 +4,7 @@ import uuid
 from hashlib import sha256
 
 import itsdangerous
-from sqlalchemy import Unicode, Integer, ForeignKey
+from sqlalchemy import Unicode, Integer, ForeignKey, Boolean
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
@@ -145,6 +145,7 @@ class User(Member):
     __tablename__ = 'user'
 
     id = Field(Integer,ForeignKey('member.id'), primary_key=True)
+    add_to_room = Field(Boolean, default=True)
 
     contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
 
@@ -173,7 +174,7 @@ class User(Member):
             remote_side=[id],
         )
     )
-    my_room = relationship('Room', backref='owner')
+    user_room = relationship('Room', backref='owner')
 
 
     __mapper_args__ = {

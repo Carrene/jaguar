@@ -1,4 +1,4 @@
-from nanohttp import json, context, validate
+from nanohttp import json, context, validate, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
@@ -35,7 +35,11 @@ class RoomController(ModelRestController):
     @commit
     def add(self, room_id : int):
         user_id = context.form.get('user_id')
-        user = User.current()
         room = DBSession.query(Room).filter_by(id=room_id).one()
+        if int(user_id) in room.to_dict()['member_ids']:
+            raise HTTPStatus('604 Already Added To Target')
+        user = DBSession.query(User).filter_by(id = user_id).one()
+        if not user.add_to_room:
+            raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
         room.members.append(user)
         return room

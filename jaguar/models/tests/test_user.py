@@ -30,6 +30,7 @@ def test_user_model(db):
     session.add(user)
     session.commit()
     assert session.query(User).count() == 1
+    assert user.add_to_room == True
 
     # Testing rooms of a user
     room = Room(title='example')

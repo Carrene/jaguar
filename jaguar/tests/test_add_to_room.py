@@ -20,8 +20,23 @@ class TestRoom(AutoDocumentationBDDTest):
             password='123456',
         )
         user.is_active = True
+
+        room_member = User(
+            email='member@example.com',
+            title='member',
+            password='123456',
+        )
+
+        never_add_to_room = User(
+            email='never.add@example.com',
+            title='never',
+            password='123456',
+            add_to_room = False,
+        )
+
         room = Room(title='example', type='room')
-        session.add_all([user, room])
+        room.members.append(room_member)
+        session.add_all([user, room, never_add_to_room])
         session.commit()
 
     def test_create_room(self):
@@ -39,3 +54,14 @@ class TestRoom(AutoDocumentationBDDTest):
         ):
 
             assert status == 200
+            assert len(response.json['member_ids']) == 2
+
+            when('Already added to the room', form=Update(user_id=2))
+            assert status == '604 Already Added To Target'
+
+            when('Not allowed to add to any room',
+                 form=Update(user_id=3)
+            )
+            assert status == 602
+
+
