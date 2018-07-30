@@ -21,7 +21,7 @@ class TestMembership(AutoDocumentationBDDTest):
         DBSession.commit()
 
     def test_registration(self):
-        serializer\
+        serializer \
             = itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
         token = serializer.dumps('test@example.com')
 
