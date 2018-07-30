@@ -1,7 +1,7 @@
 from nanohttp import json, context, validate
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
-from restfulpy.orm import DBSession
+from restfulpy.orm import DBSession, commit
 
 from jaguar.models import Target, Room
 from jaguar.models import User
@@ -30,3 +30,12 @@ class RoomController(ModelRestController):
         DBSession.commit()
         return room.to_dict()
 
+    @json
+    @Room.expose
+    @commit
+    def add(self, room_id : int):
+        user_id = context.form.get('user_id')
+        user = User.current()
+        room = DBSession.query(Room).filter_by(id=room_id).one()
+        room.members.append(user)
+        return room
