@@ -22,7 +22,7 @@ blocked_user = Table(
     'blocked_user',
     DeclarativeBase.metadata,
     Field('blocked_user_id', Integer, ForeignKey('user.id')),
-    Field('Blocked_user_reference_id', Integer, ForeignKey('user.id'))
+    Field('Blocked_user_reference_id', Integer, ForeignKey('user.blocked_id'))
 )
 
 
@@ -156,7 +156,12 @@ class User(Member):
     add_to_room = Field(Boolean, default=True)
 
     contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
-    blocked_id = Field(Integer, ForeignKey('user.id'), nullable=True)
+    blocked_id = Field(
+        Integer,
+        ForeignKey('user.id'),
+        nullable=True,
+        unique=True
+    )
 
 
     user_name = Field(
@@ -176,6 +181,7 @@ class User(Member):
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
             r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
+
     contact = relationship(
         'User',
         foreign_keys=[contact_id],
@@ -184,17 +190,19 @@ class User(Member):
             remote_side=[id],
         )
     )
+
     user_room = relationship('Room', backref='owner')
+
     blocked_users = relationship(
         'User',
-        secondary=blocked_user,
         foreign_keys=[blocked_id],
-        backref='blocked_reference',
+        backref=backref(
+            'blocked_reference',
+            remote_side=[id],
+        ),
         lazy='selectin',
         protected=True,
     )
-
-
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
