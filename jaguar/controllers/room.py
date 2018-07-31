@@ -3,7 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from jaguar.models import Target, Room
+from jaguar.models import Target, Room, blocked_user
 from jaguar.models import User
 
 

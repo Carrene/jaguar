@@ -211,7 +211,7 @@ class User(Member):
     blocked_users = relationship(
         'User',
         secondary=blocked_user,
-        primaryjoin=id == blocked_user.c.blocked_user_id,
+        primaryjoin=id  == blocked_user.c.blocked_user_id,
         secondaryjoin=id == blocked_user.c.blocked_user_reference_id,
         backref=backref('blocked_user_reference'),
     )
