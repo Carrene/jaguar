@@ -60,12 +60,12 @@ def test_user_model(db):
     user.contact.append(contact)
     session.commit()
     assert len(user.contact) == 1
+    assert len(contact.contact_reference) == 1
 
     # Testing other side of relationship
-    contact.contact_parent = user
     session.commit()
-    assert contact.contact_parent.title == 'example'
     user.blocked_users.append(contact)
-    contact.blocked_reference = user
+    assert len(user.blocked_users) == 1
+    assert len(contact.blocked_user_reference) == 1
 
 

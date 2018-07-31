@@ -21,8 +21,32 @@ from .messaging import ActivationEmail
 blocked_user = Table(
     'blocked_user',
     DeclarativeBase.metadata,
-    Field('blocked_user_id', Integer, ForeignKey('user.id')),
-    Field('Blocked_user_reference_id', Integer, ForeignKey('user.blocked_id'))
+    Field('blocked_user_id',
+          Integer,
+          ForeignKey('user.id'),
+          primary_key=True
+          ),
+    Field(
+        'blocked_user_reference_id',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True
+    )
+)
+
+contact_user = Table(
+    'contact_user',
+    DeclarativeBase.metadata,
+    Field('contact_id',
+          Integer,
+          ForeignKey('user.id'),
+          primary_key=True
+          ),
+    Field('contact_reference_id',
+          Integer,
+          ForeignKey('user.id'),
+          primary_key=True
+          ),
 )
 
 
@@ -52,7 +76,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
         'polymorphic_on': type
-   }
+        }
 
     @property
     def roles(self):
@@ -79,7 +103,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
         min_length = self.__class__.password.info['min_length']
         if len(password) < min_length:
             raise HTTPStatus(
-                '704 Please enter at least %d characters for password.' \
+                '704 Please enter at least %d characters for password.'
                 % min_length
             )
         self._password = self._hash_password(password)
@@ -146,29 +170,21 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     @classmethod
     def current(cls):
-        return DBSession.query(cls).filter(cls.email == context.identity.email).one()
+        return DBSession.query(cls).filter(
+            cls.email == context.identity.email).one()
 
 
 class User(Member):
     __tablename__ = 'user'
 
-    id = Field(Integer,ForeignKey('member.id'), primary_key=True)
+    id = Field(Integer, ForeignKey('member.id'), primary_key=True)
     add_to_room = Field(Boolean, default=True)
-
-    contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
-    blocked_id = Field(
-        Integer,
-        ForeignKey('user.id'),
-        nullable=True,
-        unique=True
-    )
-
 
     user_name = Field(
         Unicode(50),
         unique=True,
-        index = True,
-        nullable = True,
+        index=True,
+        nullable=True,
     )
 
     phone = Field(
@@ -179,35 +195,30 @@ class User(Member):
         watermark='Phone',
         example='734 555 1212',
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-            r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+        r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
 
     contact = relationship(
         'User',
-        foreign_keys=[contact_id],
-        backref=backref(
-            'contact_parent',
-            remote_side=[id],
+        secondary=contact_user,
+        primaryjoin=id == contact_user.c.contact_id,
+        secondaryjoin=id == contact_user.c.contact_reference_id,
+        backref=backref('contact_reference'),
         )
-    )
 
     user_room = relationship('Room', backref='owner')
 
     blocked_users = relationship(
         'User',
-        foreign_keys=[blocked_id],
-        backref=backref(
-            'blocked_reference',
-            remote_side=[id],
-        ),
-        lazy='selectin',
-        protected=True,
+        secondary=blocked_user,
+        primaryjoin=id == blocked_user.c.blocked_user_id,
+        secondaryjoin=id == blocked_user.c.blocked_user_reference_id,
+        backref=backref('blocked_user_reference'),
     )
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
-
 
     @property
     def roles(self):
