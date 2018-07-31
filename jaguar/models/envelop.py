@@ -2,7 +2,7 @@
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin
-from restfulpy.taskqueue import Task
+from restfulpy.taskqueue import RestfulpyTask
 from restfulpy.logging_ import get_logger
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 from sqlalchemy.dialects.postgresql.json import JSONB

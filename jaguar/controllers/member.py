@@ -10,7 +10,7 @@ from restfulpy.orm import DBSession
 from jaguar.models import Member
 
 
-class MembersController(ModelRestController):
+class MemberController(ModelRestController):
     __model__ = Member
 
     @json
@@ -20,8 +20,8 @@ class MembersController(ModelRestController):
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
 
         try:
-             email = serializer.loads(
-                context.form.get('token') ,
+            email = serializer.loads(
+                context.form.get('token'),
                 max_age=settings.activation.max_age
             )
 
@@ -34,15 +34,12 @@ class MembersController(ModelRestController):
             password=context.form.get('password')
         )
         member.is_active = True
-
         DBSession.add(member)
         DBSession.commit()
-
         principal = member.create_jwt_principal()
         context.response_headers.add_header(
             'X-New-JWT-Token',
             principal.dump().decode('utf-8')
         )
-
         return member
 

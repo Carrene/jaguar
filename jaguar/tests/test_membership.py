@@ -13,18 +13,17 @@ class TestMembership(AutoDocumentationBDDTest):
     def mockup(cls):
         user = User(
             email='already.added@example.com',
-            title = 'example',
-            password = '123456',
+            title='example',
+            password='123456',
         )
         user.is_active = True
         DBSession.add(user)
         DBSession.commit()
 
     def test_registration(self):
-        serializer\
+        serializer \
             = itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
         token = serializer.dumps('test@example.com')
-
         with self.given(
             'Invalid password format',
             verb='REGISTER',
@@ -32,11 +31,9 @@ class TestMembership(AutoDocumentationBDDTest):
             form=dict(token=token, password='1234', title='test member')
         ):
             assert response.status == 704
-
             when('Registering a user', form=Update(password='123456'))
             assert response.status == 200
             assert 'X-New-JWT-Token' in response.headers[1]
-
             when('Invalid token', form=Update(token='Invalid token'))
             assert response.status == 703
 

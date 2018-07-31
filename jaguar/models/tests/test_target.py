@@ -19,8 +19,8 @@ def test_target_model(db):
     )
     session.add(member)
     room.members.append(member)
+    room.owner = member
     session.commit()
-
     # Since the selectin loading is used to load relations,
     # the relation is already load.
     assert room.members[0].title == 'example'
@@ -37,3 +37,4 @@ def test_target_model(db):
     room.administrators.append(administrator)
     session.commit()
     assert room.administrators[0].title == 'administrator'
+    assert room.owner_id == 1
