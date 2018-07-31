@@ -41,6 +41,7 @@ class TestRoom(AutoDocumentationBDDTest):
             password='123456',
         )
         block_the_user.blocked_users.append(user)
+        block_the_user.blocked_users.append(room_member)
         room = Room(title='example', type='room')
         room.members.append(room_member)
         session.add_all(
@@ -69,6 +70,6 @@ class TestRoom(AutoDocumentationBDDTest):
                  form=Update(user_id=3)
                  )
             assert status == '602 Not Allowed To Add This Person To Any Room'
-#            when('Blocked by the user', form=Update(user_id=4))
-#            assert status == 601
+            when('Blocked by the user', form=Update(user_id=4))
+            assert status == 601
 

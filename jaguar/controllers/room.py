@@ -43,3 +43,4 @@ class RoomController(ModelRestController):
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
         room.members.append(user)
         return room
+
