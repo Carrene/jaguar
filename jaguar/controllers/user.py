@@ -7,11 +7,11 @@ from restfulpy.controllers import ModelRestController
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
 
-from jaguar.models import Member
+from jaguar.models import User
 
 
-class MemberController(ModelRestController):
-    __model__ = Member
+class UserController(ModelRestController):
+    __model__ = User
 
     @json
     def register(self):
@@ -28,18 +28,18 @@ class MemberController(ModelRestController):
         except itsdangerous.BadSignature:
             raise HTTPStatus(status='703 Invalid email activation token')
 
-        member = Member(
+        user = User(
             email=email,
             title=context.form.get('title'),
             password=context.form.get('password')
         )
-        member.is_active = True
-        DBSession.add(member)
+        user.is_active = True
+        DBSession.add(user)
         DBSession.commit()
-        principal = member.create_jwt_principal()
+        principal = user.create_jwt_principal()
         context.response_headers.add_header(
             'X-New-JWT-Token',
             principal.dump().decode('utf-8')
         )
-        return member
+        return user
 

@@ -4,7 +4,7 @@ from restfulpy.controllers import RootController
 
 import jaguar
 
-from .member import MemberController
+from .user import UserController
 from .email import EmailController
 from .token import TokenController
 from .room import RoomController
@@ -12,7 +12,7 @@ from .room import RoomController
 
 class ApiV1(Controller):
 
-    members = MemberController()
+    users = UserController()
     emails = EmailController()
     tokens = TokenController()
     rooms = RoomController()
