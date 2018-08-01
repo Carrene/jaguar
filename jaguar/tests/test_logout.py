@@ -1,6 +1,5 @@
 
 from bddrest.authoring import response, when, Remove, Update, status
-from restfulpy.orm import DBSession
 
 from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
@@ -10,14 +9,15 @@ class TestEmail(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
+        session = cls.create_session()
         user = User(
             email='already.added@example.com',
             title='example',
             password='123456',
         )
         user.is_active = True
-        DBSession.add(user)
-        DBSession.commit()
+        session.add(user)
+        session.commit()
 
     def test_logout(self):
 

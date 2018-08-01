@@ -79,5 +79,4 @@ class TestRoom(AutoDocumentationBDDTest):
             assert status == '602 Not Allowed To Add This Person To Any Room'
             when('Blocked by the user', form=Update(user_id=4))
             assert status == 601
-            self.logout()
 

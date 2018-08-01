@@ -34,7 +34,6 @@ class TestRoom(AutoDocumentationBDDTest):
             verb='CREATE',
             form=dict(title='example'),
         ):
-
             assert status == 200
             assert response.json['title'] == 'example'
             assert response.json['owner_id'] == 1
@@ -52,6 +51,6 @@ class TestRoom(AutoDocumentationBDDTest):
                 )
             )
             assert status == '702 Must Be Less Than 32 Charecters'
-
             when('Title is required', form=Remove('title'))
             assert status == '703 Room Title Is Required'
+

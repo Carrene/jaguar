@@ -76,8 +76,8 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
-        'polymorphic_on': type
-        }
+        'polymorphic_on': type,
+    }
 
     @property
     def roles(self):
@@ -211,7 +211,7 @@ class User(Member):
     blocked_users = relationship(
         'User',
         secondary=blocked,
-        primaryjoin=id  == blocked.c.source,
+        primaryjoin=id == blocked.c.source,
         secondaryjoin=id == blocked.c.destination,
     )
 

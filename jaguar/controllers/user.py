@@ -21,9 +21,9 @@ class UserController(ModelRestController):
 
         try:
             email = serializer.loads(
-                 context.form.get('token'),
-                 max_age=settings.activation.max_age
-                )
+                context.form.get('token'),
+                max_age=settings.activation.max_age,
+            )
 
         except itsdangerous.BadSignature:
             raise HTTPStatus(status='703 Invalid email activation token')
