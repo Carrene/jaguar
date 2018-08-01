@@ -18,16 +18,13 @@ class UserController(ModelRestController):
 
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
-
         try:
             email = serializer.loads(
                 context.form.get('token'),
                 max_age=settings.activation.max_age,
             )
-
         except itsdangerous.BadSignature:
             raise HTTPStatus(status='703 Invalid email activation token')
-
         user = User(
             email=email,
             title=context.form.get('title'),
@@ -42,3 +39,4 @@ class UserController(ModelRestController):
             principal.dump().decode('utf-8')
         )
         return user
+

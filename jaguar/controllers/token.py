@@ -2,6 +2,7 @@
 from nanohttp import RestController, json, context, HTTPBadRequest, validate
 from restfulpy.authorization import authorize
 
+
 class TokenController(RestController):
     @validate(
         email=dict(
@@ -15,7 +16,6 @@ class TokenController(RestController):
     def create(self):
         email = context.form.get('email')
         password = context.form.get('password')
-
         principal = context.application.__authenticator__. \
             login((email, password))
         if principal is None:

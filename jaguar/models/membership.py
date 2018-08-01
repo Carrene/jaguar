@@ -25,8 +25,8 @@ blocked = Table(
         'source',
         Integer,
         ForeignKey('user.id'),
-        primary_key=True
-          ),
+        primary_key=True,
+    ),
     Field(
         'destination',
         Integer,
@@ -38,16 +38,18 @@ blocked = Table(
 contact = Table(
     'contact',
     DeclarativeBase.metadata,
-    Field('source',
-          Integer,
-          ForeignKey('user.id'),
-          primary_key=True
-          ),
-    Field('destination',
-          Integer,
-          ForeignKey('user.id'),
-          primary_key=True
-          ),
+    Field(
+        'source',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True,
+    ),
+    Field(
+        'destination',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True,
+    ),
 )
 
 
