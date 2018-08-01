@@ -18,16 +18,17 @@ from .envelop import Envelop
 from .messaging import ActivationEmail
 
 
-blocked_user = Table(
-    'blocked_user',
+blocked = Table(
+    'blocked',
     DeclarativeBase.metadata,
-    Field('blocked_user_id',
-          Integer,
-          ForeignKey('user.id'),
-          primary_key=True
+    Field(
+        'source',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True
           ),
     Field(
-        'blocked_user_reference_id',
+        'destination',
         Integer,
         ForeignKey('user.id'),
         primary_key=True
@@ -210,10 +211,9 @@ class User(Member):
 
     blocked_users = relationship(
         'User',
-        secondary=blocked_user,
-        primaryjoin=id  == blocked_user.c.blocked_user_id,
-        secondaryjoin=id == blocked_user.c.blocked_user_reference_id,
-        backref=backref('blocked_user_reference'),
+        secondary=blocked,
+        primaryjoin=id  == blocked.c.source,
+        secondaryjoin=id == blocked.c.destination,
     )
 
     __mapper_args__ = {

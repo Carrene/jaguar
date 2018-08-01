@@ -3,8 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from jaguar.models import Target, Room, blocked_user
-from jaguar.models import User
+from jaguar.models import Target, Room, blocked, User
 
 
 class RoomController(ModelRestController):
@@ -41,11 +40,12 @@ class RoomController(ModelRestController):
         user = DBSession.query(User).filter(User.id == user_id).one()
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
-        query = DBSession.query(blocked_user) \
-            .filter(blocked_user.c.blocked_user_id == user_id)
-        if context.identity.id in \
-                [reference_id for _, reference_id in query.all()]:
+        is_blocked = DBSession.query(blocked) \
+            .filter(
+                blocked.c.source == user_id,
+                blocked.c.destination == context.identity.id) \
+            .count()
+        if is_blocked:
             raise HTTPStatus('601 Blocked By Target User')
         room.members.append(user)
         return room

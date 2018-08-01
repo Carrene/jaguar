@@ -66,6 +66,5 @@ def test_user_model(db):
     session.commit()
     user.blocked_users.append(contact)
     assert len(user.blocked_users) == 1
-    assert len(contact.blocked_user_reference) == 1
 
 

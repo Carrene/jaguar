@@ -40,8 +40,15 @@ class TestRoom(AutoDocumentationBDDTest):
             title='block',
             password='123456',
         )
+
+        lover_lock = User(
+            id=5,
+            email='lover@example.com',
+            title='lover',
+            password='123456',
+        )
         block_the_user.blocked_users.append(user)
-        block_the_user.blocked_users.append(room_member)
+        block_the_user.blocked_users.append(lover_lock)
         room = Room(title='example', type='room')
         room.members.append(room_member)
         session.add_all(
@@ -53,7 +60,6 @@ class TestRoom(AutoDocumentationBDDTest):
         self.login(
             email='already.added@example.com',
             password='123456',
-
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -73,3 +79,5 @@ class TestRoom(AutoDocumentationBDDTest):
             assert status == '602 Not Allowed To Add This Person To Any Room'
             when('Blocked by the user', form=Update(user_id=4))
             assert status == 601
+            self.logout()
+

@@ -1,4 +1,4 @@
-from bddrest.authoring import when, response, Remove, Update
+from bddrest.authoring import when, response, Remove, Update, status
 from restfulpy.orm import DBSession
 
 from jaguar.models.membership import User
@@ -29,11 +29,11 @@ class TestMembership(AutoDocumentationBDDTest):
             assert response.status == 400
 
             when('Request without email parameters', form=Remove('email'))
-            assert response.status == 400
+            assert status == 400
 
             when(
                 'Request without password parameters',
                 form=Remove('password')
             )
-            assert response.status == 400
+            assert status == 400
 
