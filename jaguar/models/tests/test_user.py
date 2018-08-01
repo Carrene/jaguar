@@ -57,10 +57,9 @@ def test_user_model(db):
         email='contact@example.com'
     )
     session.add(contact)
-    user.contact.append(contact)
+    user.contacts.append(contact)
     session.commit()
-    assert len(user.contact) == 1
-    assert len(contact.contact_reference) == 1
+    assert len(user.contacts) == 1
 
     # Testing other side of relationship
     session.commit()

@@ -35,15 +35,15 @@ blocked = Table(
     )
 )
 
-contact_user = Table(
-    'contact_user',
+contact = Table(
+    'contact',
     DeclarativeBase.metadata,
-    Field('contact_id',
+    Field('source',
           Integer,
           ForeignKey('user.id'),
           primary_key=True
           ),
-    Field('contact_reference_id',
+    Field('destination',
           Integer,
           ForeignKey('user.id'),
           primary_key=True
@@ -199,12 +199,11 @@ class User(Member):
         r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
 
-    contact = relationship(
+    contacts = relationship(
         'User',
-        secondary=contact_user,
-        primaryjoin=id == contact_user.c.contact_id,
-        secondaryjoin=id == contact_user.c.contact_reference_id,
-        backref=backref('contact_reference'),
+        secondary=contact,
+        primaryjoin=id == contact.c.source,
+        secondaryjoin=id == contact.c.destination,
         )
 
     user_room = relationship('Room', backref='owner')
