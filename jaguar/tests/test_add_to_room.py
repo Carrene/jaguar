@@ -27,6 +27,7 @@ class TestRoom(AutoDocumentationBDDTest):
             title='member',
             password='123456',
         )
+        room_member.is_active = True
         never_add_to_room = User(
             id=3,
             email='never.add@example.com',
@@ -79,4 +80,11 @@ class TestRoom(AutoDocumentationBDDTest):
             assert status == '602 Not Allowed To Add This Person To Any Room'
             when('Blocked by the user', form=Update(user_id=4))
             assert status == 601
+        self.logout()
+        self.login(
+            email='member@example.com',
+            password='123456',
+            url='/apiv1/tokens',
+            verb='CREATE'
+        )
 
