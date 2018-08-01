@@ -53,6 +53,7 @@ class TestRoom(AutoDocumentationBDDTest):
         self.login(
             email='already.added@example.com',
             password='123456',
+
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -72,4 +73,3 @@ class TestRoom(AutoDocumentationBDDTest):
             assert status == '602 Not Allowed To Add This Person To Any Room'
             when('Blocked by the user', form=Update(user_id=4))
             assert status == 601
-
