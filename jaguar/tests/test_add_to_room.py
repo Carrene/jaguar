@@ -27,7 +27,6 @@ class TestRoom(AutoDocumentationBDDTest):
             title='member',
             password='123456',
         )
-        room_member.is_active = True
         never_add_to_room = User(
             id=3,
             email='never.add@example.com',
@@ -41,7 +40,7 @@ class TestRoom(AutoDocumentationBDDTest):
             title='block',
             password='123456',
         )
-
+        block_the_user.is_active = True
         lover_lock = User(
             id=5,
             email='lover@example.com',
@@ -82,9 +81,17 @@ class TestRoom(AutoDocumentationBDDTest):
             assert status == 601
         self.logout()
         self.login(
-            email='member@example.com',
+            email='block@example.com',
             password='123456',
             url='/apiv1/tokens',
             verb='CREATE'
         )
+
+        with self.given(
+            'Add to  a room',
+            url='/apiv1/rooms/1',
+            verb='ADD',
+            form=dict(user_id=5),
+        ):
+            assert status == 601
 

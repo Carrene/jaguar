@@ -1,3 +1,4 @@
+from sqlalchemy import and_, or_
 from nanohttp import json, context, validate, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
@@ -43,9 +44,19 @@ class RoomController(ModelRestController):
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
         is_blocked = DBSession.query(blocked) \
             .filter(
-                blocked.c.source == user_id,
-                blocked.c.destination == context.identity.id) \
-            .count()
+                and_
+               (
+                   blocked.c.source == user_id,
+                   blocked.c.destination == context.identity.id
+               )
+                |
+                and_
+               (
+                   blocked.c.source == context.identity.id,
+                   blocked.c.destination == user_id
+               )
+            ) \
+        .count()
         if is_blocked:
             raise HTTPStatus('601 Blocked By Target User')
         room.members.append(user)
