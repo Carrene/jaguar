@@ -206,7 +206,7 @@ class User(Member):
         secondary=contact,
         primaryjoin=id == contact.c.source,
         secondaryjoin=id == contact.c.destination,
-        )
+    )
 
     user_room = relationship('Room', backref='owner')
 
