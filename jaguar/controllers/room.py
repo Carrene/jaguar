@@ -43,22 +43,17 @@ class RoomController(ModelRestController):
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
         is_blocked = DBSession.query(blocked) \
-            .filter(
-                and_
-               (
+            .filter(or_(
+                and_(
                    blocked.c.source == user_id,
                    blocked.c.destination == context.identity.id
-               )
-                |
-                and_
-               (
+                    ),
+                and_(
                    blocked.c.source == context.identity.id,
                    blocked.c.destination == user_id
-               )
-            ) \
-        .count()
+                    ))) \
+            .count()
         if is_blocked:
             raise HTTPStatus('601 Blocked By Target User')
         room.members.append(user)
         return room
-
