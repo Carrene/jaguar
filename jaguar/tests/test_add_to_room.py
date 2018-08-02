@@ -78,7 +78,7 @@ class TestRoom(AutoDocumentationBDDTest):
                  )
             assert status == '602 Not Allowed To Add This Person To Any Room'
             when('Blocked by the user', form=Update(user_id=4))
-            assert status == 601
+            assert status == '601 Blocked By Target User'
         self.logout()
         self.login(
             email='block@example.com',
@@ -93,5 +93,5 @@ class TestRoom(AutoDocumentationBDDTest):
             verb='ADD',
             form=dict(user_id=5),
         ):
-            assert status == 601
+            assert status == '601 Blocked By Target User'
 
