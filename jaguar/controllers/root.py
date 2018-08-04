@@ -8,6 +8,7 @@ from .user import UserController
 from .email import EmailController
 from .token import TokenController
 from .room import RoomController
+from .target import TargetController
 
 
 class ApiV1(Controller):
@@ -16,6 +17,7 @@ class ApiV1(Controller):
     emails = EmailController()
     tokens = TokenController()
     rooms = RoomController()
+    targets = TargetController()
 
     @json
     def version(self):

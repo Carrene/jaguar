@@ -1,6 +1,7 @@
 
 from nanohttp import settings
-from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, relationship
+from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
+    relationship, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
@@ -10,12 +11,13 @@ from .membership import User
 from .envelop import Envelop
 
 
-room_member = Table(
-    'room_member',
+target_member = Table(
+    'target_member',
     DeclarativeBase.metadata,
-    Field('room_id', Integer, ForeignKey('room.id')),
+    Field('target_id', Integer, ForeignKey('target.id')),
     Field('member_id', Integer, ForeignKey('user.id'))
 )
+
 room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,
@@ -24,7 +26,13 @@ room_administrator = Table(
 )
 
 
-class Target(DeclarativeBase, ModifiedMixin):
+class Target(
+    DeclarativeBase,
+    ModifiedMixin,
+    OrderingMixin,
+    FilteringMixin,
+    PaginationMixin
+):
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
@@ -35,6 +43,14 @@ class Target(DeclarativeBase, ModifiedMixin):
     )
     type = Field(
         Unicode(25)
+    )
+    # since the number of collections are small, the selectin strategy is
+    # more efficient for loading
+    members = relationship(
+        'User',
+        secondary=target_member,
+        backref='rooms',
+        lazy='selectin',
     )
     envelop_id = relationship('Envelop')
     __mapper_args__ = {
@@ -50,16 +66,6 @@ class Room(Target):
         Integer,
         ForeignKey('target.id'),
         primary_key=True,
-        json='target_id'
-    )
-    # since the number of collections are small, the selectin strategy is
-    # more efficient for loading
-    members = relationship(
-        'User',
-        secondary=room_member,
-        backref='rooms',
-        protected=True,
-        lazy='selectin'
     )
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
@@ -102,3 +108,4 @@ class Direct(Target):
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
+
