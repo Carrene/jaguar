@@ -55,7 +55,7 @@ class RoomController(ModelRestController):
             )) \
             .count()
         if is_blocked:
-            raise HTTPStatus('601 Blocked By Target User')
+            raise HTTPStatus('601 Not Allowed To Add User To Any Room')
         room.members.append(user)
         return room
 
