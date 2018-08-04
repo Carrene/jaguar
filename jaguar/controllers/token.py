@@ -4,6 +4,7 @@ from restfulpy.authorization import authorize
 
 
 class TokenController(RestController):
+
     @validate(
         email=dict(
             required=(True, '400 Invalid email or password')

@@ -10,13 +10,13 @@ from .membership import User
 from .envelop import Envelop
 
 
-room_member_table = Table(
+room_member = Table(
     'room_member',
     DeclarativeBase.metadata,
     Field('room_id', Integer, ForeignKey('room.id')),
     Field('member_id', Integer, ForeignKey('user.id'))
 )
-room_administrator_table = Table(
+room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,
     Field('room_id', Integer, ForeignKey('room.id')),
@@ -28,7 +28,6 @@ class Target(DeclarativeBase, ModifiedMixin):
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
-
     title = Field(
         Unicode(50),
         nullable=True,
@@ -38,7 +37,6 @@ class Target(DeclarativeBase, ModifiedMixin):
         Unicode(25)
     )
     envelop_id = relationship('Envelop')
-
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
         'polymorphic_on': type,
@@ -54,22 +52,20 @@ class Room(Target):
         primary_key=True,
         json='target_id'
     )
-
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     members = relationship(
         'User',
-        secondary=room_member_table,
+        secondary=room_member,
         backref='rooms',
         protected=True,
         lazy='selectin'
     )
-
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(
         'User',
-        secondary=room_administrator_table,
+        secondary=room_administrator,
         backref='administrator_of',
         protected=True,
         lazy='selectin'
@@ -88,9 +84,7 @@ class Room(Target):
             administrator_ids = administrator_ids,
             owner_id = self.owner_id
         )
-
     messages = relationship('Envelop')
-
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
@@ -105,7 +99,6 @@ class Direct(Target):
         primary_key=True,
         json='target_id'
     )
-
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }

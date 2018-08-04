@@ -20,7 +20,6 @@ class TestEmail(AutoDocumentationBDDTest):
         session.commit()
 
     def test_logout(self):
-
         self.login(
             email='already.added@example.com',
             password='123456',

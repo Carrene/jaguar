@@ -4,10 +4,9 @@ from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
-class TestMembership(AutoDocumentationBDDTest):
+class TestToken(AutoDocumentationBDDTest):
 
     def test_login(self):
-
         with self.given(
             'Login user',
             verb='CREATE',

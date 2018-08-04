@@ -9,7 +9,7 @@ from jaguar.models.target import Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
-class TestRoom(AutoDocumentationBDDTest):
+class TestAddToRoom(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -56,7 +56,7 @@ class TestRoom(AutoDocumentationBDDTest):
         )
         session.commit()
 
-    def test_create_room(self):
+    def test_add_user_to_room(self):
         self.login(
             email='already.added@example.com',
             password='123456',
@@ -86,7 +86,6 @@ class TestRoom(AutoDocumentationBDDTest):
             url='/apiv1/tokens',
             verb='CREATE'
         )
-
         with self.given(
             'Add to  a room',
             url='/apiv1/rooms/1',

@@ -15,7 +15,6 @@ class UserController(ModelRestController):
 
     @json
     def register(self):
-
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
         try:

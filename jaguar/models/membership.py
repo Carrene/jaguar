@@ -72,7 +72,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
         protected=True,
         min_length=6
     )
-
     title = Field(Unicode(100))
     type = Field(Unicode(50))
 
@@ -182,14 +181,12 @@ class User(Member):
 
     id = Field(Integer, ForeignKey('member.id'), primary_key=True)
     add_to_room = Field(Boolean, default=True)
-
     user_name = Field(
         Unicode(50),
         unique=True,
         index=True,
         nullable=True,
     )
-
     phone = Field(
         Unicode(50),
         json='phone',
@@ -200,16 +197,13 @@ class User(Member):
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
         r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
-
     contacts = relationship(
         'User',
         secondary=contact,
         primaryjoin=id == contact.c.source,
         secondaryjoin=id == contact.c.destination,
     )
-
     user_room = relationship('Room', backref='owner')
-
     blocked_users = relationship(
         'User',
         secondary=blocked,
