@@ -15,7 +15,7 @@ def test_user_model(db):
         user = User(
             title='example',
             password='1234',
-            user_name='example',
+            username='example',
             email='example@example.com'
         )
 
@@ -24,12 +24,13 @@ def test_user_model(db):
     user = User(
         title='example',
         password='1234567',
-        user_name='example',
+        username='example',
         email='example@example.com'
     )
     session.add(user)
     session.commit()
     assert session.query(User).count() == 1
+    assert user.add_to_room == True
 
     # Testing rooms of a user
     room = Room(title='example')
@@ -52,15 +53,17 @@ def test_user_model(db):
     contact = User(
         title='contact',
         password='123456',
-        user_name='contact',
+        username='contact',
         email='contact@example.com'
     )
     session.add(contact)
-    user.contact.append(contact)
+    user.contacts.append(contact)
     session.commit()
-    assert len(user.contact) == 1
+    assert len(user.contacts) == 1
 
     # Testing other side of relationship
-    contact.contact_parent = user
     session.commit()
-    assert contact.contact_parent.title == 'example'
+    user.blocked_users.append(contact)
+    assert len(user.blocked_users) == 1
+
+

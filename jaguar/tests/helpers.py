@@ -19,7 +19,6 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
         root=Root(),
         authenticator=Authenticator()
     )
-
     __configuration__ = '''
     db:
       url: postgresql://postgres:postgres@localhost/jaguar_dev

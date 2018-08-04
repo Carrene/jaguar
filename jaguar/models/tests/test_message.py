@@ -9,7 +9,7 @@ def test_message_model(db):
     member = User(
         title='example',
         password='123456',
-        user_name='example',
+        username='example',
         email='example@example.com'
     )
     session.add(member)

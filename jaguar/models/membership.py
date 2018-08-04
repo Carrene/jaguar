@@ -4,7 +4,7 @@ import uuid
 from hashlib import sha256
 
 import itsdangerous
-from sqlalchemy import Unicode, Integer, ForeignKey
+from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
@@ -16,6 +16,41 @@ from sqlalchemy.orm import backref
 
 from .envelop import Envelop
 from .messaging import ActivationEmail
+
+
+blocked = Table(
+    'blocked',
+    DeclarativeBase.metadata,
+    Field(
+        'source',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True,
+    ),
+    Field(
+        'destination',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True
+    )
+)
+
+contact = Table(
+    'contact',
+    DeclarativeBase.metadata,
+    Field(
+        'source',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True,
+    ),
+    Field(
+        'destination',
+        Integer,
+        ForeignKey('user.id'),
+        primary_key=True,
+    ),
+)
 
 
 class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
@@ -37,14 +72,13 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
         protected=True,
         min_length=6
     )
-
     title = Field(Unicode(100))
     type = Field(Unicode(50))
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
-        'polymorphic_on': type
-   }
+        'polymorphic_on': type,
+    }
 
     @property
     def roles(self):
@@ -66,13 +100,11 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     def _set_password(self, password):
         """Hash ``password`` on the fly and store its hashed version."""
-        if not isinstance(password, str):
-            raise HTT
         min_length = self.__class__.password.info['min_length']
         if len(password) < min_length:
             raise HTTPStatus(
-                '704 Please enter at least %d characters for password.' \
-                % min_length
+                f'704 Please enter at least {min_length} characters '
+                'for password.'
             )
         self._password = self._hash_password(password)
 
@@ -138,23 +170,21 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     @classmethod
     def current(cls):
-        return DBSession.query(cls).filter(cls.email == context.identity.email).one()
+        return DBSession.query(cls) \
+            .filter(cls.email == context.identity.email).one()
 
 
 class User(Member):
     __tablename__ = 'user'
 
-    id = Field(Integer,ForeignKey('member.id'), primary_key=True)
-
-    contact_id = Field(Integer, ForeignKey('user.id'), nullable=True)
-
-    user_name = Field(
+    id = Field(Integer, ForeignKey('member.id'), primary_key=True)
+    add_to_room = Field(Boolean, default=True)
+    username = Field(
         Unicode(50),
         unique=True,
-        index = True,
-        nullable = True,
+        index=True,
+        nullable=True,
     )
-
     phone = Field(
         Unicode(50),
         json='phone',
@@ -162,24 +192,26 @@ class User(Member):
         min_length=10,
         watermark='Phone',
         example='734 555 1212',
-        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-            r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+        pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
+        '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
-    contact = relationship(
+    contacts = relationship(
         'User',
-        foreign_keys=[contact_id],
-        backref=backref(
-            'contact_parent',
-            remote_side=[id],
-        )
+        secondary=contact,
+        primaryjoin=id == contact.c.source,
+        secondaryjoin=id == contact.c.destination,
     )
-    my_room = relationship('Room', backref='owner')
-
+    user_room = relationship('Room', backref='owner')
+    blocked_users = relationship(
+        'User',
+        secondary=blocked,
+        primaryjoin=id == blocked.c.source,
+        secondaryjoin=id == blocked.c.destination,
+    )
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
     }
-
 
     @property
     def roles(self):

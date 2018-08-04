@@ -1,7 +1,6 @@
 import itsdangerous
 from bddrest.authoring import response, when, Update
 from nanohttp import settings
-from restfulpy.orm import DBSession
 
 from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
@@ -11,14 +10,15 @@ class TestMembership(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
+        session = cls.create_session()
         user = User(
             email='already.added@example.com',
             title='example',
             password='123456',
         )
         user.is_active = True
-        DBSession.add(user)
-        DBSession.commit()
+        session.add(user)
+        session.commit()
 
     def test_registration(self):
         serializer \
@@ -26,8 +26,8 @@ class TestMembership(AutoDocumentationBDDTest):
         token = serializer.dumps('test@example.com')
         with self.given(
             'Invalid password format',
-            verb='REGISTER',
-            url='/apiv1/users',
+            '/apiv1/users',
+            'REGISTER',
             form=dict(token=token, password='1234', title='test user')
         ):
             assert response.status == 704

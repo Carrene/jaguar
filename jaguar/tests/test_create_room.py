@@ -23,35 +23,31 @@ class TestRoom(AutoDocumentationBDDTest):
 
     def test_create_room(self):
         self.login(
-            email='already.added@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
+            'already.added@example.com',
+            '123456',
+            '/apiv1/tokens',
+            'CREATE'
         )
         with self.given(
             'Creating a room',
-            url='/apiv1/rooms',
-            verb='CREATE',
+            '/apiv1/rooms',
+            'CREATE',
             form=dict(title='example'),
         ):
-
             assert status == 200
             assert response.json['title'] == 'example'
             assert response.json['owner_id'] == 1
             assert len(response.json['administrator_ids']) == 1
             assert len(response.json['member_ids']) == 1
-
             when(
                 'The room title is less than minimum',
                 form=Update(title='min')
             )
             assert status == '701 Must Be Greater Than 4 Charecters'
-
             when(
                 'The Room Title Is Less Than Minimum',
                 form=Update(
-                    title= \
-                    'The room title should not be more than 32 charecters'
+                    title='The room title should not be more than 32 charecters'
                 )
             )
             assert status == '702 Must Be Less Than 32 Charecters'
