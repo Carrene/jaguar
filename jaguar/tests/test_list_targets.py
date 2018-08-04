@@ -1,5 +1,4 @@
 
-from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
 
 from jaguar.models.membership import User
@@ -26,7 +25,6 @@ class TestListTarget(AutoDocumentationBDDTest):
         direct.members.append(user)
         session.add_all([user, room2])
         session.commit()
-
 
     def test_list_targets_of_user(self):
          self.login(
