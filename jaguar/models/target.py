@@ -67,6 +67,7 @@ class Room(Target):
         ForeignKey('target.id'),
         primary_key=True,
     )
+
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(
@@ -87,8 +88,8 @@ class Room(Target):
             title=self.title,
             type=self.type,
             member_ids=member_ids,
-            administrator_ids = administrator_ids,
-            owner_id = self.owner_id
+            administrator_ids=administrator_ids,
+            owner_id=self.owner_id
         )
     messages = relationship('Envelop')
     __mapper_args__ = {
