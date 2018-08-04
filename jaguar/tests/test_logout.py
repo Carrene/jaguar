@@ -23,7 +23,6 @@ class TestEmail(AutoDocumentationBDDTest):
         self.login(
             'already.added@example.com',
             '123456',
-
             '/apiv1/tokens',
             'CREATE'
         )
