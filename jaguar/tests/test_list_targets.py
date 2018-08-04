@@ -23,7 +23,7 @@ class TestListTarget(AutoDocumentationBDDTest):
         room2 = Room(title='room2')
         room1.members.append(user)
         direct.members.append(user)
-        session.add_all([user, room2])
+        session.add_all([direct, room1, room2])
         session.commit()
 
     def test_list_targets_of_user(self):
