@@ -20,6 +20,12 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             password='123456',
         )
         user.is_active = True
+        blocked1 = User(
+            email='blocked1@example.com',
+            title='blocked1',
+            password='123456',
+        )
+        blocked1.is_active = True
         room_member = User(
             email='member@example.com',
             title='member',
@@ -37,13 +43,13 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             password='123456',
         )
         blocker.is_active = True
-        example = User(
-            email='example@example.com',
-            title='example',
+        blocked2 = User(
+            email='blocked2@example.com',
+            title='blocked2',
             password='123456',
         )
-        blocker.blocked_users.append(user)
-        blocker.blocked_users.append(example)
+        blocker.blocked_users.append(blocked1)
+        blocker.blocked_users.append(blocked2)
         room = Room(title='example', type='room')
         room.members.append(room_member)
         session.add_all(
@@ -66,13 +72,25 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert len(response.json['member_ids']) == 2
-            when('Already added to the room', form=Update(user_id=4))
+            when('Already added to the room', form=Update(user_id=5))
             assert status == '604 Already Added To Target'
             when('Not allowed to add this person to any room',
-                 form=Update(user_id=5)
+                 form=Update(user_id=6)
                  )
             assert status == '602 Not Allowed To Add This Person To Any Room'
-            when('Blocked by the user', form=Update(user_id=2))
+        self.logout()
+        self.login(
+            'blocked1@example.com',
+            '123456',
+            '/apiv1/tokens',
+            'CREATE'
+        )
+        with self.given(
+            'Blocked by the target user',
+            '/apiv1/rooms/1',
+            'ADD',
+            form=dict(user_id = 2)
+        ):
             assert status == '601 Blocked By Target User'
         self.logout()
         self.login(
@@ -85,7 +103,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'The blocker can not add the user he blocked',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(user_id=3),
+            form=dict(user_id=4),
         ):
             assert status == '601 Blocked By Target User'
 

@@ -100,8 +100,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     def _set_password(self, password):
         """Hash ``password`` on the fly and store its hashed version."""
-        if not isinstance(password, str):
-            raise HTT
         min_length = self.__class__.password.info['min_length']
         if len(password) < min_length:
             raise HTTPStatus(
@@ -172,8 +170,8 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
 
     @classmethod
     def current(cls):
-        return DBSession.query(cls).filter(
-            cls.email == context.identity.email).one()
+        return DBSession.query(cls) \
+            .filter(cls.email == context.identity.email).one()
 
 
 class User(Member):
