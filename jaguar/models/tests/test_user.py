@@ -15,7 +15,7 @@ def test_user_model(db):
         user = User(
             title='example',
             password='1234',
-            user_name='example',
+            username='example',
             email='example@example.com'
         )
 
@@ -24,7 +24,7 @@ def test_user_model(db):
     user = User(
         title='example',
         password='1234567',
-        user_name='example',
+        username='example',
         email='example@example.com'
     )
     session.add(user)
@@ -53,7 +53,7 @@ def test_user_model(db):
     contact = User(
         title='contact',
         password='123456',
-        user_name='contact',
+        username='contact',
         email='contact@example.com'
     )
     session.add(contact)

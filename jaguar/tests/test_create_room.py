@@ -23,15 +23,15 @@ class TestRoom(AutoDocumentationBDDTest):
 
     def test_create_room(self):
         self.login(
-            email='already.added@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
+            'already.added@example.com',
+            '123456',
+            '/apiv1/tokens',
+            'CREATE'
         )
         with self.given(
             'Creating a room',
-            url='/apiv1/rooms',
-            verb='CREATE',
+            '/apiv1/rooms',
+            'CREATE',
             form=dict(title='example'),
         ):
             assert status == 200

@@ -58,15 +58,15 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
     def test_add_user_to_room(self):
         self.login(
-            email='already.added@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
+            'already.added@example.com',
+            '123456',
+            '/apiv1/tokens',
+            'CREATE'
         )
         with self.given(
             'Add to  a room',
-            url='/apiv1/rooms/1',
-            verb='ADD',
+            '/apiv1/rooms/1',
+            'ADD',
             form=dict(user_id=1),
         ):
             assert status == 200
@@ -81,15 +81,15 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == '601 Blocked By Target User'
         self.logout()
         self.login(
-            email='block@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
+            'block@example.com',
+            '123456',
+            '/apiv1/tokens',
+            'CREATE'
         )
         with self.given(
             'Add to  a room',
-            url='/apiv1/rooms/1',
-            verb='ADD',
+            '/apiv1/rooms/1',
+            'ADD',
             form=dict(user_id=5),
         ):
             assert status == '601 Blocked By Target User'

@@ -21,16 +21,16 @@ class TestEmail(AutoDocumentationBDDTest):
 
     def test_logout(self):
         self.login(
-            email='already.added@example.com',
-            password='123456',
+            'already.added@example.com',
+            '123456',
 
-            url='/apiv1/tokens',
-            verb='CREATE'
+            '/apiv1/tokens',
+            'CREATE'
         )
         with self.given(
             'Log out a user',
-            verb='INVALIDATE',
-            url='/apiv1/tokens'
+            '/apiv1/tokens',
+            'INVALIDATE',
         ):
             assert status == 200
             when('Try to access some authorize source')

@@ -14,7 +14,7 @@ def test_target_model(db):
     member = User(
         title='example',
         password='123456',
-        user_name='example',
+        username='example',
         email='example@example.com'
     )
     session.add(member)
@@ -29,7 +29,7 @@ def test_target_model(db):
     administrator = User(
         title='administrator',
         password='123456',
-        user_name='administrator',
+        username='administrator',
         email='administrator@example.com'
     )
     session.add(administrator)

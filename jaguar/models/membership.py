@@ -105,8 +105,8 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
         min_length = self.__class__.password.info['min_length']
         if len(password) < min_length:
             raise HTTPStatus(
-                '704 Please enter at least %d characters for password.'
-                % min_length
+                f'704 Please enter at least {min_length} characters '
+                'for password.'
             )
         self._password = self._hash_password(password)
 
@@ -181,7 +181,7 @@ class User(Member):
 
     id = Field(Integer, ForeignKey('member.id'), primary_key=True)
     add_to_room = Field(Boolean, default=True)
-    user_name = Field(
+    username = Field(
         Unicode(50),
         unique=True,
         index=True,
@@ -194,8 +194,8 @@ class User(Member):
         min_length=10,
         watermark='Phone',
         example='734 555 1212',
-        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-        r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+        pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
+        '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
     contacts = relationship(
         'User',

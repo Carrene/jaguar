@@ -9,8 +9,8 @@ class TestToken(AutoDocumentationBDDTest):
     def test_login(self):
         with self.given(
             'Login user',
-            verb='CREATE',
-            url='/apiv1/tokens',
+            '/apiv1/tokens',
+            'CREATE',
             form=dict(email='already.added@example.com', password='123456')
         ):
             assert response.status == 200

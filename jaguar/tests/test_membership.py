@@ -26,8 +26,8 @@ class TestMembership(AutoDocumentationBDDTest):
         token = serializer.dumps('test@example.com')
         with self.given(
             'Invalid password format',
-            verb='REGISTER',
-            url='/apiv1/users',
+            '/apiv1/users',
+            'REGISTER',
             form=dict(token=token, password='1234', title='test user')
         ):
             assert response.status == 704
