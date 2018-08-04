@@ -12,7 +12,7 @@ class TargetController(ModelRestController):
 
     @authorize
     @json
-    @Room.expose
+    @Target.expose
     def list(self):
         query = DBSession.query(Target) \
             .join(target_member) \

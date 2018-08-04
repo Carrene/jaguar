@@ -36,8 +36,8 @@ class TestListTarget(AutoDocumentationBDDTest):
 
          with self.given(
              'List targets of a user',
-             url='/apiv1/targets',
-             verb='LIST',
+             '/apiv1/targets',
+             'LIST',
          ):
              assert status == 200
              assert len(response.json) == 2

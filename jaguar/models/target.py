@@ -50,8 +50,7 @@ class Target(
         'User',
         secondary=target_member,
         backref='rooms',
-        protected=True,
-        lazy='selectin'
+        lazy='selectin',
     )
     envelop_id = relationship('Envelop')
     __mapper_args__ = {
@@ -67,7 +66,6 @@ class Room(Target):
         Integer,
         ForeignKey('target.id'),
         primary_key=True,
-        json='room_id',
     )
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
