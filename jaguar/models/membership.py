@@ -195,6 +195,8 @@ class User(Member):
         pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
         '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
+    show_email = Field(Boolean, default=False)
+    show_phone = Field(Boolean, default=False)
     contacts = relationship(
         'User',
         secondary=contact,
@@ -208,6 +210,15 @@ class User(Member):
         primaryjoin=id == blocked.c.source,
         secondaryjoin=id == blocked.c.destination,
     )
+
+    def to_dict(self):
+        return dict(
+            userId=self.id,
+            title=self.title,
+            username=self.username,
+            phoneNumber=self.phone if self.show_phone else None,
+            email=self.email if self.show_email else None,
+        )
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,

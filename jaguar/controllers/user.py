@@ -1,5 +1,6 @@
 
 from typing import Union
+from sqlalchemy import or_
 
 import itsdangerous
 from nanohttp import json, context, HTTPStatus, settings
@@ -38,4 +39,18 @@ class UserController(ModelRestController):
             principal.dump().decode('utf-8')
         )
         return user
+
+    @json
+    @User.expose
+    def search(self):
+        search_string = '%' + context.form.get('search_string') + '%'
+        query = DBSession.query(User) \
+            .filter(or_(
+                User.title.ilike(search_string),
+                User.email.ilike(search_string)
+            ))
+        if not query.count():
+            raise HTTPStatus('611 User Not Found')
+
+        return query
 
