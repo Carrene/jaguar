@@ -27,7 +27,8 @@ class TestSearchUser(AutoDocumentationBDDTest):
         with self.given(
             'Search for a user',
             '/apiv1/users',
-            'SEARCH',form=dict(search_string='Use'),
+            'SEARCH',
+            form=dict(search_string='Use'),
         ):
             assert status == 200
             assert response.json[0]['title'] == 'user1'
@@ -41,7 +42,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 'Search non existing user',
                 form=Update(search_string='sample')
             )
-            assert status == 611
+            assert status == '611 User Not Found'
 
             when(
                 'Search string must be less than 20 charecters',
@@ -50,5 +51,5 @@ class TestSearchUser(AutoDocumentationBDDTest):
                     'The search string should be less than 20 charecters'
                 )
             )
-            assert status == 702
+            assert status == '702 Must Be Less Than 20 Charecters'
 

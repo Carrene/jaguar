@@ -7,11 +7,12 @@ import itsdangerous
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
-from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
+from nanohttp import settings, HTTPBadRequest, HTTPNotFound, \
     context, HTTPConflict, ContextIsNotInitializedError, HTTPStatus
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
-from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin,\
-    ActivationMixin, SoftDeleteMixin, relationship, DBSession
+from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
+    ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
+    FilteringMixin, PaginationMixin, OrderingMixin
 from sqlalchemy.orm import backref
 
 from .envelop import Envelop
@@ -174,7 +175,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
             .filter(cls.email == context.identity.email).one()
 
 
-class User(Member):
+class User(Member, FilteringMixin, OrderingMixin, PaginationMixin):
     __tablename__ = 'user'
 
     id = Field(Integer, ForeignKey('member.id'), primary_key=True)

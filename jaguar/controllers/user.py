@@ -3,7 +3,7 @@ from typing import Union
 from sqlalchemy import or_
 
 import itsdangerous
-from nanohttp import json, context, HTTPStatus, settings
+from nanohttp import json, context, HTTPStatus, settings, validate
 from restfulpy.controllers import ModelRestController
 from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
@@ -40,14 +40,19 @@ class UserController(ModelRestController):
         )
         return user
 
+    @validate(
+        search_string=dict(
+            max_length=(20, '702 Must Be Less Than 20 Charecters')
+        )
+    )
     @json
     @User.expose
     def search(self):
-        search_string = '%' + context.form.get('search_string') + '%'
+        search_string = context.form.get('search_string')
         query = DBSession.query(User) \
             .filter(or_(
-                User.title.ilike(search_string),
-                User.email.ilike(search_string)
+                User.title.ilike(f'%{search_string}%'),
+                User.email.ilike(f'%{search_string}%')
             ))
         if not query.count():
             raise HTTPStatus('611 User Not Found')
