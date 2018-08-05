@@ -101,3 +101,5 @@ class TestSearchUser(AutoDocumentationBDDTest):
             query=dict(searchString='user')
         ):
             assert status == 200
+            assert len(response.json) == 2
+
