@@ -59,11 +59,4 @@ Or, you can add `--drop` to drop the previously created database: **TAKE CARE AB
 
     $ jaguar [-c path/to/config.yml] db create --drop
 
-#### Create databse schema
-
-    $ jaguar [-c path/to/config.yml] db schema
-
-#### Sending an email using cli 
- 
-   (jaguar) $ jaguar email send -e YOUR-EMAIL
 
