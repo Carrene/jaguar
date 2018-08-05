@@ -13,6 +13,8 @@ class RoomController(ModelRestController):
 
     @authorize
     @json
+    @room.expose
+    @commit
     @validate(
         title=dict(
             min_length=(4, '701 Must Be Greater Than 4 Charecters'),
@@ -28,8 +30,7 @@ class RoomController(ModelRestController):
         room.members.append(member)
         room.owner = member
         DBSession.add(room)
-        DBSession.commit()
-        return room.to_dict()
+        return room
 
     @json
     @Room.expose
