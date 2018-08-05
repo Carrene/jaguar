@@ -67,7 +67,6 @@ class Room(Target):
         ForeignKey('target.id'),
         primary_key=True,
     )
-
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(

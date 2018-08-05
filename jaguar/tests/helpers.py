@@ -13,6 +13,7 @@ HERE = path.abspath(path.dirname(__file__))
 
 
 class AutoDocumentationBDDTest(ApplicableTestCase):
+
     __application__ = Application(
         'Mockup',
         root=Root(),
@@ -29,6 +30,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
       secret: activation-secret
       max_age: 86400  # seconds
       url: http://nc.carrene.com/activate
+
     '''
 
     @classmethod

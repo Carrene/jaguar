@@ -13,7 +13,7 @@ class RoomController(ModelRestController):
 
     @authorize
     @json
-    @room.expose
+    @Room.expose
     @commit
     @validate(
         title=dict(
