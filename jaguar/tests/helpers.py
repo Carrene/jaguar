@@ -19,15 +19,18 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
         authenticator=Authenticator()
     )
     __configuration__ = '''
-      db:
-        url: postgresql://postgres:postgres@localhost/jaguar_dev
-        test_url: postgresql://postgres:postgres@localhost/jaguar_test
-        administrative_url: postgresql://postgres:postgres@localhost/postgres
-      activation:
-        secret: activation-secret
-        max_age: 86400  # seconds
-        url: http://nc.carrene.com/activate
+    db:
+      url: postgresql://postgres:postgres@localhost/jaguar_dev
+      test_url: postgresql://postgres:postgres@localhost/jaguar_test
+      administrative_url: postgresql://postgres:postgres@localhost/postgres
+
+
+    activation:
+      secret: activation-secret
+      max_age: 86400  # seconds
+      url: http://nc.carrene.com/activate
     '''
+
     @classmethod
     def mockup(cls):
         user = User(
@@ -41,7 +44,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 
     @classmethod
     def get_spec_filename(cls, story):
-        filename =\
+        filename = \
             f'{story.base_call.verb}-' \
             f'{story.base_call.url.split("/")[2]}({story.title})'
         target = \
