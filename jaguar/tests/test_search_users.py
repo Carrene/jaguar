@@ -28,26 +28,26 @@ class TestSearchUser(AutoDocumentationBDDTest):
             'Search for a user',
             '/apiv1/users',
             'SEARCH',
-            form=dict(search_string='Use'),
+            form=dict(searchString='Use'),
         ):
             assert status == 200
             assert response.json[0]['title'] == 'user1'
             assert len(response.json) == 2
 
-            when('Search in email', form=Update(search_string='exam'))
+            when('Search in email', form=Update(searchString='exam'))
             assert status == 200
             assert len(response.json) == 1
 
             when(
                 'Search non existing user',
-                form=Update(search_string='sample')
+                form=Update(searchString='sample')
             )
             assert status == '611 User Not Found'
 
             when(
                 'Search string must be less than 20 charecters',
                 form=Update(
-                    search_string= \
+                    searchString= \
                     'The search string should be less than 20 charecters'))
             assert status == '702 Must Be Less Than 20 Charecters'
 
@@ -56,7 +56,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             'Test sorting',
             '/apiv1/users',
             'SEARCH',
-            form=dict(search_string='user'),
+            form=dict(searchString='user'),
             query=('sort=title'),
         ):
             assert response.json[0]['id'] == 1
@@ -69,7 +69,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             'Test filtering',
             '/apiv1/users',
             'SEARCH',
-            form=dict(search_string='user'),
+            form=dict(searchString='user'),
             query=('title=user2'),
         ):
             assert len(response.json) == 1
@@ -83,7 +83,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             'Test pagination',
             '/apiv1/users',
             'SEARCH',
-            form=dict(search_string='user'),
+            form=dict(searchString='user'),
             query=('take=1&skip=1')
         ):
             assert len(response.json) == 1
@@ -93,3 +93,11 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'user1'
 
+    def test_rquest_with_query_string(self):
+        with self.given(
+            'Test if request works with query string',
+            '/apiv1/users',
+            'SEARCH',
+            query=dict(searchString='user')
+        ):
+            assert status == 200

@@ -41,18 +41,22 @@ class UserController(ModelRestController):
         return user
 
     @validate(
-        search_string=dict(
+        searchString=dict(
             max_length=(20, '702 Must Be Less Than 20 Charecters')
         )
     )
     @json
     @User.expose
     def search(self):
-        search_string = f'%{context.form.get("search_string")}%'
+        query_string = context.form.get('searchString') \
+            if context.form.get('searchString') \
+            else context.query.get('searchString')
+
+        query_string = f'%{query_string}%'
         query = DBSession.query(User) \
             .filter(or_(
-                User.title.ilike(search_string),
-                User.email.ilike(search_string)
+                User.title.ilike(query_string),
+                User.email.ilike(query_string)
             ))
         if not query.count():
             raise HTTPStatus('611 User Not Found')
