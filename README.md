@@ -59,4 +59,3 @@ Or, you can add `--drop` to drop the previously created database: **TAKE CARE AB
 
     $ jaguar [-c path/to/config.yml] db create --drop
 
-
