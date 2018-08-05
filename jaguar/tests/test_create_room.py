@@ -6,6 +6,7 @@ from bddrest.authoring import response, when, Update, Remove, status
 from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
+
 class TestRoom(AutoDocumentationBDDTest):
 
     @classmethod
