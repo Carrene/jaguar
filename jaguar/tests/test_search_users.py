@@ -48,9 +48,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 'Search string must be less than 20 charecters',
                 form=Update(
                     search_string= \
-                    'The search string should be less than 20 charecters'
-                )
-            )
+                    'The search string should be less than 20 charecters'))
             assert status == '702 Must Be Less Than 20 Charecters'
 
     def test_sorting(self):
@@ -76,6 +74,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
         ):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'user2'
+
             when('Test filtering with two parameter', query=('title!=user2'))
             assert response.json[0]['title'] != 'user2'
 
