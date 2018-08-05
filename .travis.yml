@@ -24,4 +24,4 @@ services:
 
 install: ./scripts/travis-install.sh
 script: py.test --cov=jaguar jaguar/tests
--after_success: travis_retry coveralls
+after_success: travis_retry coveralls
