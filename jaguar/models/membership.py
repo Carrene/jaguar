@@ -54,7 +54,15 @@ contact = Table(
 )
 
 
-class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
+class Member(
+    ActivationMixin,
+    SoftDeleteMixin,
+    ModifiedMixin,
+    OrderingMixin,
+    FilteringMixin,
+    PaginationMixin,
+    DeclarativeBase
+):
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
@@ -175,7 +183,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
             .filter(cls.email == context.identity.email).one()
 
 
-class User(Member, FilteringMixin, OrderingMixin, PaginationMixin):
+class User(Member):
     __tablename__ = 'user'
 
     id = Field(Integer, ForeignKey('member.id'), primary_key=True)
@@ -214,10 +222,10 @@ class User(Member, FilteringMixin, OrderingMixin, PaginationMixin):
 
     def to_dict(self):
         return dict(
-            userId=self.id,
+            id=self.id,
             title=self.title,
             username=self.username,
-            phoneNumber=self.phone if self.show_phone else None,
+            phone=self.phone if self.show_phone else None,
             email=self.email if self.show_email else None,
         )
 

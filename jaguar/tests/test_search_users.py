@@ -53,3 +53,44 @@ class TestSearchUser(AutoDocumentationBDDTest):
             )
             assert status == '702 Must Be Less Than 20 Charecters'
 
+    def test_sorting(self):
+        with self.given(
+            'Test sorting',
+            '/apiv1/users',
+            'SEARCH',
+            form=dict(search_string='user'),
+            query=('sort=title'),
+        ):
+            assert response.json[0]['id'] == 1
+
+            when('Test ordering, descending sort', query=('sort=-title'))
+            assert response.json[0]['id'] == 2
+
+    def test_filtering(self):
+        with self.given(
+            'Test filtering',
+            '/apiv1/users',
+            'SEARCH',
+            form=dict(search_string='user'),
+            query=('title=user2'),
+        ):
+            assert len(response.json) == 1
+            assert response.json[0]['title'] == 'user2'
+            when('Test filtering with two parameter', query=('title!=user2'))
+            assert response.json[0]['title'] != 'user2'
+
+    def test_pagination(self):
+        with self.given(
+            'Test pagination',
+            '/apiv1/users',
+            'SEARCH',
+            form=dict(search_string='user'),
+            query=('take=1&skip=1')
+        ):
+            assert len(response.json) == 1
+            assert response.json[0]['title'] == 'user2'
+
+            when('Sort before pagination', query=('sort=-id&take=3&skip=1'))
+            assert len(response.json) == 1
+            assert response.json[0]['title'] == 'user1'
+
