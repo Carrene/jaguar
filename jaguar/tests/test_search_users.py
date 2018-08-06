@@ -160,5 +160,3 @@ class TestSearchUser(AutoDocumentationBDDTest):
         ):
             assert status == 401
 
-
-
