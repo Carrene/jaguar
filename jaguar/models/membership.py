@@ -8,7 +8,6 @@ from sqlalchemy.orm import backref
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
-
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound, \
     context, HTTPConflict, ContextIsNotInitializedError, HTTPStatus
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
