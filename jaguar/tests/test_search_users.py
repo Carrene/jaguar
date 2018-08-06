@@ -1,6 +1,7 @@
-from jaguar.tests.helpers import AutoDocumentationBDDTest
-from jaguar.models import User
 from bddrest.authoring import given, when, status, Update, response
+
+from jaguar.models import User
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
 class TestSearchUser(AutoDocumentationBDDTest):
@@ -23,7 +24,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
         session.add_all([user1, user2])
         session.commit()
 
-    def test_search_for_user(self):
+    def test_search_user(self):
         with self.given(
             'Search for a user',
             '/apiv1/users',
@@ -34,12 +35,12 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert response.json[0]['title'] == 'user1'
             assert len(response.json) == 2
 
-            when('Search in email', form=Update(searchString='exam'))
+            when('Search using email', form=Update(searchString='exam'))
             assert status == 200
             assert len(response.json) == 1
 
             when(
-                'Search non existing user',
+                'Trying to pass search non existing user',
                 form=Update(searchString='sample')
             )
             assert status == '611 User Not Found'
@@ -48,7 +49,9 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 'Search string must be less than 20 charecters',
                 form=Update(
                     searchString= \
-                    'The search string should be less than 20 charecters'))
+                    'The search string should be less than 20 charecters'
+                )
+            )
             assert status == '702 Must Be Less Than 20 Charecters'
 
     def test_sorting(self):
@@ -95,7 +98,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
 
     def test_rquest_with_query_string(self):
         with self.given(
-            'Test if request works with query string',
+            'Test request using query string',
             '/apiv1/users',
             'SEARCH',
             query=dict(searchString='user')
