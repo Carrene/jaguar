@@ -9,6 +9,7 @@ from .email import EmailController
 from .token import TokenController
 from .room import RoomController
 from .target import TargetController
+from .contact import ContactController
 
 
 class ApiV1(Controller):
@@ -18,6 +19,7 @@ class ApiV1(Controller):
     tokens = TokenController()
     rooms = RoomController()
     targets = TargetController()
+    contacts = ContactController()
 
     @json
     def version(self):
