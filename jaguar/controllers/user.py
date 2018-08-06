@@ -1,11 +1,8 @@
 
-from typing import Union
-
 from sqlalchemy import or_
 import itsdangerous
 from nanohttp import json, context, HTTPStatus, settings, validate
 from restfulpy.controllers import ModelRestController
-from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
 

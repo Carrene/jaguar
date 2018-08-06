@@ -36,6 +36,7 @@ blocked = Table(
     )
 )
 
+
 contact = Table(
     'contact',
     DeclarativeBase.metadata,
@@ -54,15 +55,8 @@ contact = Table(
 )
 
 
-class Member(
-    ActivationMixin,
-    SoftDeleteMixin,
-    ModifiedMixin,
-    OrderingMixin,
-    FilteringMixin,
-    PaginationMixin,
-    DeclarativeBase
-):
+class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
+             FilteringMixin, PaginationMixin, DeclarativeBase):
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
@@ -202,7 +196,7 @@ class User(Member):
         watermark='Phone',
         example='734 555 1212',
         pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-        '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+            '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
     show_email = Field(Boolean, default=False)
     show_phone = Field(Boolean, default=False)
