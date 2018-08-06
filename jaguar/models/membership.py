@@ -4,16 +4,17 @@ import uuid
 from hashlib import sha256
 
 import itsdangerous
+from sqlalchemy.orm import backref
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
+
 from nanohttp import settings, HTTPBadRequest, HTTPNotFound, \
     context, HTTPConflict, ContextIsNotInitializedError, HTTPStatus
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
 from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
     ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
     FilteringMixin, PaginationMixin, OrderingMixin
-from sqlalchemy.orm import backref
 
 from .envelop import Envelop
 from .messaging import ActivationEmail
