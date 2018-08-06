@@ -64,7 +64,10 @@ class TestSearchUser(AutoDocumentationBDDTest):
         ):
             assert response.json[0]['id'] == 1
 
-            when('Test ordering, descending sort', query=('sort=-title'))
+            when(
+                'Trying ro sort the response in descend ordering',
+                 query=('sort=-title')
+            )
             assert response.json[0]['id'] == 2
 
     def test_filtering(self):
@@ -78,7 +81,10 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'user2'
 
-            when('Test filtering with two parameter', query=('title!=user2'))
+            when(
+                'Trying to filter the response ignoring the title',
+                 query=('title!=user2')
+            )
             assert response.json[0]['title'] != 'user2'
 
     def test_pagination(self):
@@ -96,7 +102,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'user1'
 
-    def test_rquest_with_query_string(self):
+    def test_request_with_query_string(self):
         with self.given(
             'Test request using query string',
             '/apiv1/users',
