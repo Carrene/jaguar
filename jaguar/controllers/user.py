@@ -48,15 +48,15 @@ class UserController(ModelRestController):
     @json
     @User.expose
     def search(self):
-        query_string = context.form.get('searchString') \
+        search_string = context.form.get('searchString') \
             if context.form.get('searchString') \
             else context.query.get('searchString')
 
-        query_string = f'%{query_string}%'
+        pattern = f'%{search_string}%'
         query = DBSession.query(User) \
             .filter(or_(
-                User.title.ilike(query_string),
-                User.email.ilike(query_string)
+                User.title.ilike(pattern),
+                User.email.ilike(pattern)
             ))
         if not query.count():
             raise HTTPStatus('611 User Not Found')
