@@ -1,6 +1,5 @@
 
-from nanohttp import context
-from bddrest.authoring import response, when, Update, Remove, status
+from bddrest.authoring import when, Update, Remove, status
 
 from jaguar.models.membership import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
