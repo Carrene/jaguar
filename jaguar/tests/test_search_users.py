@@ -60,7 +60,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 'Search string must be less than 20 charecters',
                 form=Update(
                     query= \
-                    'The search string should be less than 20 charecters'
+                        'The search string should be less than 20 charecters'
                 )
             )
             assert status == '702 Must Be Less Than 20 Charecters'
