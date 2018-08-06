@@ -1,5 +1,4 @@
 
-from restfulpy.orm import DBSession
 from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
 
@@ -53,10 +52,11 @@ class TestAddToContact(AutoDocumentationBDDTest):
            form=dict(userId=3),
         ):
             assert status == 200
-            user = DBSession.query(User).filter(User.id == 1).one()
+            session = self.create_session()
+            user = session.query(User).filter(User.id == 1).one()
             assert len(user.contacts) == 2
 
-            when('The user id already added to contact',form=Update(userId=2))
+            when('The user id already added to contact', form=Update(userId=2))
             assert status == '603 Already Added To Contacts'
 
             when('Try to add not existing user', form=Update(userId=6))
@@ -71,6 +71,6 @@ class TestAddToContact(AutoDocumentationBDDTest):
             when('Request without issuing userId', form=Remove('userId'))
             assert status == '709 User Id Is Required'
 
-            when('Unauthorization request', authorization=None)
+            when('Trying to pass the unauthorized request', authorization=None)
             assert status == 401
 
