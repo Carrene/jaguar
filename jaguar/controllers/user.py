@@ -42,7 +42,8 @@ class UserController(ModelRestController):
 
     @validate(
         query=dict(
-            max_length=(20, '702 Must Be Less Than 20 Charecters')
+            max_length=(20, '702 Must Be Less Than 20 Charecters'),
+            required=(True, '708 Search Query Is Required'),
         )
     )
     @json

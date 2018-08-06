@@ -1,4 +1,4 @@
-from bddrest.authoring import given, when, status, Update, response
+from bddrest.authoring import given, when, status, Update, response, Remove
 
 from jaguar.models import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest
@@ -39,6 +39,9 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 1
 
+            when('Search without query parameter', form=Remove('query'))
+            assert status == '708 Search Query Is Required'
+
             when(
                 'Trying to pass search non existing user',
                 form=Update(query='sample')
@@ -53,6 +56,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 )
             )
             assert status == '702 Must Be Less Than 20 Charecters'
+
 
     def test_sorting(self):
         with self.given(
