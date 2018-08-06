@@ -151,3 +151,14 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 2
 
+        self.logout()
+        with self.given(
+            'Search for a user',
+            '/apiv1/users',
+            'SEARCH',
+            form=dict(query='Use'),
+        ):
+            assert status == 401
+
+
+
