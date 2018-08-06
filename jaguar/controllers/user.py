@@ -41,18 +41,18 @@ class UserController(ModelRestController):
         return user
 
     @validate(
-        searchString=dict(
+        query=dict(
             max_length=(20, '702 Must Be Less Than 20 Charecters')
         )
     )
     @json
     @User.expose
     def search(self):
-        search_string = context.form.get('searchString') \
-            if context.form.get('searchString') \
-            else context.query.get('searchString')
+        query = context.form.get('query') \
+            if context.form.get('query') \
+            else context.query.get('query')
 
-        pattern = f'%{search_string}%'
+        pattern = f'%{query}%'
         query = DBSession.query(User) \
             .filter(or_(
                 User.title.ilike(pattern),
