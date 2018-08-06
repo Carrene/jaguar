@@ -4,15 +4,16 @@ import uuid
 from hashlib import sha256
 
 import itsdangerous
+from sqlalchemy.orm import backref
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 from sqlalchemy.orm import synonym, validates
 from sqlalchemy.events import event
-from nanohttp import settings, HTTPBadRequest, HTTPNotFound,\
+from nanohttp import settings, HTTPBadRequest, HTTPNotFound, \
     context, HTTPConflict, ContextIsNotInitializedError, HTTPStatus
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
-from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin,\
-    ActivationMixin, SoftDeleteMixin, relationship, DBSession
-from sqlalchemy.orm import backref
+from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
+    ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
+    FilteringMixin, PaginationMixin, OrderingMixin
 
 from .envelop import Envelop
 from .messaging import ActivationEmail
@@ -35,6 +36,7 @@ blocked = Table(
     )
 )
 
+
 contact = Table(
     'contact',
     DeclarativeBase.metadata,
@@ -53,7 +55,8 @@ contact = Table(
 )
 
 
-class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, DeclarativeBase):
+class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
+             FilteringMixin, PaginationMixin, DeclarativeBase):
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
@@ -193,8 +196,10 @@ class User(Member):
         watermark='Phone',
         example='734 555 1212',
         pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-        '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+            '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
+    show_email = Field(Boolean, default=False)
+    show_phone = Field(Boolean, default=False)
     contacts = relationship(
         'User',
         secondary=contact,
@@ -208,6 +213,15 @@ class User(Member):
         primaryjoin=id == blocked.c.source,
         secondaryjoin=id == blocked.c.destination,
     )
+
+    def to_dict(self):
+        return dict(
+            id=self.id,
+            title=self.title,
+            username=self.username,
+            phone=self.phone if self.show_phone else None,
+            email=self.email if self.show_email else None,
+        )
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
