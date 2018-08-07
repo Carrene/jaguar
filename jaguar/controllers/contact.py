@@ -39,3 +39,14 @@ class ContactController(ModelRestController):
 
         return destination
 
+    @authorize
+    @json
+    @User.expose
+    def list(self):
+        query = DBSession.query(User) \
+            .filter(
+                Contact.source == context.identity.id,
+                Contact.destination == User.id
+            )
+
+        return query
