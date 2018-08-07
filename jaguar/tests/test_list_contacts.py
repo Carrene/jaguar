@@ -67,13 +67,13 @@ class TestListContact(AutoDocumentationBDDTest):
             'Try to sort the response',
             '/apiv1/contacts',
             'LIST',
-            query=('sort=title')
+            query=dict(sort='title')
         ):
             assert response.json[0]['title'] == 'contact1'
 
             when(
                 'Try to sort the response in descending order',
-                query=('sort=-title')
+                query=dict(sort='-title')
             )
             assert response.json[0]['title'] == 'contact2'
 
@@ -89,14 +89,14 @@ class TestListContact(AutoDocumentationBDDTest):
             'Filtering the response using title',
             '/apiv1/contacts',
             'LIST',
-            query=('title=contact2')
+            query=dict(title='contact2')
         ):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'contact2'
 
             when(
                 'Try to filter the response ignoring a title',
-                query=('title=!contact2')
+                query=dict(title='!contact2')
             )
             assert len(response.json) == 1
             assert response.json[0]['title'] != 'contact2'
@@ -113,13 +113,13 @@ class TestListContact(AutoDocumentationBDDTest):
             'Testing pagination',
             '/apiv1/contacts',
             'LIST',
-            query=('take=1&skip=1')
+            query=dict(take=1, skip=1)
         ):
             assert response.json[0]['title'] == 'contact2'
 
             when(
                 'Test sorting before pagination',
-                query=('sort=-title&take=1&skip=1')
+                query=dict(sort='-title', take=1, skip=1)
             )
             assert response.json[0]['title'] == 'contact1'
 
