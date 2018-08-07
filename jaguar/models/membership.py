@@ -37,22 +37,11 @@ blocked = Table(
 )
 
 
-contact = Table(
-    'contact',
-    DeclarativeBase.metadata,
-    Field(
-        'source',
-        Integer,
-        ForeignKey('user.id'),
-        primary_key=True,
-    ),
-    Field(
-        'destination',
-        Integer,
-        ForeignKey('user.id'),
-        primary_key=True,
-    ),
-)
+class Contact(DeclarativeBase):
+    __tablename__ = 'contact'
+
+    source = Field(Integer, ForeignKey('user.id'), primary_key=True)
+    destination = Field(Integer, ForeignKey('user.id'), primary_key=True)
 
 
 class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
@@ -202,9 +191,9 @@ class User(Member):
     show_phone = Field(Boolean, default=False)
     contacts = relationship(
         'User',
-        secondary=contact,
-        primaryjoin=id == contact.c.source,
-        secondaryjoin=id == contact.c.destination,
+        secondary='contact',
+        primaryjoin=id == Contact.source,
+        secondaryjoin=id == Contact.destination,
     )
     user_room = relationship('Room', backref='owner')
     blocked_users = relationship(
