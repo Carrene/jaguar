@@ -37,5 +37,5 @@ class ContactController(ModelRestController):
 
         DBSession.add(Contact(source=context.identity.id, destination=user_id))
 
-        return User.current()
+        return destination
 
