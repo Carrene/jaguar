@@ -14,7 +14,7 @@ class ContactController(ModelRestController):
     @validate(
         userId=dict(
             type_=(int, '705 Invalid User Id'),
-            required=(True, '709 User Id Is Required'),
+            required='709 User Id Is Required',
         )
     )
     @json

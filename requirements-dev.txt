@@ -2,4 +2,5 @@ coverage
 coveralls
 pytest-pudb
 pytest-cov
-
+git+git://github.com/Carrene/nanohttp.git@develop
+git+git://github.com/Carrene/restfulpy.git@develop

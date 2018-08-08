@@ -7,10 +7,10 @@ class TokenController(RestController):
 
     @validate(
         email=dict(
-            required=(True, '400 Invalid email or password')
+            required='400 Invalid email or password'
         ),
         password=dict(
-            required=(True, '400 Invalid email or password')
+            required='400 Invalid email or password'
         )
     )
     @json

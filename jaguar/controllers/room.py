@@ -18,7 +18,7 @@ class RoomController(ModelRestController):
         title=dict(
             min_length=(4, '701 Must Be Greater Than 4 Charecters'),
             max_length=(32, '702 Must Be Less Than 32 Charecters'),
-            required=(True, '703 Room Title Is Required'),
+            required='703 Room Title Is Required',
         )
     )
     def create(self):
