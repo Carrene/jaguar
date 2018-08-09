@@ -34,10 +34,10 @@ class RoomController(ModelRestController):
     @json
     @Room.expose
     @commit
-    def add(self, room_id: int):
+    def add(self, id: int):
         user_id = context.form.get('userId')
-        room = DBSession.query(Room).filter(Room.id == room_id).one()
-        if int(user_id) in room.to_dict()['member_ids']:
+        room = DBSession.query(Room).filter(Room.id == id).one()
+        if int(user_id) in room.to_dict()['memberIds']:
             raise HTTPStatus('604 Already Added To Target')
         user = DBSession.query(User).filter(User.id == user_id).one()
         if not user.add_to_room:

@@ -72,7 +72,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             form=dict(userId=1),
         ):
             assert status == 200
-            assert len(response.json['member_ids']) == 2
+            assert len(response.json['memberIds']) == 2
 
             when('Already added to the room', form=Update(userId=5))
             assert status == '604 Already Added To Target'
