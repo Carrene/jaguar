@@ -39,11 +39,13 @@ class TestRoom(AutoDocumentationBDDTest):
             assert response.json['ownerId'] == 1
             assert len(response.json['administratorIds']) == 1
             assert len(response.json['memberIds']) == 1
+
             when(
                 'The room title is less than minimum',
                 form=Update(title='min')
             )
             assert status == '701 Must Be Greater Than 4 Charecters'
+
             when(
                 'The Room Title Is Less Than Minimum',
                 form=Update(
@@ -51,6 +53,7 @@ class TestRoom(AutoDocumentationBDDTest):
                 )
             )
             assert status == '702 Must Be Less Than 32 Charecters'
+
             when('Title is required', form=Remove('title'))
             assert status == '703 Room Title Is Required'
 
