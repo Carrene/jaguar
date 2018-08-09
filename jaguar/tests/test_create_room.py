@@ -36,9 +36,9 @@ class TestRoom(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert response.json['title'] == 'example'
-            assert response.json['owner_id'] == 1
-            assert len(response.json['administrator_ids']) == 1
-            assert len(response.json['member_ids']) == 1
+            assert response.json['ownerId'] == 1
+            assert len(response.json['administratorIds']) == 1
+            assert len(response.json['memberIds']) == 1
             when(
                 'The room title is less than minimum',
                 form=Update(title='min')
