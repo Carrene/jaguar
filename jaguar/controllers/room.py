@@ -38,14 +38,14 @@ class RoomController(ModelRestController):
         user_id = context.form.get('userId')
 
         # FIXME use one_or_none
-        room = DBSession.query(Room).filter(Room.id == id).one()
+        room = DBSession.query(Room).filter(Room.id == id).one_or_none()
 
         # FIXME use query to check this
         if int(user_id) in room.to_dict()['memberIds']:
             raise HTTPStatus('604 Already Added To Target')
 
         # FIXME use one_or_none
-        user = DBSession.query(User).filter(User.id == user_id).one()
+        user = DBSession.query(User).filter(User.id == user_id).one_or_none()
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
         is_blocked = DBSession.query(blocked) \

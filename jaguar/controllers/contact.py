@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from jaguar.models import User, Contact
+from ..models import User, Contact
 
 
 class ContactController(ModelRestController):
@@ -23,7 +23,9 @@ class ContactController(ModelRestController):
     def add(self):
         user_id = context.form.get('userId')
         destination = DBSession.query(User) \
-        .filter(User.id == user_id).one_or_none()
+            .filter(User.id == user_id) \
+            .one_or_none()
+
         if destination is None:
             raise HTTPStatus('611 User Not Found')
 
@@ -31,12 +33,13 @@ class ContactController(ModelRestController):
             .filter(
                 Contact.source == context.identity.id,
                 Contact.destination == user_id
-            ).count()
+            ) \
+            .count()
+
         if is_contact:
             raise HTTPStatus('603 Already Added To Contacts')
 
         DBSession.add(Contact(source=context.identity.id, destination=user_id))
-
         return destination
 
     @authorize
@@ -48,5 +51,5 @@ class ContactController(ModelRestController):
                 Contact.source == context.identity.id,
                 Contact.destination == User.id
             )
-
         return query
+
