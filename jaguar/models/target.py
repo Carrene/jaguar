@@ -87,8 +87,8 @@ class Room(Target):
             title=self.title,
             type=self.type,
             memberIds=member_ids,
-            administratorIds = administrator_ids,
-            ownerId = self.owner_id
+            administratorIds=administrator_ids,
+            ownerId=self.owner_id
         )
     messages = relationship('Envelop')
     __mapper_args__ = {
