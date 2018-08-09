@@ -43,6 +43,8 @@ class RoomController(ModelRestController):
         # FIXME use query to check this
         if int(user_id) in room.to_dict()['memberIds']:
             raise HTTPStatus('604 Already Added To Target')
+
+        # FIXME use one_or_none
         user = DBSession.query(User).filter(User.id == user_id).one()
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
