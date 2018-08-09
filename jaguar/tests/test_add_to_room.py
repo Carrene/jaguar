@@ -69,16 +69,16 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'Add to  a room',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(user_id=1),
+            form=dict(userId=1),
         ):
             assert status == 200
-            assert len(response.json['member_ids']) == 2
+            assert len(response.json['memberIds']) == 2
 
-            when('Already added to the room', form=Update(user_id=5))
+            when('Already added to the room', form=Update(userId=5))
             assert status == '604 Already Added To Target'
 
             when('Not allowed to add this person to any room',
-                 form=Update(user_id=6)
+                 form=Update(userId=6)
                  )
             assert status == '602 Not Allowed To Add This Person To Any Room'
 
@@ -94,7 +94,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'Blocked by the target user',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(user_id = 2)
+            form=dict(userId = 2)
         ):
             assert status == '601 Not Allowed To Add User To Any Room'
 
@@ -110,7 +110,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'The blocker can not add the user he blocked',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(user_id=4),
+            form=dict(userId=4),
         ):
             assert status == '601 Not Allowed To Add User To Any Room'
 
