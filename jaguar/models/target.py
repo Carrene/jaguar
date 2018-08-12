@@ -3,7 +3,6 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
-from restfulpy.orm import DBSession
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 
 from .membership import User
