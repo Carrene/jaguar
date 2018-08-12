@@ -1,5 +1,4 @@
 
-from restfulpy.orm import DBSession
 from restfulpy.principal import JwtPrincipal, JwtRefreshToken
 from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
@@ -63,7 +62,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         )
 
         with self.given(
-            'Add to  a room',
+            'Add to a room',
             '/apiv1/rooms/id:1',
             'ADD',
             form=dict(userId=1),
@@ -77,9 +76,10 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             when('User not exists', form=Update(userId=10))
             assert status == '611 User Not Found'
 
-            when('Not allowed to add this person to any room',
+            when(
+                'Not allowed to add this person to any room',
                  form=Update(userId=6)
-                 )
+            )
             assert status == '602 Not Allowed To Add This Person To Any Room'
 
             when('Room not exist', url_parameters=Update(id='2'))

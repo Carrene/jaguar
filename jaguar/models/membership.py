@@ -1,6 +1,5 @@
 
 import os
-import uuid
 from hashlib import sha256
 
 import itsdangerous
@@ -53,16 +52,9 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         Unicode(100),
         unique=True,
         index=True,
-        json='email',
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
-    _password = Field(
-        'password',
-        Unicode(128),
-        index=True,
-        json='password',
-        min_length=6
-    )
+    _password = Field('password', Unicode(128), min_length=6)
     title = Field(Unicode(100))
     type = Field(Unicode(50))
 
@@ -114,45 +106,13 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         hashed_pass.update((password + self.password[:64]).encode('utf-8'))
         return self.password[64:] == hashed_pass.hexdigest()
 
-    def create_jwt_principal(self, session_id=None):
-        # FIXME: IMPORTANT Include user password as salt in signature
-
-        if session_id is None:
-            session_id = str(uuid.uuid4())
-
+    def create_jwt_principal(self):
         return JwtPrincipal(dict(
             id=self.id,
             roles=self.roles,
             email=self.email,
-            sessionId=session_id,
             name=self.title
         ))
-
-    @classmethod
-    def activate(cls, token):
-        serializer = itsdangerous.URLSafeTimedSerializer(
-            settings.activation.secret
-        )
-
-        try:
-            email = serializer.loads(
-                token,
-                max_age=settings.activation.max_age
-            )
-
-        except itsdangerous.SignatureExpired:
-            raise HTTPConflict(reason='signature-expired')
-
-        except itsdangerous.BadSignature:
-            raise HTTPBadRequest('Invalid Token')
-
-        query = DBSession.query(Member)
-
-        member = cls.exclude_deleted(query).filter(cls.email == email).one()
-        if member.is_active:
-            raise HTTPConflict('Member is already activated.')
-        member.is_active = True
-        return member
 
     def create_refresh_principal(self):
         return JwtRefreshToken(dict(
@@ -178,7 +138,6 @@ class User(Member):
     )
     phone = Field(
         Unicode(50),
-        json='phone',
         nullable=True,
         min_length=10,
         watermark='Phone',
@@ -222,6 +181,5 @@ class User(Member):
         return ['user']
 
     def create_jwt_principal(self):
-        principal = super().create_jwt_principal()
-        return principal
+        return super().create_jwt_principal()
 

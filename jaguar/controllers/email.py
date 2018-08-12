@@ -26,6 +26,7 @@ class EmailController(RestController):
                 '601 The requested email address is already registered.'
             )
 
+        # FIXME Token should be put in pyload
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
         token = serializer.dumps(email)
