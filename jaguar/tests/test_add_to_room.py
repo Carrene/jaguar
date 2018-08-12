@@ -85,7 +85,6 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             when('Room not exist', url_parameters=Update(id='2'))
             assert status == 612
 
-
         self.logout()
         self.login(
             'blocked1@example.com',
