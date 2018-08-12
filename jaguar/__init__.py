@@ -4,7 +4,7 @@ from restfulpy.application import Application
 
 from .authentication import Authenticator
 from .controllers.root import Root
-from jaguar.cli.email import EmailLauncher
+from .cli.email import EmailLauncher
 
 
 __version__ = '0.1.0-dev'

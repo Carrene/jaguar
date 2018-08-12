@@ -13,17 +13,16 @@ class TestRoom(AutoDocumentationBDDTest):
     def mockup(cls):
         session = cls.create_session()
         user = User(
-            email='already.added@example.com',
-            title='example',
+            email='user@example.com',
+            title='user',
             password='123456',
         )
-        user.is_active = True
         session.add(user)
         session.commit()
 
     def test_create_room(self):
         self.login(
-            'already.added@example.com',
+            'user@example.com',
             '123456',
             '/apiv1/tokens',
             'CREATE'

@@ -61,7 +61,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         Unicode(128),
         index=True,
         json='password',
-        protected=True,
         min_length=6
     )
     title = Field(Unicode(100))
@@ -194,6 +193,7 @@ class User(Member):
         secondary='contact',
         primaryjoin=id == Contact.source,
         secondaryjoin=id == Contact.destination,
+        lazy='selectin'
     )
     user_room = relationship('Room', backref='owner')
     blocked_users = relationship(
@@ -201,6 +201,7 @@ class User(Member):
         secondary=blocked,
         primaryjoin=id == blocked.c.source,
         secondaryjoin=id == blocked.c.destination,
+        lazy='selectin'
     )
 
     def to_dict(self):
@@ -220,7 +221,7 @@ class User(Member):
     def roles(self):
         return ['user']
 
-    def create_jwt_principal(self, session_id=None):
-        principal = super().create_jwt_principal(session_id=session_id)
+    def create_jwt_principal(self):
+        principal = super().create_jwt_principal()
         return principal
 

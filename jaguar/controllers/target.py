@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 
-from jaguar.models import Target, Room, target_member, User
+from ..models import Target, Room, target_member, User
 
 
 class TargetController(ModelRestController):

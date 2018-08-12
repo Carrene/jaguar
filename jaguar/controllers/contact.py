@@ -25,7 +25,6 @@ class ContactController(ModelRestController):
         destination = DBSession.query(User) \
             .filter(User.id == user_id) \
             .one_or_none()
-
         if destination is None:
             raise HTTPStatus('611 User Not Found')
 
@@ -35,7 +34,6 @@ class ContactController(ModelRestController):
                 Contact.destination == user_id
             ) \
             .count()
-
         if is_contact:
             raise HTTPStatus('603 Already Added To Contacts')
 

@@ -14,7 +14,6 @@ class TestEmail(AutoDocumentationBDDTest):
             title='example',
             password='123456',
         )
-        user.is_active = True
         session.add(user)
         session.commit()
 

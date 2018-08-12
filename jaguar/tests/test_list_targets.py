@@ -16,8 +16,6 @@ class TestListTarget(AutoDocumentationBDDTest):
             title='user',
             password='123456',
         )
-        user.is_active = True
-
         room1 = Room(title='room1')
         direct = Direct(title='direct')
         room2 = Room(title='room2')
@@ -26,6 +24,7 @@ class TestListTarget(AutoDocumentationBDDTest):
         session.add_all([direct, room1, room2])
         session.commit()
 
+    # TODO Add some tests for pagination, filtering and sorting
     def test_list_targets_of_user(self):
          self.login(
              email='user@example.com',

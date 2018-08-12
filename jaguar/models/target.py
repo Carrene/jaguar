@@ -3,7 +3,6 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
-from restfulpy.logging_ import get_logger
 from restfulpy.orm import DBSession
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 
@@ -18,6 +17,7 @@ target_member = Table(
     Field('member_id', Integer, ForeignKey('user.id'))
 )
 
+
 room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,
@@ -26,13 +26,8 @@ room_administrator = Table(
 )
 
 
-class Target(
-    DeclarativeBase,
-    ModifiedMixin,
-    OrderingMixin,
-    FilteringMixin,
-    PaginationMixin
-):
+class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
+             DeclarativeBase):
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
@@ -41,9 +36,8 @@ class Target(
         nullable=True,
         json='title'
     )
-    type = Field(
-        Unicode(25)
-    )
+    type = Field(Unicode(25))
+
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     members = relationship(
@@ -67,6 +61,8 @@ class Room(Target):
         ForeignKey('target.id'),
         primary_key=True,
     )
+    owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
+
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(
@@ -76,7 +72,6 @@ class Room(Target):
         protected=True,
         lazy='selectin'
     )
-    owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
 
     def to_dict(self):
         member_ids = [member.id for member in self.members]

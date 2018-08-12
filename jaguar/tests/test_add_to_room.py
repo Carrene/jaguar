@@ -19,13 +19,11 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             title='user',
             password='123456',
         )
-        user.is_active = True
         blocked1 = User(
             email='blocked1@example.com',
             title='blocked1',
             password='123456',
         )
-        blocked1.is_active = True
         room_member = User(
             email='member@example.com',
             title='member',
@@ -42,7 +40,6 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             title='blocker',
             password='123456',
         )
-        blocker.is_active = True
         blocked2 = User(
             email='blocked2@example.com',
             title='blocked2',
@@ -67,7 +64,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
         with self.given(
             'Add to  a room',
-            '/apiv1/rooms/1',
+            '/apiv1/rooms/id:1',
             'ADD',
             form=dict(userId=1),
         ):
@@ -77,10 +74,17 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             when('Already added to the room', form=Update(userId=5))
             assert status == '604 Already Added To Target'
 
+            when('User not exists', form=Update(userId=10))
+            assert status == '611 User Not Found'
+
             when('Not allowed to add this person to any room',
                  form=Update(userId=6)
                  )
             assert status == '602 Not Allowed To Add This Person To Any Room'
+
+            when('Room not exist', url_parameters=Update(id='2'))
+            assert status == 612
+
 
         self.logout()
         self.login(
