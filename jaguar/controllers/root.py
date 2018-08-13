@@ -10,6 +10,7 @@ from .token import TokenController
 from .room import RoomController
 from .target import TargetController
 from .contact import ContactController
+from .direct import DirectController
 
 
 class ApiV1(Controller):
@@ -20,6 +21,7 @@ class ApiV1(Controller):
     rooms = RoomController()
     targets = TargetController()
     contacts = ContactController()
+    directs = DirectController()
 
     @json
     def version(self):
