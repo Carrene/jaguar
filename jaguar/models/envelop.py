@@ -3,12 +3,11 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin
 from restfulpy.taskqueue import RestfulpyTask
-from restfulpy.logging_ import get_logger
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 from sqlalchemy.dialects.postgresql.json import JSONB
 
 
-user_message_table = Table(
+user_message = Table(
     'user_message',
     DeclarativeBase.metadata,
     Field('message_id', Integer, ForeignKey('message.id')),
@@ -43,10 +42,9 @@ class Message(Envelop):
     # selecin loding is chosen for this relationship.
     seen_by = relationship(
         'User',
-        secondary=user_message_table,
+        secondary=user_message,
         lazy='selectin'
     )
-
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
     }

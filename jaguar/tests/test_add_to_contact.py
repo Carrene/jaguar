@@ -15,7 +15,6 @@ class TestAddToContact(AutoDocumentationBDDTest):
             title='user',
             password='123456',
         )
-        user.is_active = True
         user2 = User(
             email='user2@example.com',
             title='user2',

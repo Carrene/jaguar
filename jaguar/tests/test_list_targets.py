@@ -16,8 +16,6 @@ class TestListTarget(AutoDocumentationBDDTest):
             title='user',
             password='123456',
         )
-        user.is_active = True
-
         room1 = Room(title='room1')
         direct = Direct(title='direct')
         room2 = Room(title='room2')

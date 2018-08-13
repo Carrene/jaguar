@@ -15,7 +15,6 @@ class TestLogout(AutoDocumentationBDDTest):
             title='user',
             password='123456',
         )
-        user.is_active = True
         session.add(user)
         session.commit()
 
@@ -26,12 +25,14 @@ class TestLogout(AutoDocumentationBDDTest):
             '/apiv1/tokens',
             'CREATE'
         )
+
         with self.given(
             'Log out a user',
             '/apiv1/tokens',
             'INVALIDATE',
         ):
             assert status == 200
+
             when('Try to access some authorize source')
             assert status == 401
 

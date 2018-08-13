@@ -6,7 +6,7 @@ from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
 
-from jaguar.models import User
+from ..models import User
 
 
 class UserController(ModelRestController):
@@ -28,7 +28,6 @@ class UserController(ModelRestController):
             title=context.form.get('title'),
             password=context.form.get('password')
         )
-        user.is_active = True
         DBSession.add(user)
         DBSession.commit()
         principal = user.create_jwt_principal()

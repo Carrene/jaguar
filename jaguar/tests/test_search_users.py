@@ -15,7 +15,6 @@ class TestSearchUser(AutoDocumentationBDDTest):
             title='user1',
             username='user1',
         )
-        user1.is_active = True
         user2 = User(
             email='user2@gmail.com',
             password='123456',

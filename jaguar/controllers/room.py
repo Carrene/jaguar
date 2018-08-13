@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from jaguar.models import Target, Room, blocked, User
+from ..models import Target, Room, blocked, User, target_member
 
 
 class RoomController(ModelRestController):
@@ -27,6 +27,7 @@ class RoomController(ModelRestController):
         member = User.current()
         room.administrators.append(member)
         room.members.append(member)
+
         room.owner = member
         DBSession.add(room)
         return room
@@ -36,18 +37,26 @@ class RoomController(ModelRestController):
     @commit
     def add(self, id: int):
         user_id = context.form.get('userId')
+        room = DBSession.query(Room).filter(Room.id == id).one_or_none()
+        if room is None:
+            raise HTTPStatus('612 Room Not Found')
 
-        # FIXME use one_or_none
-        room = DBSession.query(Room).filter(Room.id == id).one()
-
-        # FIXME use query to check this
-        if int(user_id) in room.to_dict()['memberIds']:
+        is_member = DBSession.query(target_member) \
+            .filter(
+                target_member.c.target_id == id,
+                target_member.c.member_id == user_id
+            ) \
+            .count()
+        if is_member:
             raise HTTPStatus('604 Already Added To Target')
 
-        # FIXME use one_or_none
-        user = DBSession.query(User).filter(User.id == user_id).one()
+        user = DBSession.query(User).filter(User.id == user_id).one_or_none()
+        if user is None:
+            raise HTTPStatus('611 User Not Found')
+
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
+
         is_blocked = DBSession.query(blocked) \
             .filter(or_(
                 and_(
@@ -62,6 +71,7 @@ class RoomController(ModelRestController):
             .count()
         if is_blocked:
             raise HTTPStatus('601 Not Allowed To Add User To Any Room')
+
         room.members.append(user)
         return room
 
