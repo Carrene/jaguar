@@ -25,8 +25,6 @@ class RoomController(ModelRestController):
         title = context.form.get('title')
         room = Room(title=title)
         member = User.current()
-
-        # FIXME It is better to use assosiation table
         room.administrators.append(member)
         room.members.append(member)
 
@@ -74,7 +72,6 @@ class RoomController(ModelRestController):
         if is_blocked:
             raise HTTPStatus('601 Not Allowed To Add User To Any Room')
 
-        #FIXME It is better to use assosiation table
         room.members.append(user)
         return room
 
