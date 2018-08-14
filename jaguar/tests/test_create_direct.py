@@ -54,7 +54,7 @@ class TestDirect(AutoDocumentationBDDTest):
             )
             assert status == '705 Invalid User Id'
 
-            when('Try to pass empty form', form=dict({}))
+            when('Try to pass empty form', form={})
             assert status == '710 Empty Form'
 
             when('Blocked user tries to create a direct', form=Update(userId=1))
@@ -70,7 +70,7 @@ class TestDirect(AutoDocumentationBDDTest):
 
         with self.given(
             'Try to create a direct with a blocked user',
-            '/apiv1/directs/',
+            '/apiv1/directs',
             'CREATE',
             form=dict(userId=2)
         ):

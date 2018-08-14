@@ -10,6 +10,7 @@ from jaguar.authentication import Authenticator
 from jaguar.controllers.root import Root
 from jaguar.models.membership import User
 
+
 HERE = path.abspath(path.dirname(__file__))
 
 
