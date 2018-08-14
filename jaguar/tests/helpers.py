@@ -16,6 +16,7 @@ HERE = path.abspath(path.dirname(__file__))
 class AutoDocumentationBDDTest(ApplicableTestCase):
 
     __application_factory__ = Jaguar
+
     @classmethod
     def get_spec_filename(cls, story):
         filename = \

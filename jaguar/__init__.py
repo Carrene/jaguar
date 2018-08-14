@@ -30,7 +30,6 @@ class Jaguar(Application):
       password: <smtp-password>
       localhost: gmail.com
 
-
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
