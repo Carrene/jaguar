@@ -6,6 +6,17 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 class TestToken(AutoDocumentationBDDTest):
 
+    @classmethod
+    def mockup(cls):
+        session = cls.create_session()
+        user = User(
+            email='already.added@example.com',
+            title='user',
+            password='123456',
+        )
+        session.add(user)
+        session.commit()
+
     def test_login(self):
         with self.given(
             'Login user',

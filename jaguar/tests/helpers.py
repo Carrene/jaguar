@@ -5,44 +5,18 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 
+from jaguar import Jaguar
 from jaguar.authentication import Authenticator
 from jaguar.controllers.root import Root
 from jaguar.models.membership import User
+
 
 HERE = path.abspath(path.dirname(__file__))
 
 
 class AutoDocumentationBDDTest(ApplicableTestCase):
 
-    __application__ = Application(
-        'Mockup',
-        root=Root(),
-        authenticator=Authenticator()
-    )
-    __configuration__ = '''
-    db:
-      url: postgresql://postgres:postgres@localhost/jaguar_dev
-      test_url: postgresql://postgres:postgres@localhost/jaguar_test
-      administrative_url: postgresql://postgres:postgres@localhost/postgres
-
-
-    activation:
-      secret: activation-secret
-      max_age: 86400  # seconds
-      url: http://nc.carrene.com/activate
-
-    '''
-
-    @classmethod
-    def mockup(cls):
-        user = User(
-            email='already.added@example.com',
-            title='example',
-            password='123456',
-        )
-        user.is_active = True
-        DBSession.add(user)
-        DBSession.commit()
+    __application_factory__ = Jaguar
 
     @classmethod
     def get_spec_filename(cls, story):
