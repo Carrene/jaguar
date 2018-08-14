@@ -1,7 +1,7 @@
-from bddrest.authoring import given, when, Update, status
+from bddrest.authoring import given, when, Update, status, response
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest
-from jaguar.models import User, Room
+from jaguar.models import User, Room, Direct
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -14,9 +14,17 @@ class TestSendMessage(AutoDocumentationBDDTest):
             password='123456',
             title='user1',
         )
+        blocker = User(
+            email='blocker@example.com',
+            password='123456',
+            title='blocker'
+        )
+        blocker.blocked_users.append(user1)
         room = Room(title='example')
-        session.add(user1)
+        direct = Direct(title='direct')
+        session.add(blocker)
         session.add(room)
+        session.add(direct)
         session.commit()
 
     def test_send_message_to_target(self):
@@ -34,4 +42,10 @@ class TestSendMessage(AutoDocumentationBDDTest):
             form=dict(body='hello world!', type='text/plain')
         ):
             assert status == 200
+            assert response.json['body'] == 'hello world!'
+
+            when('Invalid target id', url_parameters=Update('Invalid'))
+            assert status == '706 Ivalid Target Id'
+
+
 

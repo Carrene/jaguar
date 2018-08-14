@@ -1,5 +1,5 @@
 
-from nanohttp import json, context, HTTPUnauthorized
+from nanohttp import json, context, HTTPUnauthorized, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
@@ -19,6 +19,11 @@ class TargetController(ModelRestController):
         return super().__call__(*remaining_paths)
 
     def resolve_target(self, id):
+        from pudb import set_trace; set_trace()
+        try:
+            int(id)
+        except:
+            raise HTTPStatus('706 Invalid Target Id')
         target = DBSession.query(Target).filter(Target.id == id).one_or_none()
         if target is None:
             raise HTTPStatus('706 Invalid TargetId')

@@ -15,6 +15,7 @@ class MessageController(ModelRestController):
         body = context.form.get('body')
         type = context.form.get('type')
         message = Message(body=body, type=type)
+        message.target_id = self.target.id
         return message
 
 
