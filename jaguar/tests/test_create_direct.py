@@ -54,7 +54,7 @@ class TestDirect(AutoDocumentationBDDTest):
             )
             assert status == '705 Invalid User Id'
 
-            when('Try to pass empty form', form={})
+            when('Try to pass empty form', form=None)
             assert status == '710 Empty Form'
 
             when('Blocked user tries to create a direct', form=Update(userId=1))
