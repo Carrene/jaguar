@@ -12,7 +12,6 @@ __version__ = '0.1.0-dev'
 
 class Jaguar(Application):
     __authenticator__ = Authenticator()
-
     __configuration__ = '''
 
     db:
@@ -39,10 +38,10 @@ class Jaguar(Application):
 
     '''
 
-    def __init__(self):
+    def __init__(self, application_name='jaguar', root=Root()):
         super().__init__(
-            'jaguar',
-            root=Root(),
+            application_name,
+            root=root,
             root_path=join(dirname(__file__), '..'),
             version=__version__,
         )

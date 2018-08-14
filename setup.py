@@ -13,7 +13,7 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'restfulpy >= 1.0.0a0',
+    'restfulpy >= 1.2.0b1',
 ]
 
 
