@@ -49,7 +49,7 @@ class TestDirect(AutoDocumentationBDDTest):
             assert status == '611 User Not Found'
 
             when(
-                'Try to pass Invalid userId in the form',
+                'Try to pass invalid user id in the form',
                 form=Update(userId='Invalid')
             )
             assert status == '705 Invalid User Id'
@@ -57,7 +57,7 @@ class TestDirect(AutoDocumentationBDDTest):
             when('Try to pass empty form', form=Update(userId={}))
             assert status == '710 Empty Form'
 
-            when('Blocked user try to create a direct', form=Update(userId=1))
+            when('Blocked user tries to create a direct', form=Update(userId=1))
             assert status == '613 Not Allowed To Create Direct With This User'
 
         self.logout()
@@ -69,7 +69,7 @@ class TestDirect(AutoDocumentationBDDTest):
         )
 
         with self.given(
-            'Try to create direct with blocked user',
+            'Try to create a direct with a blocked user',
             '/apiv1/directs/',
             'CREATE',
             form=dict(userId=2)
