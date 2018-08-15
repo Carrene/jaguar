@@ -4,6 +4,12 @@ A chat application
 
 ![Jaguar](https://img00.deviantart.net/0a9d/i/2010/343/9/6/jaguar_by_alannahily-d34ju3t.jpg)
 
+## Branches
+
+### master
+
+[![Build Status](https://travis-ci.com/Carrene/jaguar.svg?token=JgyQwxgapUeYpgeJwWxz&branch=master)](https://travis-ci.com/Carrene/jaguar)
+
 Setting up development Environment on Linux
 ----------------------------------
 
