@@ -37,6 +37,7 @@ class Message(Envelop):
         ForeignKey('envelop.id'),
         primary_key=True,
     )
+    mime_type=Field(Unicode(25))
 
     # Since collections would be fairly small,
     # selecin loding is chosen for this relationship.
