@@ -1,7 +1,7 @@
 
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
-    ActivationMixin
+    ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 from sqlalchemy.dialects.postgresql.json import JSONB
@@ -15,7 +15,8 @@ user_message = Table(
 )
 
 
-class Envelop(ActivationMixin, ModifiedMixin, DeclarativeBase):
+class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
+              ModifiedMixin, DeclarativeBase):
     __tablename__ = 'envelop'
 
     id = Field(Integer, primary_key=True)
