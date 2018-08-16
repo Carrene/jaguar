@@ -34,9 +34,7 @@ class TestListMessages(AutoDocumentationBDDTest):
         message3.target_id = room1.id
         message2.sender_id = user1.id
         message2.target_id = room2.id
-        session.add(message1)
-        session.add(message2)
-        session.add(message3)
+        session.add_all([message1, message2, message3])
         session.commit()
 
     def test_list_messages_of_target(self):
