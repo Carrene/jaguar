@@ -52,6 +52,5 @@ class MessageController(ModelRestController):
 
         query = DBSession.query(Message) \
             .filter(Message.target_id == self.target.id)
-
         return query
 
