@@ -1,9 +1,9 @@
-from nanohttp import json, context, HTTPStatus, validate
+from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 
-from ..models import Envelop, Message
+from ..models import Envelop, Message, target_member
 
 
 SUPPORTED_MIME_TYPES=['text/plain']
@@ -41,6 +41,15 @@ class MessageController(ModelRestController):
     @json
     @Message.expose
     def list(self):
+        is_member = DBSession.query(target_member) \
+            .filter(
+                target_member.c.target_id == self.target.id,
+                target_member.c.member_id == context.identity.id
+            ) \
+            .count()
+        if not is_member:
+            raise HTTPForbidden
+
         query = DBSession.query(Message) \
             .filter(Message.target_id == self.target.id)
 
