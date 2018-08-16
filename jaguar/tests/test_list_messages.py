@@ -22,18 +22,27 @@ class TestListMessages(AutoDocumentationBDDTest):
         room1 = Room(title='room1', type='room')
         room2 = Room(title='room2', type='room')
         room1.members.append(user1)
-        message1 = Message(body='This is message 1', mime_type='text/plain')
-        message2 = Message(body='This is message 2', mime_type='text/plain')
-        message3 = Message(body='This is message 3', mime_type='test/plain')
         session.add_all([room1, room2])
         session.add(user2)
         session.flush()
-        message1.sender_id = user1.id
-        message3.sender_id = user1.id
-        message1.target_id = room1.id
-        message3.target_id = room1.id
-        message2.sender_id = user1.id
-        message2.target_id = room2.id
+        message1 = Message(
+            body='This is message 1',
+            mime_type='text/plain',
+            sender_id=user1.id,
+            target_id=room1.id,
+        )
+        message2 = Message(
+            body='This is message 2',
+            mime_type='text/plain',
+            sender_id=user1.id,
+            target_id=room2.id
+        )
+        message3 = Message(
+            body='This is message 3',
+            mime_type='test/plain',
+            sender_id=user1.id,
+            target_id=room1.id
+        )
         session.add_all([message1, message2, message3])
         session.commit()
 
@@ -121,7 +130,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
 
-    def test_Forbidden_request(self):
+    def test_forbidden_request(self):
 
         self.login(
             email='user2@example.com',
