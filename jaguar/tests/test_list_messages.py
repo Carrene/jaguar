@@ -131,7 +131,6 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == 401
 
     def test_forbidden_request(self):
-
         self.login(
             email='user2@example.com',
             password='123456',
