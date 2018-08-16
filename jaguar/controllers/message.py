@@ -38,7 +38,7 @@ class MessageController(ModelRestController):
         return message
 
     @authorize
-    @json
+    @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self):
         is_member = DBSession.query(target_member) \

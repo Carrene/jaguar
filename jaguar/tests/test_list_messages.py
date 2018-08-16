@@ -73,6 +73,12 @@ class TestListMessages(AutoDocumentationBDDTest):
             when('Sorting the response descending', query=Update(sort='-id'))
             assert response.json[0]['body'] == 'This is message 3'
 
+            when(
+                'Try to send form in the request',
+                form=dict(parameter='parameter')
+            )
+            assert status == '711 Form Not Allowed'
+
     def test_pagination(self):
         self.login(
             email='user1@example.com',
