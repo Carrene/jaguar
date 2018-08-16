@@ -37,3 +37,12 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         return message
 
+    @authorize
+    @json
+    @Message.expose
+    def list(self):
+        query = DBSession.query(Message) \
+            .filter(Message.target_id == self.target.id)
+
+        return query
+
