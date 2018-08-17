@@ -54,3 +54,29 @@ class MessageController(ModelRestController):
             .filter(Message.target_id == self.target.id)
         return query
 
+    @authorize
+    @json
+    @commit
+    def delete(self, id):
+        try:
+            int(id)
+        except:
+            raise HTTPStatus('707 Invalid MessageId')
+
+        message = DBSession.query(Message) \
+            .filter(Message.id == id).one_or_none()
+        if message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        is_member = DBSession.query(target_member) \
+            .filter(
+                target_member.c.target_id == message.target_id,
+                target_member.c.member_id == context.identity.id
+            ) \
+            .count()
+        if not is_member:
+            raise HTTPForbidden
+
+        DBSession.delete(message)
+        return message
+
