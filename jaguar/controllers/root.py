@@ -11,6 +11,7 @@ from .room import RoomController
 from .target import TargetController
 from .contact import ContactController
 from .direct import DirectController
+from .message import MessageController
 
 
 class ApiV1(Controller):
@@ -22,6 +23,7 @@ class ApiV1(Controller):
     targets = TargetController()
     contacts = ContactController()
     directs = DirectController()
+    messages = MessageController()
 
     @json
     def version(self):

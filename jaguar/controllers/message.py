@@ -12,7 +12,7 @@ SUPPORTED_MIME_TYPES=['text/plain']
 class MessageController(ModelRestController):
     __model__ = Envelop
 
-    def __init__(self, target):
+    def __init__(self, target=None):
          self.target = target
 
     @authorize
