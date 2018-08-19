@@ -56,15 +56,17 @@ class MessageController(ModelRestController):
 
     @authorize
     @json
+    @Message.expose
     @commit
     def delete(self, id):
         try:
-            int(id)
+            id = int(id)
         except:
             raise HTTPStatus('707 Invalid MessageId')
 
         message = DBSession.query(Message) \
-            .filter(Message.id == id).one_or_none()
+            .filter(Message.id == id) \
+            .one_or_none()
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 

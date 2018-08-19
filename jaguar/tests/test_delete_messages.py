@@ -1,7 +1,7 @@
-from bddrest.authoring import given, when, status, response, Update
+from bddrest.authoring import when, status, response, Update
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest
 from jaguar.models import User, Room, Message
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
 class TestDeleteMessage(AutoDocumentationBDDTest):
@@ -33,7 +33,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         cls.session.add_all([message1, message2])
         cls.session.commit()
 
-    def test_delete_a_message(self):
+    def test_delete_the_message(self):
         self.login(
             email='user1@example.com',
             password='123456',
@@ -50,17 +50,17 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             assert response.json['body'] == 'This is message 1'
             assert len(self.session.query(Message).all()) == 1
 
-            when('message not exists', url_parameters=Update(id=3))
+            when('The message not exists', url_parameters=Update(id=3))
             assert status == '614 Message Not Found'
 
             when(
-                'Try to pass invalid message id',
+                'Trying to pass using invalid message id',
                 url_parameters=Update(id='Invalid')
             )
             assert status == '707 Invalid MessageId'
 
-     # TODO: More test scenarios should be checked when other
-     #authorizations would be implemented
+    # TODO: More test scenarios should be checked when other
+    #authorizations would be implemented
     def test_forbidden_request(self):
         self.login(
             email='user2@example.com',
@@ -70,7 +70,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         )
 
         with self.given(
-            'Not Allowed to delete the message',
+            'Not allowed to delete the message',
             '/apiv1/messages/id:2/',
             'DELETE',
          ):
