@@ -77,7 +77,7 @@ class MessageController(ModelRestController):
             ) \
             .count()
         if not is_member:
-            raise HTTPForbidden
+            raise HTTPForbidden()
 
         DBSession.delete(message)
         return message

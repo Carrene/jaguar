@@ -60,7 +60,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             assert status == '707 Invalid MessageId'
 
     # TODO: More test scenarios should be checked when other
-    #authorizations would be implemented
+    # Authorizations would be implemented
     def test_forbidden_request(self):
         self.login(
             email='user2@example.com',
