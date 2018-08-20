@@ -12,9 +12,6 @@ SUPPORTED_MIME_TYPES=['text/plain']
 class MessageController(ModelRestController):
     __model__ = Envelop
 
-    def __init__(self, target):
-         self.target = target
-
     @authorize
     @validate(
         body=dict(
@@ -25,14 +22,14 @@ class MessageController(ModelRestController):
     @json
     @Message.expose
     @commit
-    def send(self):
+    def send(self, target_id):
         body = context.form.get('body')
         mime_type = context.form.get('mimeType')
         if not mime_type in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         message = Message(body=body, mime_type=mime_type)
-        message.target_id = self.target.id
+        message.target_id = target_id
         message.sender_id = context.identity.id
         DBSession.add(message)
         return message
@@ -40,10 +37,10 @@ class MessageController(ModelRestController):
     @authorize
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
-    def list(self):
+    def list(self, target_id):
         is_member = DBSession.query(target_member) \
             .filter(
-                target_member.c.target_id == self.target.id,
+                target_member.c.target_id == target_id,
                 target_member.c.member_id == context.identity.id
             ) \
             .count()
@@ -51,6 +48,34 @@ class MessageController(ModelRestController):
             raise HTTPForbidden
 
         query = DBSession.query(Message) \
-            .filter(Message.target_id == self.target.id)
+            .filter(Message.target_id == target_id)
         return query
+
+    @authorize
+    @json
+    @Message.expose
+    @commit
+    def delete(self, id):
+        try:
+            id = int(id)
+        except:
+            raise HTTPStatus('707 Invalid MessageId')
+
+        message = DBSession.query(Message) \
+            .filter(Message.id == id) \
+            .one_or_none()
+        if message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        is_member = DBSession.query(target_member) \
+            .filter(
+                target_member.c.target_id == message.target_id,
+                target_member.c.member_id == context.identity.id
+            ) \
+            .count()
+        if not is_member:
+            raise HTTPForbidden()
+
+        DBSession.delete(message)
+        return message
 
