@@ -1,10 +1,11 @@
-from sqlalchemy import or_, and_
 from nanohttp import json, context, HTTPStatus, validate
-from restfulpy.controllers import ModelRestController
 from restfulpy.authorization import authorize
+from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
+from sqlalchemy import or_, and_, select, func, ARRAY, Integer
+from sqlalchemy.dialects.postgresql import aggregate_order_by
 
-from ..models import Direct, User, blocked
+from ..models import Direct, User, blocked, target_member
 
 
 class DirectController(ModelRestController):
@@ -38,6 +39,26 @@ class DirectController(ModelRestController):
             raise HTTPStatus('613 Not Allowed To Create Direct With This User')
 
         source = User.current()
+
+        cte = select([
+            target_member.c.target_id.label('direct_id'),
+            func.array_agg(
+                aggregate_order_by(
+                    target_member.c.member_id,
+                    target_member.c.member_id
+                )
+                ,type_=ARRAY(Integer)
+            ).label('members')
+        ]).group_by(target_member.c.target_id).cte()
+
+        direct = DBSession.query(Direct) \
+            .join(cte, cte.c.direct_id == Direct.id) \
+            .filter(cte.c.members == sorted([source.id, user_id])) \
+            .one_or_none()
+
+        if direct:
+            return direct
+
         direct = Direct(title=destination.title, type='direct')
         direct.members = [source, destination]
         return direct
