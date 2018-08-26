@@ -42,11 +42,13 @@ class DirectController(ModelRestController):
 
         cte = select([
             target_member.c.target_id.label('direct_id'),
-            func.array_agg(aggregate_order_by(
-                target_member.c.member_id,
-                target_member.c.member_id
-            ),
-            type_=ARRAY(Integer)).label('members')
+            func.array_agg(
+                aggregate_order_by(
+                    target_member.c.member_id,
+                    target_member.c.member_id
+                )
+                ,type_=ARRAY(Integer)
+            ).label('members')
         ]).group_by(target_member.c.target_id).cte()
 
         direct = DBSession.query(Direct) \
