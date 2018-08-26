@@ -44,6 +44,10 @@ class TestDirect(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert response.json['title'] == 'user2'
+            target_id = response.json['target_id']
+
+            when('The users have a direct')
+            assert response.json['target_id'] == target_id
 
             when('The user not exists', form=Update(userId=5))
             assert status == '611 User Not Found'
