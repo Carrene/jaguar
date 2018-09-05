@@ -15,15 +15,14 @@ class TestRoom(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token',
         )
         session.add(user)
         session.commit()
 
     def test_create_room(self):
         self.login(
-            'user@example.com',
-            '123456',
+            dict(email='user@example.com'),
             '/apiv1/tokens',
             'CREATE'
         )

@@ -13,24 +13,24 @@ class TestListContact(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token',
         )
         contact1 = User(
             email='contact1@example.com',
             title='contact1',
-            password='123456',
+            access_token='access token',
         )
         contact2 = User(
             email='contact2@example.com',
             title='contact2',
-            password='123456',
+            access_token='access token',
         )
 
         # This contact is added to make sure the query works correctly
         contact3 = User(
             email='contact3@example.com',
             title='contact3',
-            password='123456',
+            access_token='access token',
             show_email=True,
         )
         user.contacts = [contact1, contact2]
@@ -40,8 +40,7 @@ class TestListContact(AutoDocumentationBDDTest):
 
     def test_list_contacts(self):
         self.login(
-            email='user@example.com',
-            password='123456',
+            dict(email='user@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -56,8 +55,7 @@ class TestListContact(AutoDocumentationBDDTest):
 
     def test_sorting(self):
         self.login(
-            email='user@example.com',
-            password='123456',
+            dict(email='user@example.com'),
             url='/apiv1/tokens',
             verb='CREATE',
         )
@@ -78,8 +76,7 @@ class TestListContact(AutoDocumentationBDDTest):
 
     def test_filtering(self):
         self.login(
-            email='user@example.com',
-            password='123456',
+            dict(email='user@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -102,8 +99,7 @@ class TestListContact(AutoDocumentationBDDTest):
 
     def test_pagination(self):
         self.login(
-            email='user@example.com',
-            password='123456',
+            dict(email='user@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )

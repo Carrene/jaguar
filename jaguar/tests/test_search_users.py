@@ -11,23 +11,22 @@ class TestSearchUser(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
             title='user1',
             username='user1',
+            access_token='access token',
         )
         user2 = User(
             email='user2@gmail.com',
-            password='123456',
             title='user2',
             username='user2',
+            access_token='access token',
         )
         session.add_all([user1, user2])
         session.commit()
 
     def test_search_user(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -66,8 +65,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
 
     def test_sorting(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -89,8 +87,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
 
     def test_filtering(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -113,8 +110,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
 
     def test_pagination(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -135,8 +131,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
 
     def test_request_with_query_string(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )

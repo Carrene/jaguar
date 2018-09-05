@@ -16,33 +16,33 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token'
         )
         blocked1 = User(
             email='blocked1@example.com',
             title='blocked1',
-            password='123456',
+            access_token='access token'
         )
         room_member = User(
             email='member@example.com',
             title='member',
-            password='123456',
+            access_token='access token'
         )
         never = User(
             email='never@example.com',
             title='never',
-            password='123456',
+            access_token='access token',
             add_to_room=False,
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
-            password='123456',
+            access_token='access token'
         )
         blocked2 = User(
             email='blocked2@example.com',
             title='blocked2',
-            password='123456',
+            access_token='access token'
         )
         blocker.blocked_users.append(blocked1)
         blocker.blocked_users.append(blocked2)
@@ -55,8 +55,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
     def test_add_user_to_room(self):
         self.login(
-            'user@example.com',
-            '123456',
+            dict(email='user@example.com'),
             '/apiv1/tokens',
             'CREATE'
         )
@@ -87,8 +86,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
         self.logout()
         self.login(
-            'blocked1@example.com',
-            '123456',
+            dict(email='blocked1@example.com'),
             '/apiv1/tokens',
             'CREATE'
         )
@@ -103,8 +101,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
         self.logout()
         self.login(
-            'blocker@example.com',
-            '123456',
+            dict(email='blocker@example.com'),
             '/apiv1/tokens',
             'CREATE'
         )

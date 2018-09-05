@@ -14,7 +14,7 @@ class TestMembership(AutoDocumentationBDDTest):
         user = User(
             email='already.added@example.com',
             title='example',
-            password='123456',
+            access_token='access token',
         )
         session.add(user)
         session.commit()
@@ -27,7 +27,7 @@ class TestMembership(AutoDocumentationBDDTest):
             'Invalid password format',
             '/apiv1/users',
             'REGISTER',
-            form=dict(token=token, password='1234', title='test user')
+            form=dict(token=token, title='test user')
         ):
             assert response.status == 704
             when('Registering a user', form=Update(password='123456'))

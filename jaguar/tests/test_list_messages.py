@@ -11,13 +11,13 @@ class TestListMessages(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
             title='user',
+            access_token='access token',
         )
         user2 = User(
             email='user2@example.com',
-            password='123456',
-            title='user2'
+            title='user2',
+            access_token='access token',
         )
         room1 = Room(title='room1', type='room')
         room2 = Room(title='room2', type='room')
@@ -48,8 +48,7 @@ class TestListMessages(AutoDocumentationBDDTest):
 
     def test_list_messages_of_target(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -70,8 +69,7 @@ class TestListMessages(AutoDocumentationBDDTest):
 
     def test_sorting(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -90,8 +88,7 @@ class TestListMessages(AutoDocumentationBDDTest):
 
     def test_pagination(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -113,8 +110,7 @@ class TestListMessages(AutoDocumentationBDDTest):
 
     def test_filtering(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -132,8 +128,7 @@ class TestListMessages(AutoDocumentationBDDTest):
 
     def test_forbidden_request(self):
         self.login(
-            email='user2@example.com',
-            password='123456',
+            dict(email='user2@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )

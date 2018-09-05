@@ -11,13 +11,13 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         cls.session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
-            title='user1'
+            title='user1',
+            access_token='access token',
         )
         user2 = User(
             email='user2@example.com',
-            password='123456',
-            title='user2'
+            title='user2',
+            access_token='access token',
         )
         room = Room(title='room', type='room')
         room.members.append(user1)
@@ -35,8 +35,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
 
     def test_delete_the_message(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )
@@ -63,8 +62,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
     # Authorizations would be implemented
     def test_forbidden_request(self):
         self.login(
-            email='user2@example.com',
-            password='123456',
+            dict(email='user2@example.com'),
             url='/apiv1/tokens',
             verb='CREATE'
         )

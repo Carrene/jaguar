@@ -11,18 +11,18 @@ class TestDirect(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
-            title='user1'
+            title='user1',
+            access_token='access token',
         )
         user2 = User(
             email='user2@example.com',
-            password='123456',
             title='user2',
+            access_token='access token',
         )
         blocker = User(
             email='blocker@example.com',
-            password='123456',
             title='blocker',
+            access_token='access token',
         )
         blocker.blocked_users.append(user1)
         session.add_all([blocker, user2])
@@ -30,8 +30,7 @@ class TestDirect(AutoDocumentationBDDTest):
 
     def test_creat_token(self):
         self.login(
-            email='user1@example.com',
-            password='123456',
+            dict(email='user1@example.com'),
             url='/apiv1/tokens',
             verb='CREATE',
         )
@@ -66,8 +65,7 @@ class TestDirect(AutoDocumentationBDDTest):
 
         self.logout()
         self.login(
-            email='blocker@example.com',
-            password='123456',
+            dict(email='blocker@example.com'),
             url='/apiv1/tokens',
             verb='CREATE',
         )

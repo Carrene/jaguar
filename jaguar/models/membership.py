@@ -54,8 +54,8 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         index=True,
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
-    _password = Field('password', Unicode(128), min_length=6)
     title = Field(Unicode(100))
+    access_token = Field(Unicode(200))
     type = Field(Unicode(50))
 
     __mapper_args__ = {
@@ -66,45 +66,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
     @property
     def roles(self):
         return []
-
-    @classmethod
-    def _hash_password(cls, password):
-        salt = sha256()
-        salt.update(os.urandom(60))
-        salt = salt.hexdigest()
-
-        hashed_pass = sha256()
-        # Make sure password is a str because we cannot hash unicode objects
-        hashed_pass.update((password + salt).encode('utf-8'))
-        hashed_pass = hashed_pass.hexdigest()
-
-        password = salt + hashed_pass
-        return password
-
-    def _set_password(self, password):
-        """Hash ``password`` on the fly and store its hashed version."""
-        min_length = self.__class__.password.info['min_length']
-        if len(password) < min_length:
-            raise HTTPStatus(
-                f'704 Please enter at least {min_length} characters '
-                'for password.'
-            )
-        self._password = self._hash_password(password)
-
-    def _get_password(self):
-        """Return the hashed version of the password."""
-        return self._password
-
-    password = synonym(
-        '_password',
-        descriptor=property(_get_password, _set_password),
-        info=dict(protected=True)
-    )
-
-    def validate_password(self, password):
-        hashed_pass = sha256()
-        hashed_pass.update((password + self.password[:64]).encode('utf-8'))
-        return self.password[64:] == hashed_pass.hexdigest()
 
     def create_jwt_principal(self):
         return JwtPrincipal(dict(
@@ -179,7 +140,4 @@ class User(Member):
     @property
     def roles(self):
         return ['user']
-
-    def create_jwt_principal(self):
-        return super().create_jwt_principal()
 
