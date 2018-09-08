@@ -12,7 +12,7 @@ class TestToken(AutoDocumentationBDDTest):
         user = User(
             email='already.added@example.com',
             title='user',
-            access_token='access token',
+            access_token='access token'
         )
         session.add(user)
         session.commit()
@@ -22,7 +22,7 @@ class TestToken(AutoDocumentationBDDTest):
             'Login user',
             '/apiv1/tokens',
             'CREATE',
-            form=dict(email='already.added@example.com',)
+            form=dict(email='already.added@example.com', password='123456')
         ):
             assert response.status == 200
 
@@ -31,5 +31,4 @@ class TestToken(AutoDocumentationBDDTest):
 
             when('Request without email parameters', form=Remove('email'))
             assert status == 400
-
 

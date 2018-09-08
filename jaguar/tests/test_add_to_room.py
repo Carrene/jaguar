@@ -31,8 +31,8 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         never = User(
             email='never@example.com',
             title='never',
-            access_token='access token',
             add_to_room=False,
+            access_token='access token'
         )
         blocker = User(
             email='blocker@example.com',
@@ -54,11 +54,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         session.commit()
 
     def test_add_user_to_room(self):
-        self.login(
-            dict(email='user@example.com'),
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Add to a room',
@@ -85,11 +81,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == 612
 
         self.logout()
-        self.login(
-            dict(email='blocked1@example.com'),
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('blocked1@example.com')
 
         with self.given(
             'Blocked by the target user',
@@ -100,11 +92,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == '601 Not Allowed To Add User To Any Room'
 
         self.logout()
-        self.login(
-            dict(email='blocker@example.com'),
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('blocker@example.com')
 
         with self.given(
             'The blocker can not add the user he blocked',

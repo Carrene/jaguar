@@ -12,12 +12,12 @@ class TestListMessages(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user',
-            access_token='access token',
+            access_token='access token'
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
-            access_token='access token',
+            access_token='access token'
         )
         room1 = Room(title='room1', type='room')
         room2 = Room(title='room2', type='room')
@@ -47,11 +47,7 @@ class TestListMessages(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_messages_of_target(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'List messages of a target',
@@ -68,11 +64,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == '711 Form Not Allowed'
 
     def test_sorting(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Sorting the response',
@@ -87,11 +79,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert response.json[0]['body'] == 'This is message 3'
 
     def test_pagination(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Testing pagination',
@@ -109,11 +97,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert response.json[0]['body'] == 'This is message 1'
 
     def test_filtering(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Filtering the response',
@@ -127,11 +111,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == 401
 
     def test_forbidden_request(self):
-        self.login(
-            dict(email='user2@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user2@example.com')
 
         with self.given(
             'Not member tries to list messages of a target',

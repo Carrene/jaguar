@@ -12,7 +12,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user1',
-            access_token='access token',
+            access_token='access token'
         )
         room = Room(title='example', type='room')
         direct = Direct(title='direct', type='direct')
@@ -21,11 +21,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
         session.commit()
 
     def test_send_message_to_target(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Send a message to a target',
