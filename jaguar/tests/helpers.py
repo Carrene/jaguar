@@ -57,7 +57,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             raise HTTPBadRequest()
 
         principal = member.create_jwt_principal()
-        self._authentication_token = principal.dump().decode()
+        self._authentication_token = principal.dump().decode('utf-8')
 
 
 class MockupApplication(Application):
