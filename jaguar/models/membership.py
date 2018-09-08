@@ -55,7 +55,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
     title = Field(Unicode(100))
-    access_token = Field(Unicode(200))
+    access_token = Field(Unicode(200), protected=True)
     type = Field(Unicode(50))
 
     __mapper_args__ = {
