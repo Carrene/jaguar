@@ -11,30 +11,25 @@ class TestDirect(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
-            title='user1'
+            title='user1',
+            access_token='access token'
         )
         user2 = User(
             email='user2@example.com',
-            password='123456',
             title='user2',
+            access_token='access token'
         )
         blocker = User(
             email='blocker@example.com',
-            password='123456',
             title='blocker',
+            access_token='access token'
         )
         blocker.blocked_users.append(user1)
         session.add_all([blocker, user2])
         session.commit()
 
     def test_creat_token(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE',
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Try to create a direct with a user',
@@ -65,12 +60,7 @@ class TestDirect(AutoDocumentationBDDTest):
             assert status == '613 Not Allowed To Create Direct With This User'
 
         self.logout()
-        self.login(
-            email='blocker@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE',
-        )
+        self.login('blocker@example.com')
 
         with self.given(
             'Try to create a direct with a blocked user',

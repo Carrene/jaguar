@@ -8,9 +8,9 @@ def test_message_model(db):
     session = db()
     member = User(
         title='example',
-        password='123456',
         username='example',
-        email='example@example.com'
+        email='example@example.com',
+        access_token='access token',
     )
     session.add(member)
     session.flush()

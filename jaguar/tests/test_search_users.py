@@ -11,26 +11,21 @@ class TestSearchUser(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = User(
             email='user1@example.com',
-            password='123456',
             title='user1',
+            access_token='access token',
             username='user1',
         )
         user2 = User(
             email='user2@gmail.com',
-            password='123456',
             title='user2',
+            access_token='access token',
             username='user2',
         )
         session.add_all([user1, user2])
         session.commit()
 
     def test_search_user(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Search for a user',
@@ -65,12 +60,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert status == '702 Must Be Less Than 20 Charecters'
 
     def test_sorting(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Test sorting',
@@ -88,12 +78,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert response.json[0]['id'] == 2
 
     def test_filtering(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Test filtering',
@@ -112,12 +97,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert response.json[0]['title'] != 'user2'
 
     def test_pagination(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Test pagination',
@@ -134,12 +114,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
             assert response.json[0]['title'] == 'user1'
 
     def test_request_with_query_string(self):
-        self.login(
-            email='user1@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Test request using query string',

@@ -13,22 +13,22 @@ class TestAddToContact(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token'
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
-            password='123456',
+            access_token='access token'
         )
         contact1 = User(
             email='contact1@example.com',
             title='contact1',
-            password='123456',
+            access_token='access token'
         )
         contact2 = User(
             email='contact2@example.com',
             title='contact2',
-            password='123456',
+            access_token='access token'
         )
         user.contacts.append(contact2)
         contact1.contacts.append(user2)
@@ -36,12 +36,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         session.commit()
 
     def test_add_user_to_contact(self):
-        self.login(
-            email='user@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Add a user to contacts',
