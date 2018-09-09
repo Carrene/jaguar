@@ -19,11 +19,7 @@ class TestLogout(AutoDocumentationBDDTest):
         session.commit()
 
     def test_logout_a_user(self):
-        self.login(
-            dict(email='user@example.com'),
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Log out a user',

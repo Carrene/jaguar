@@ -34,11 +34,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         cls.session.commit()
 
     def test_delete_the_message(self):
-        self.login(
-            dict(email='user1@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user1@example.com')
 
         with self.given(
             'Try to delete a message',
@@ -61,11 +57,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
     # TODO: More test scenarios should be checked when other
     # Authorizations would be implemented
     def test_forbidden_request(self):
-        self.login(
-            dict(email='user2@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user2@example.com')
 
         with self.given(
             'Not allowed to delete the message',

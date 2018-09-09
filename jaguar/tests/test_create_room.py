@@ -21,11 +21,8 @@ class TestRoom(AutoDocumentationBDDTest):
         session.commit()
 
     def test_create_room(self):
-        self.login(
-            dict(email='user@example.com'),
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('user@example.com')
+
         with self.given(
             'Creating a room',
             '/apiv1/rooms',

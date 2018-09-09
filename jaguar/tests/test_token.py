@@ -25,11 +25,11 @@ class TestToken(AutoDocumentationBDDTest):
             form=dict(email='already.added@example.com',)
         ):
             assert response.status == 200
+            assert 'token' in response.json
 
             when('Invalid email', form=Update(email='user@example.com'))
             assert response.status == 400
 
             when('Request without email parameters', form=Remove('email'))
             assert status == 400
-
 

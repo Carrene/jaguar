@@ -39,11 +39,7 @@ class TestListContact(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_contacts(self):
-        self.login(
-            dict(email='user@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'List a user contacts',
@@ -54,11 +50,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert len(response.json) == 2
 
     def test_sorting(self):
-        self.login(
-            dict(email='user@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE',
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Try to sort the response',
@@ -75,11 +67,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert response.json[0]['title'] == 'contact2'
 
     def test_filtering(self):
-        self.login(
-            dict(email='user@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Filtering the response using title',
@@ -98,11 +86,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert response.json[0]['title'] != 'contact2'
 
     def test_pagination(self):
-        self.login(
-            dict(email='user@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Testing pagination',

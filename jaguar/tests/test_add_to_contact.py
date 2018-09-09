@@ -36,11 +36,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         session.commit()
 
     def test_add_user_to_contact(self):
-        self.login(
-            form=dict(email='user@example.com'),
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Add a user to contacts',

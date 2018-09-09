@@ -25,11 +25,7 @@ class TestListTarget(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_targets_of_user(self):
-         self.login(
-             dict(email='user@example.com'),
-             url='/apiv1/tokens',
-             verb='CREATE'
-         )
+         self.login('user@example.com')
 
          with self.given(
              'List targets of a user',
