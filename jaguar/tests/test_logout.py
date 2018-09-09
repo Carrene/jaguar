@@ -13,18 +13,13 @@ class TestLogout(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token',
         )
         session.add(user)
         session.commit()
 
     def test_logout_a_user(self):
-        self.login(
-            'user@example.com',
-            '123456',
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Log out a user',

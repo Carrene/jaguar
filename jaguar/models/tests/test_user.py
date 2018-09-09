@@ -9,23 +9,11 @@ from jaguar.models.target import Room
 # Test target model
 def test_user_model(db):
     session = db()
-
-    # Test password minlength
-    with pytest.raises(HTTPStatus) as ex:
-        user = User(
-            title='example',
-            password='1234',
-            username='example',
-            email='example@example.com'
-        )
-
-    assert '704' in str(ex.value)
-
     user = User(
         title='example',
-        password='1234567',
         username='example',
-        email='example@example.com'
+        email='example@example.com',
+        access_token='access token'
     )
     session.add(user)
     session.commit()
@@ -52,9 +40,9 @@ def test_user_model(db):
     # Testing relationship between User and User ( As contactlist)
     contact = User(
         title='contact',
-        password='123456',
         username='contact',
-        email='contact@example.com'
+        email='contact@example.com',
+        access_token='access token'
     )
     session.add(contact)
     user.contacts.append(contact)
@@ -65,5 +53,4 @@ def test_user_model(db):
     session.commit()
     user.blocked_users.append(contact)
     assert len(user.blocked_users) == 1
-
 

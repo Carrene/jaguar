@@ -16,33 +16,33 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token'
         )
         blocked1 = User(
             email='blocked1@example.com',
             title='blocked1',
-            password='123456',
+            access_token='access token'
         )
         room_member = User(
             email='member@example.com',
             title='member',
-            password='123456',
+            access_token='access token'
         )
         never = User(
             email='never@example.com',
             title='never',
-            password='123456',
+            access_token='access token',
             add_to_room=False,
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
-            password='123456',
+            access_token='access token'
         )
         blocked2 = User(
             email='blocked2@example.com',
             title='blocked2',
-            password='123456',
+            access_token='access token'
         )
         blocker.blocked_users.append(blocked1)
         blocker.blocked_users.append(blocked2)
@@ -54,12 +54,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         session.commit()
 
     def test_add_user_to_room(self):
-        self.login(
-            'user@example.com',
-            '123456',
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Add to a room',
@@ -86,12 +81,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == 612
 
         self.logout()
-        self.login(
-            'blocked1@example.com',
-            '123456',
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('blocked1@example.com')
 
         with self.given(
             'Blocked by the target user',
@@ -102,12 +92,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == '601 Not Allowed To Add User To Any Room'
 
         self.logout()
-        self.login(
-            'blocker@example.com',
-            '123456',
-            '/apiv1/tokens',
-            'CREATE'
-        )
+        self.login('blocker@example.com')
 
         with self.given(
             'The blocker can not add the user he blocked',

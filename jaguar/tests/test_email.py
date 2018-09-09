@@ -12,7 +12,7 @@ class TestEmail(AutoDocumentationBDDTest):
         user = User(
             email='already.added@example.com',
             title='example',
-            password='123456',
+            access_token='access token',
         )
         session.add(user)
         session.commit()

@@ -13,24 +13,24 @@ class TestListContact(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            password='123456',
+            access_token='access token',
         )
         contact1 = User(
             email='contact1@example.com',
             title='contact1',
-            password='123456',
+            access_token='access token',
         )
         contact2 = User(
             email='contact2@example.com',
             title='contact2',
-            password='123456',
+            access_token='access token',
         )
 
         # This contact is added to make sure the query works correctly
         contact3 = User(
             email='contact3@example.com',
             title='contact3',
-            password='123456',
+            access_token='access token',
             show_email=True,
         )
         user.contacts = [contact1, contact2]
@@ -39,12 +39,7 @@ class TestListContact(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_contacts(self):
-        self.login(
-            email='user@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'List a user contacts',
@@ -55,12 +50,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert len(response.json) == 2
 
     def test_sorting(self):
-        self.login(
-            email='user@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE',
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Try to sort the response',
@@ -77,12 +67,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert response.json[0]['title'] == 'contact2'
 
     def test_filtering(self):
-        self.login(
-            email='user@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Filtering the response using title',
@@ -101,12 +86,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert response.json[0]['title'] != 'contact2'
 
     def test_pagination(self):
-        self.login(
-            email='user@example.com',
-            password='123456',
-            url='/apiv1/tokens',
-            verb='CREATE'
-        )
+        self.login('user@example.com')
 
         with self.given(
             'Testing pagination',

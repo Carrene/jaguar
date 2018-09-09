@@ -13,9 +13,9 @@ def test_target_model(db):
     # Test members of a room
     member = User(
         title='example',
-        password='123456',
         username='example',
-        email='example@example.com'
+        email='example@example.com',
+        access_token='access token'
     )
     session.add(member)
     room.members.append(member)
@@ -28,9 +28,9 @@ def test_target_model(db):
     # Test administrators of a room
     administrator = User(
         title='administrator',
-        password='123456',
         username='administrator',
-        email='administrator@example.com'
+        email='administrator@example.com',
+        access_token='access token'
     )
     session.add(administrator)
     session.commit()

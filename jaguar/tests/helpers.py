@@ -50,3 +50,6 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             **kwargs
         )
 
+    def login(self, email, url='/apiv1/tokens', verb='CREATE'):
+        super().login(dict(email=email), url = url, verb = verb)
+
