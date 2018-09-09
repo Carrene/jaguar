@@ -34,18 +34,6 @@ class Jaguar(Application):
       secret: activation-secret
       max_age: 86400  # seconds
       url: http://example.com/activate
-
-    oauth:
-      secret: A1dFVpz4w/qyym+HeXKWYmm6Ocj4X5ZNv1JQ7kgHBEk=\n
-      authorization_code:
-        url: http://localhost:8080/apiv1/authorizationcodes
-        verb: create
-      access_token:
-        url: http://localhost:8080/apiv1/accesstokens
-        verb: create
-      member:
-        url: http://localhost:8080/apiv1/members
-        verb: get
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):

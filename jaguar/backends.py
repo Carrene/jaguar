@@ -2,9 +2,7 @@ import urllib
 import json
 
 import requests
-from nanohttp import settings, context, HTTPFound, HTTPForbidden
-from restfulpy.controllers import ModelRestController
-from restfulpy.orm import DBSession
+from nanohttp import settings, HTTPFound, HTTPForbidden
 
 
 class CASClient:

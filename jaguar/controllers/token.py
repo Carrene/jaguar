@@ -35,7 +35,6 @@ class TokenController(RestController):
             applicationId=settings.oauth['application_id'],
         )
 
-
     @json
     def obtain(self):
         access_token, member_id = CASClient() \
