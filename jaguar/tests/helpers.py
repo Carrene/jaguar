@@ -53,3 +53,28 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
     def login(self, email, url='/apiv1/tokens', verb='CREATE'):
         super().login(dict(email=email), url = url, verb = verb)
 
+
+class MockupApplication(Application):
+
+    def __init__(self, application_name, root):
+        super().__init__(
+            application_name,
+            root=root
+        )
+        self.__authenticator__ = Authorization()
+
+
+class Authorization(Authenticator):
+
+    def validate_credentials(self, credentials):
+        pass
+
+    def create_refresh_principal(self, member_id=None):
+        pass
+
+    def create_principal(self, member_id=None, session_id=None, **kwargs):
+        pass
+
+    def authenticate_request(self):
+        pass
+
