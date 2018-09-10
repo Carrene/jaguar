@@ -39,8 +39,8 @@ class TestAddToContact(AutoDocumentationBDDTest):
         self.login('user@example.com')
 
         with self.given(
-            'Add a user to contacts',
-            '/apiv1/contacts',
+            title='Add a user to contacts',
+            url='/apiv1/contacts',
             verb='ADD',
            form=dict(userId=3),
         ):
