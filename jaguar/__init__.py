@@ -34,7 +34,6 @@ class Jaguar(Application):
       secret: activation-secret
       max_age: 86400  # seconds
       url: http://example.com/activate
-
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):
