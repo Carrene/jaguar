@@ -37,10 +37,11 @@ class TokenController(RestController):
 
     @json
     def obtain(self):
-        access_token, member_id = CASClient() \
+        cas_server = CASClient()
+        access_token, member_id = cas_server \
             .get_access_token(context.form.get('authorizationCode'))
 
-        member = CASClient().get_member(member_id, access_token )
+        member = cas_server.get_member(member_id, access_token )
         user = DBSession.query(User) \
             .filter(User.email == member['email']) \
             .one_or_none()

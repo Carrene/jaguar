@@ -1,4 +1,3 @@
-import urllib
 import json
 
 import requests

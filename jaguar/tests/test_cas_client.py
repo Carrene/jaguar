@@ -87,6 +87,7 @@ class TestTOken(AutoDocumentationBDDTest):
             ):
                 assert status == 200
                 assert 'token' in response.json
+                assert 'X-New-Jwt-Token' in response.headers
 
                 when(
                     'Trying to pass without the authorization code parameter',

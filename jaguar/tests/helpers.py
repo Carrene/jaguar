@@ -57,10 +57,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 class MockupApplication(Application):
 
     def __init__(self, application_name, root):
-        super().__init__(
-            application_name,
-            root=root
-        )
+        super().__init__(application_name,  root=root)
         self.__authenticator__ = Authorization()
 
 
