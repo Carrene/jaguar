@@ -7,9 +7,9 @@ from nanohttp import settings, HTTPFound, HTTPForbidden
 class CASClient:
 
     def get_access_token(self, authorization_code):
-
         if authorization_code is None:
             raise HTTPForbidden()
+
         response = requests.request(
             settings.oauth.access_token.verb.upper(),
             settings.oauth.access_token.url,
@@ -26,7 +26,6 @@ class CASClient:
         return result['accessToken'], result['memberId']
 
     def get_member(self, member_id, access_token):
-
         response = requests.request(
             settings.oauth.member.verb.upper(),
             f'{settings.oauth.member.url}/{member_id}',
