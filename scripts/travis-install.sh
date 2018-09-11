@@ -6,10 +6,10 @@
 
 
 openssl aes-256-cbc \
-		-K $encrypted_79c0f355d5ee_key \
-		-iv $encrypted_79c0f355d5ee_iv \
-		-in travis-keys.tar.enc \
-		-out travis-keys.tar -d
+	-K $encrypted_79c0f355d5ee_key \
+	-iv $encrypted_79c0f355d5ee_iv \
+	-in travis-keys.tar.enc \
+	-out travis-keys.tar -d
 
 tar -xf travis-keys.tar
 
