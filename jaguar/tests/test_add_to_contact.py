@@ -41,7 +41,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         with self.given(
             'Add a user to contacts',
             '/apiv1/contacts',
-            verb='ADD',
+            'ADD',
            form=dict(userId=3),
         ):
             assert status == 200
