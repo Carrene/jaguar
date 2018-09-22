@@ -31,13 +31,13 @@ class TestEditMessage(AutoDocumentationBDDTest):
             target_id=room.id,
             sender_id=user1.id,
         )
+        cls.session.add(message1)
         message2 = Message(
             body='This is message 2',
             mime_type='text/plain',
             target_id=room.id,
             sender_id=user1.id
         )
-        cls.session.add(message1)
         cls.session.add(message2)
         cls.session.commit()
 
