@@ -92,7 +92,7 @@ class MessageController(ModelRestController):
     def edit(self, id):
         try:
             id = int(id)
-        except:
+        except ValueError:
             raise HTTPStatus('707 Invalid MessageId')
         new_message_body = context.form.get('body')
         message = DBSession.query(Message) \
@@ -102,7 +102,7 @@ class MessageController(ModelRestController):
             raise HTTPStatus('614 Message Not Found')
 
         if message.sender_id != context.identity.id:
-            raise HTTPForbidden
+            raise HTTPForbidden()
 
         message.body = new_message_body
         DBSession.add(message)

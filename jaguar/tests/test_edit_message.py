@@ -37,7 +37,8 @@ class TestEditMessage(AutoDocumentationBDDTest):
             target_id=room.id,
             sender_id=user1.id
         )
-        cls.session.add_all([message1, message2])
+        cls.session.add(message1)
+        cls.session.add(message2)
         cls.session.commit()
 
     def test_edit_the_message(self):
@@ -68,7 +69,6 @@ class TestEditMessage(AutoDocumentationBDDTest):
                 form=Update(body=(1024 + 1) * 'a')
             )
             assert status == '702 Must be less than 1024 charecters'
-
 
     # TODO: More test scenarios should be checked when other
     # Authorizations would be implemented
