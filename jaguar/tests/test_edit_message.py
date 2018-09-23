@@ -1,5 +1,3 @@
-:x
-:x
 from bddrest.authoring import when, status, response, Update
 
 from jaguar.models import User, Room, Message
