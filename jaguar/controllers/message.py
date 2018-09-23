@@ -79,3 +79,33 @@ class MessageController(ModelRestController):
         DBSession.delete(message)
         return message
 
+    @authorize
+    @validate(
+        body=dict(
+            max_length=(1024, '702 Must be less than 1024 charecters'),
+            required='400 Bad Request',
+        )
+    )
+    @json
+    @Message.expose
+    @commit
+    def edit(self, id):
+        try:
+            id = int(id)
+        except ValueError:
+            raise HTTPStatus('707 Invalid MessageId')
+
+        new_message_body = context.form.get('body')
+        message = DBSession.query(Message) \
+            .filter(Message.id == id) \
+            .one_or_none()
+        if message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        if message.sender_id != context.identity.id:
+            raise HTTPForbidden()
+
+        message.body = new_message_body
+        DBSession.add(message)
+        return message
+
