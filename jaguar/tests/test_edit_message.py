@@ -1,4 +1,5 @@
-
+:x
+:x
 from bddrest.authoring import when, status, response, Update
 
 from jaguar.models import User, Room, Message
@@ -24,21 +25,18 @@ class TestEditMessage(AutoDocumentationBDDTest):
         room.members.append(user1)
         cls.session.add(user2)
         cls.session.add(room)
-        cls.session.flush()
         message1 = Message(
             body='This is message 1',
             mime_type='text/plain',
-            target_id=room.id,
-            sender_id=user1.id,
         )
-        cls.session.add(message1)
+        room.messages.append(message1)
+        user1.messages.append(message1)
         message2 = Message(
             body='This is message 2',
             mime_type='text/plain',
-            target_id=room.id,
-            sender_id=user1.id
         )
-        cls.session.add(message2)
+        room.messages.append(message2)
+        user1.messages.append(message2)
         cls.session.commit()
 
     def test_edit_the_message(self):

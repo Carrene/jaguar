@@ -94,6 +94,7 @@ class MessageController(ModelRestController):
             id = int(id)
         except ValueError:
             raise HTTPStatus('707 Invalid MessageId')
+
         new_message_body = context.form.get('body')
         message = DBSession.query(Message) \
             .filter(Message.id == id) \

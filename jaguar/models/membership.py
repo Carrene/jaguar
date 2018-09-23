@@ -108,6 +108,7 @@ class User(Member):
     )
     show_email = Field(Boolean, default=False)
     show_phone = Field(Boolean, default=False)
+    messages = relationship('Envelop')
     contacts = relationship(
         'User',
         secondary='contact',
