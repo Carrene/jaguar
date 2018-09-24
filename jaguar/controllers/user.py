@@ -1,7 +1,8 @@
 
 from sqlalchemy import or_
 import itsdangerous
-from nanohttp import json, context, HTTPStatus, settings, validate
+from nanohttp import json, context, HTTPStatus, settings, validate, \
+    HTTPNotFound
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
@@ -36,4 +37,19 @@ class UserController(ModelRestController):
             raise HTTPStatus('611 User Not Found')
 
         return query
+
+    @authorize
+    @json
+    @User.expose
+    def get(self, id):
+        try:
+            id = int(id)
+        except ValueError:
+            raise HTTPNotFound()
+
+        user = DBSession.query(User).filter(User.id == id).one_or_none()
+        if user is None:
+            raise HTTPNotFound()
+
+        return user
 
