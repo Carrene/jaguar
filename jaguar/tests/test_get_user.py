@@ -32,6 +32,9 @@ class TestGetUser(AutoDocumentationBDDTest):
             when('User not found', url_parameters=Update(id='2'))
             assert status == 404
 
+            when('Ivalid use id', url_parameters=Update(id='user1'))
+            assert status == 404
+
             when('Try to pass unauthorize request', authorization=None)
             assert status == 401
 
