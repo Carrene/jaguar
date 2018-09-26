@@ -56,6 +56,7 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
 class Room(Target):
 
     owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
+    owner = relationship('User', back_populates='room')
 
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading

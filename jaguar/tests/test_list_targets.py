@@ -11,21 +11,23 @@ class TestListTarget(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
-            email='user@example.com',
-            title='user',
+        user1 = User(
+            email='user1@example.com',
+            title='user1',
             access_token='access token',
         )
-        room1 = Room(title='room1')
-        direct = Direct(title='direct')
-        room2 = Room(title='room2')
-        room1.members.append(user)
-        direct.members.append(user)
-        session.add_all([direct, room1, room2])
+        user2 = User(
+            email='user2@example.com',
+            title='user2',
+            access_token='access token',
+        )
+        user1_room1 = Room(title='room1', owner=user1)
+        user2_room1 = Room(title='room1', owner=user2)
+        session.add_all([user1_room1, user2_room1])
         session.commit()
 
     def test_list_targets_of_user(self):
-         self.login('user@example.com')
+         self.login('user1@example.com')
 
          with self.given(
              'List targets of a user',
@@ -33,5 +35,6 @@ class TestListTarget(AutoDocumentationBDDTest):
              'LIST',
          ):
              assert status == 200
-             assert len(response.json) == 2
+             assert len(response.json) == 1
+             assert response.json[0]['title'] == 'room1'
 
