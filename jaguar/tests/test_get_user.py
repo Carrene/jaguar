@@ -1,7 +1,7 @@
-from bddrest import given, when, status, response, Update
+from bddrest import when, status, response, Update
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest
 from jaguar.models import User
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
 class TestGetUser(AutoDocumentationBDDTest):
@@ -16,6 +16,13 @@ class TestGetUser(AutoDocumentationBDDTest):
             access_token='access token',
         )
         session.add(user1)
+        user2 = User(
+            email='user2@example.com',
+            title='user2',
+            username='user2',
+            access_token='access token'
+        )
+        session.add(user2)
         session.commit()
 
     def test_get_user_by_id(self):
@@ -29,7 +36,7 @@ class TestGetUser(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['title'] == 'user1'
 
-            when('User not found', url_parameters=Update(id='2'))
+            when('User not found', url_parameters=Update(id='3'))
             assert status == 404
 
             when('Ivalid use id', url_parameters=Update(id='user1'))
