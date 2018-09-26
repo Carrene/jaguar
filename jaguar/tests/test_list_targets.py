@@ -37,4 +37,5 @@ class TestListTarget(AutoDocumentationBDDTest):
              assert status == 200
              assert len(response.json) == 1
              assert response.json[0]['title'] == 'room1'
+             assert response.json[0]['ownerId'] == 1
 
