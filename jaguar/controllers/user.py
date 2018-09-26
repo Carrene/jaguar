@@ -1,6 +1,5 @@
 
 from sqlalchemy import or_
-import itsdangerous
 from nanohttp import json, context, HTTPStatus, settings, validate, \
     HTTPNotFound
 from restfulpy.controllers import ModelRestController
