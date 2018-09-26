@@ -116,7 +116,7 @@ class User(Member):
         secondaryjoin=id == Contact.destination,
         lazy='selectin'
     )
-    user_room = relationship('Room', backref='owner')
+    room = relationship('Room', back_populates='owner')
     blocked_users = relationship(
         'User',
         secondary=blocked,

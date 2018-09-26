@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 
-from ..models import Target, target_member
+from ..models import Target, Room
 from .message import MessageController
 
 
@@ -33,11 +33,11 @@ class TargetController(ModelRestController):
     @json
     @Target.expose
     def list(self):
-        query = DBSession.query(Target) \
-            .join(target_member) \
-            .filter(
-                Target.id == target_member.c.target_id,
-                target_member.c.member_id == context.identity.id
+        query = DBSession.query(Room)
+        if not context.identity.is_in_roles('admin'):
+            query =  query.filter(
+                Room.owner_id == context.identity.id
             )
+
         return query
 

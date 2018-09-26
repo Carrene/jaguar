@@ -17,12 +17,20 @@ class RoomController(ModelRestController):
     @validate(
         title=dict(
             min_length=(4, '701 Must Be Greater Than 4 Charecters'),
-            max_length=(32, '702 Must Be Less Than 32 Charecters'),
+            max_length=(50, '702 Must Be Less Than 50 Charecters'),
             required='703 Room Title Is Required',
         )
     )
     def create(self):
         title = context.form.get('title')
+        is_exist = DBSession.query(Room) \
+            .filter(
+                Room.title == title, Room.owner_id == context.identity.id
+            ) \
+            .count()
+        if  is_exist:
+            raise HTTPStatus('615 Room Already Exists')
+
         room = Room(title=title)
         member = User.current()
         room.administrators.append(member)
