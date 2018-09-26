@@ -11,7 +11,7 @@ class TestListTarget(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        cls.user1 = User(
             email='user1@example.com',
             title='user1',
             access_token='access token',
@@ -21,7 +21,7 @@ class TestListTarget(AutoDocumentationBDDTest):
             title='user2',
             access_token='access token',
         )
-        user1_room1 = Room(title='room1', owner=user1)
+        user1_room1 = Room(title='room1', owner=cls.user1)
         user2_room1 = Room(title='room1', owner=user2)
         session.add_all([user1_room1, user2_room1])
         session.commit()
@@ -37,5 +37,5 @@ class TestListTarget(AutoDocumentationBDDTest):
              assert status == 200
              assert len(response.json) == 1
              assert response.json[0]['title'] == 'room1'
-             assert response.json[0]['ownerId'] == 1
+             assert response.json[0]['ownerId'] == self.user1.id
 
