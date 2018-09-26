@@ -13,16 +13,19 @@ class TestDirect(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user1',
             access_token='access token',
+            reference_id=1
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
             access_token='access token',
+            reference_id=2
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
             access_token='access token',
+            reference_id=3
         )
         blocker.blocked_users.append(user1)
         session.add_all([blocker, user2])

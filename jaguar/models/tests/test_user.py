@@ -13,7 +13,8 @@ def test_user_model(db):
         title='example',
         username='example',
         email='example@example.com',
-        access_token='access token'
+        access_token='access token',
+        reference_id=4
     )
     session.add(user)
     session.commit()
@@ -42,7 +43,8 @@ def test_user_model(db):
         title='contact',
         username='contact',
         email='contact@example.com',
-        access_token='access token'
+        access_token='access token',
+        reference_id=5
     )
     session.add(contact)
     user.contacts.append(contact)

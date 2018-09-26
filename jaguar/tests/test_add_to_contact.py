@@ -13,22 +13,26 @@ class TestAddToContact(AutoDocumentationBDDTest):
         user = User(
             email='user@example.com',
             title='user',
-            access_token='access token'
+            access_token='access token',
+            reference_id=1
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
-            access_token='access token'
+            access_token='access token',
+            reference_id=2
         )
         contact1 = User(
             email='contact1@example.com',
             title='contact1',
-            access_token='access token'
+            access_token='access token',
+            reference_id=3
         )
         contact2 = User(
             email='contact2@example.com',
             title='contact2',
-            access_token='access token'
+            access_token='access token',
+            reference_id=4
         )
         user.contacts.append(contact2)
         contact1.contacts.append(user2)

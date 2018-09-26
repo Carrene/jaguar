@@ -13,6 +13,7 @@ from restfulpy.principal import JwtPrincipal, JwtRefreshToken
 from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
     ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
     FilteringMixin, PaginationMixin, OrderingMixin
+from cas import CASPrincipal
 
 from .envelop import Envelop
 from .messaging import ActivationEmail
@@ -48,6 +49,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
+    reference_id = Field(Integer)
     email = Field(
         Unicode(100),
         unique=True,
@@ -68,11 +70,12 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         return []
 
     def create_jwt_principal(self):
-        return JwtPrincipal(dict(
+        return CASPrincipal(dict(
             id=self.id,
             roles=self.roles,
             email=self.email,
-            name=self.title
+            name=self.title,
+            referenceId=self.reference_id
         ))
 
     def create_refresh_principal(self):

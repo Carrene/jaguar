@@ -14,12 +14,14 @@ class TestSearchUser(AutoDocumentationBDDTest):
             title='user1',
             username='user1',
             access_token='access token',
+            reference_id=1
         )
         user2 = User(
             email='user2@gmail.com',
             title='user2',
             username='user2',
             access_token='access token',
+            reference_id=2
         )
         session.add_all([user1, user2])
         session.commit()

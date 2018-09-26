@@ -15,11 +15,13 @@ class TestListTarget(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user1',
             access_token='access token',
+            reference_id=1
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
             access_token='access token',
+            reference_id=2
         )
         user1_room1 = Room(title='room1', owner=cls.user1)
         user2_room1 = Room(title='room1', owner=user2)

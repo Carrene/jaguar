@@ -13,6 +13,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user1',
             access_token='access token',
+            reference_id=1
         )
         room = Room(title='example', type='room')
         direct = Direct(title='direct', type='direct')

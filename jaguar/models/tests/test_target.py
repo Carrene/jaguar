@@ -15,7 +15,8 @@ def test_target_model(db):
         title='example',
         username='example',
         email='example@example.com',
-        access_token='access token'
+        access_token='access token',
+        reference_id=2
     )
     session.add(member)
     room.members.append(member)
@@ -30,7 +31,8 @@ def test_target_model(db):
         title='administrator',
         username='administrator',
         email='administrator@example.com',
-        access_token='access token'
+        access_token='access token',
+        reference_id=3
     )
     session.add(administrator)
     session.commit()
