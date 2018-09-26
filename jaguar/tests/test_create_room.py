@@ -52,3 +52,6 @@ class TestRoom(AutoDocumentationBDDTest):
             when('Title is required', form=Remove('title'))
             assert status == '703 Room Title Is Required'
 
+            when('The room already exist')
+            assert status == '615 Room Already Exists'
+

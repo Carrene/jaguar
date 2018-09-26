@@ -3,7 +3,8 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
+from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
+    UniqueConstraint
 
 from .membership import User
 from .envelop import Envelop
@@ -20,7 +21,7 @@ target_member = Table(
 room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,
-    Field('room_id', Integer, ForeignKey('room.id')),
+    Field('room_id', Integer, ForeignKey('target.id')),
     Field('member_id', Integer, ForeignKey('user.id'))
 )
 
@@ -53,13 +54,7 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
 
 
 class Room(Target):
-    __tablename__ = 'room'
 
-    id = Field(
-        Integer,
-        ForeignKey('target.id'),
-        primary_key=True,
-    )
     owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
 
     # since the number of collections are small, the selectin strategy is
@@ -71,6 +66,7 @@ class Room(Target):
         protected=True,
         lazy='selectin'
     )
+    UniqueConstraint(owner_id, Target.title, name='unique_room')
 
     def to_dict(self):
         member_ids = [member.id for member in self.members]
@@ -86,20 +82,13 @@ class Room(Target):
         )
     messages = relationship('Envelop')
     __mapper_args__ = {
-        'polymorphic_identity': __tablename__,
+        'polymorphic_identity': 'room',
     }
 
 
 class Direct(Target):
-    __tablename__ = 'direct'
 
-    id = Field(
-        Integer,
-        ForeignKey('target.id'),
-        primary_key=True,
-        json='target_id'
-    )
     __mapper_args__ = {
-        'polymorphic_identity': __tablename__,
+        'polymorphic_identity': 'direct',
     }
 

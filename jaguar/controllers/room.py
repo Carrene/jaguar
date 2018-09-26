@@ -23,6 +23,14 @@ class RoomController(ModelRestController):
     )
     def create(self):
         title = context.form.get('title')
+        is_exist = DBSession.query(Room) \
+            .filter(
+                Room.title == title, Room.owner_id == context.identity.id
+            ) \
+            .count()
+        if  is_exist:
+            raise HTTPStatus('615 Room Already Exists')
+
         room = Room(title=title)
         member = User.current()
         room.administrators.append(member)
