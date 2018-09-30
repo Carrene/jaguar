@@ -50,7 +50,8 @@ class TokenController(RestController):
             user = User(
                 email=member['email'],
                 title=member['title'],
-                access_token=access_token
+                access_token=access_token,
+                reference_id=member['id']
             )
         else:
             user.access_token = access_token

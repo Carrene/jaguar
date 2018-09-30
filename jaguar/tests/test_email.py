@@ -13,6 +13,7 @@ class TestEmail(AutoDocumentationBDDTest):
             email='already.added@example.com',
             title='example',
             access_token='access token',
+            reference_id=1
         )
         session.add(user)
         session.commit()

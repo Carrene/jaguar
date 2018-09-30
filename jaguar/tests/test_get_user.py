@@ -14,13 +14,15 @@ class TestGetUser(AutoDocumentationBDDTest):
             title='user1',
             username='user1',
             access_token='access token',
+            reference_id=1
         )
         session.add(user1)
         user2 = User(
             email='user2@example.com',
             title='user2',
             username='user2',
-            access_token='access token'
+            access_token='access token',
+            reference_id=2
         )
         session.add(user2)
         session.commit()

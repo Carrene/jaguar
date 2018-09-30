@@ -14,16 +14,19 @@ class TestListContact(AutoDocumentationBDDTest):
             email='user@example.com',
             title='user',
             access_token='access token',
+            reference_id=1
         )
         contact1 = User(
             email='contact1@example.com',
             title='contact1',
             access_token='access token',
+            reference_id=2
         )
         contact2 = User(
             email='contact2@example.com',
             title='contact2',
             access_token='access token',
+            reference_id=3
         )
 
         # This contact is added to make sure the query works correctly
@@ -32,6 +35,7 @@ class TestListContact(AutoDocumentationBDDTest):
             title='contact3',
             access_token='access token',
             show_email=True,
+            reference_id=4
         )
         user.contacts = [contact1, contact2]
         contact1.contacts.append(contact3)

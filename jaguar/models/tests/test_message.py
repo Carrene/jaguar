@@ -11,6 +11,7 @@ def test_message_model(db):
         username='example',
         email='example@example.com',
         access_token='access token',
+        reference_id=1
     )
     session.add(member)
     session.flush()

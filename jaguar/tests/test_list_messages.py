@@ -13,11 +13,13 @@ class TestListMessages(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user',
             access_token='access token',
+            reference_id=1
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
             access_token='access token',
+            reference_id=2
         )
         room1 = Room(title='room1', type='room')
         room2 = Room(title='room2', type='room')
