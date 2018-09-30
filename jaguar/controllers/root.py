@@ -1,6 +1,7 @@
 
-from nanohttp import Controller, json
+from nanohttp import Controller, json, action
 from restfulpy.controllers import RootController
+from restfulpy.authorization import authorize
 
 import jaguar
 
@@ -32,6 +33,11 @@ class ApiV1(Controller):
         return {
             'version': jaguar.__version__
         }
+
+    @authorize
+    @action
+    def index(self):
+        return 'Index'
 
 
 class Root(RootController):
