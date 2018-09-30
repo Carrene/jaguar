@@ -2,7 +2,7 @@
 from bddrest.authoring import when, Update, Remove, status
 
 from jaguar.models.membership import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestAddToContact(AutoDocumentationBDDTest):
@@ -42,7 +42,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
     def test_add_user_to_contact(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Add a user to contacts',
             '/apiv1/contacts',
             'ADD',

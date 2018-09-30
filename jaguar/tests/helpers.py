@@ -1,9 +1,12 @@
 from os import path, makedirs
+from contextlib import contextmanager
 
 from restfulpy.application import Application
 from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
+from restfulpy.mockup import mockup_http_server
+from nanohttp import RegexRouteController, json, settings, context
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
@@ -22,6 +25,47 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 
     def login(self, email, url='/apiv1/tokens', verb='CREATE'):
         super().login(dict(email=email), url=url, verb=verb)
+
+
+@contextmanager
+def cas_mockup_server():
+
+
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/members/me', self.get),
+            ])
+
+        @json
+        def get(self):
+            access_token = context.environ['HTTP_AUTHORIZATION']
+            if 'access token1' in access_token:
+                return dict(id=1, email='user1@example.com', title='user1')
+
+            if 'access token2' in access_token:
+                return dict(id=2, email='user2@example.com', title='user2')
+
+            if 'access token3' in access_token:
+                return dict(email='blocked1@example.com', title='blocked1')
+            if 'access token4' in access_token:
+                return dict(email='blocker@example.com', title='blocker')
+
+            return dict(email='user@example.com', title='user')
+
+    app = MockupApplication('cas-mockup', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          tokenizer:
+            url: {url}
+          oauth:
+            member:
+              url: {url}/apiv1/members
+              verb: get
+        ''')
+
+        yield app
 
 
 class MockupApplication(Application):
