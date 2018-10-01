@@ -6,7 +6,7 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context
+from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
@@ -16,6 +16,9 @@ from jaguar.models.membership import User
 
 HERE = path.abspath(path.dirname(__file__))
 DATA_DIRECTORY = path.abspath(path.join(HERE, '../../data'))
+
+
+_cas_server_status = 'idle'
 
 
 class AutoDocumentationBDDTest(ApplicableTestCase):
@@ -41,18 +44,30 @@ def cas_mockup_server():
         @json
         def get(self):
             access_token = context.environ['HTTP_AUTHORIZATION']
+            if _cas_server_status != 'idle':
+                raise HTTPStatus(_cas_server_status)
+
             if 'access token1' in access_token:
-                return dict(id=1, email='user1@example.com', title='user1')
+                return dict(id=2, email='user1@example.com', title='user1')
 
             if 'access token2' in access_token:
-                return dict(id=2, email='user2@example.com', title='user2')
+                return dict(id=3, email='user2@example.com', title='user2')
 
             if 'access token3' in access_token:
-                return dict(email='blocked1@example.com', title='blocked1')
-            if 'access token4' in access_token:
-                return dict(email='blocker@example.com', title='blocker')
+                return dict(
+                    id=4,
+                    email='blocked1@example.com',
+                    title='blocked1'
+                )
 
-            return dict(email='user@example.com', title='user')
+            if 'access token4' in access_token:
+                return dict(
+                    id=5,
+                    email='blocker@example.com',
+                    title='blocker'
+                )
+
+            return dict(id=1, email='user@example.com', title='user')
 
     app = MockupApplication('cas-mockup', Root())
     with mockup_http_server(app) as (server, url):
@@ -66,6 +81,14 @@ def cas_mockup_server():
         ''')
 
         yield app
+
+
+@contextmanager
+def cas_server_status(status):
+    global _cas_server_status
+    _cas_server_status = status
+    yield
+    _cas_server_status = 'idle'
 
 
 class MockupApplication(Application):

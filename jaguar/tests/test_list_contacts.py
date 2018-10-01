@@ -2,7 +2,7 @@
 from bddrest.authoring import response, when, Update, status
 
 from jaguar.models.membership import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestListContact(AutoDocumentationBDDTest):
@@ -45,7 +45,7 @@ class TestListContact(AutoDocumentationBDDTest):
     def test_list_contacts(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'List a user contacts',
             '/apiv1/contacts',
             'LIST',
@@ -56,7 +56,7 @@ class TestListContact(AutoDocumentationBDDTest):
     def test_sorting(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Try to sort the response',
             '/apiv1/contacts',
             'LIST',
@@ -73,7 +73,7 @@ class TestListContact(AutoDocumentationBDDTest):
     def test_filtering(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Filtering the response using title',
             '/apiv1/contacts',
             'LIST',
@@ -92,7 +92,7 @@ class TestListContact(AutoDocumentationBDDTest):
     def test_pagination(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Testing pagination',
             '/apiv1/contacts',
             'LIST',

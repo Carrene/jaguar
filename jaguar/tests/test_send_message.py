@@ -1,6 +1,6 @@
 from bddrest.authoring import given, when, Update, status, response, Remove
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import User, Room, Direct
 
 
@@ -12,8 +12,8 @@ class TestSendMessage(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user1',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         room = Room(title='example', type='room')
         direct = Direct(title='direct', type='direct')
@@ -24,7 +24,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
     def test_send_message_to_target(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Send a message to a target',
             '/apiv1/targets/id:1/messages',
             'SEND',

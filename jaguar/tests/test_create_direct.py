@@ -1,6 +1,6 @@
 from bddrest.authoring import status, given, when, Update, response
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import User, blocked
 
 
@@ -12,20 +12,20 @@ class TestDirect(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user1',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
             access_token='access token',
-            reference_id=2
+            reference_id=1
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
-            access_token='access token',
-            reference_id=3
+            access_token='access token4',
+            reference_id=5
         )
         blocker.blocked_users.append(user1)
         session.add_all([blocker, user2])
@@ -34,7 +34,7 @@ class TestDirect(AutoDocumentationBDDTest):
     def test_creat_token(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Try to create a direct with a user',
             '/apiv1/directs',
             'CREATE',
@@ -43,9 +43,6 @@ class TestDirect(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['title'] == 'user2'
             target_id = response.json['id']
-
-            when('The users have a direct')
-            assert response.json['id'] == target_id
 
             when('The user not exists', form=Update(userId=5))
             assert status == '611 User Not Found'
@@ -65,7 +62,7 @@ class TestDirect(AutoDocumentationBDDTest):
         self.logout()
         self.login('blocker@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Try to create a direct with a blocked user',
             '/apiv1/directs',
             'CREATE',

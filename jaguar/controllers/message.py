@@ -3,7 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 
-from ..models import Envelop, Message, target_member
+from ..models import Envelop, Message, target_member, User
 
 
 SUPPORTED_MIME_TYPES=['text/plain']
@@ -28,9 +28,12 @@ class MessageController(ModelRestController):
         if not mime_type in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         message = Message(body=body, mime_type=mime_type)
         message.target_id = target_id
-        message.sender_id = context.identity.id
+        message.sender_id = current_member.id
         DBSession.add(message)
         return message
 
@@ -38,10 +41,13 @@ class MessageController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         is_member = DBSession.query(target_member) \
             .filter(
                 target_member.c.target_id == target_id,
-                target_member.c.member_id == context.identity.id
+                target_member.c.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -67,10 +73,13 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         is_member = DBSession.query(target_member) \
             .filter(
                 target_member.c.target_id == message.target_id,
-                target_member.c.member_id == context.identity.id
+                target_member.c.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -96,13 +105,16 @@ class MessageController(ModelRestController):
             raise HTTPStatus('707 Invalid MessageId')
 
         new_message_body = context.form.get('body')
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         message = DBSession.query(Message) \
             .filter(Message.id == id) \
             .one_or_none()
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
-        if message.sender_id != context.identity.id:
+        if message.sender_id != current_member.id:
             raise HTTPForbidden()
 
         message.body = new_message_body

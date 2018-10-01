@@ -4,7 +4,7 @@ from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
 
 from jaguar.models.membership import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestRoom(AutoDocumentationBDDTest):
@@ -24,7 +24,7 @@ class TestRoom(AutoDocumentationBDDTest):
     def test_create_room(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Creating a room',
             '/apiv1/rooms',
             'CREATE',

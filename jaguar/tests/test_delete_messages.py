@@ -1,7 +1,7 @@
 from bddrest.authoring import when, status, response, Update
 
 from jaguar.models import User, Room, Message
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestDeleteMessage(AutoDocumentationBDDTest):
@@ -12,14 +12,14 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user1',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
-            access_token='access token',
-            reference_id=2
+            access_token='access token2',
+            reference_id=3
         )
         room = Room(title='room', type='room')
         room.members.append(user1)
@@ -38,7 +38,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
     def test_delete_the_message(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Try to delete a message',
             '/apiv1/messages/id:1',
            'DELETE'
@@ -61,7 +61,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
     def test_forbidden_request(self):
         self.login('user2@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Not allowed to delete the message',
             '/apiv1/messages/id:2/',
             'DELETE',

@@ -7,11 +7,11 @@ from nanohttp import settings, json, context
 from nanohttp import RegexRouteController
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication, \
-    cas_mockup_server
+    cas_mockup_server, cas_server_status
 from jaguar.models import User
 
 
-class TestCasMemeber(AutoDocumentationBDDTest):
+class TestLoginWithCAS(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -25,7 +25,7 @@ class TestCasMemeber(AutoDocumentationBDDTest):
         session.add(user1)
         session.commit()
 
-    def test_get_cas_member(self):
+    def test_login_with_cas(self):
         token = JwtPrincipal(dict(
             email='user2@example.com',
             title='user2',
@@ -84,4 +84,22 @@ class TestCasMemeber(AutoDocumentationBDDTest):
                     authorization=member_token
                 )
                 assert status == 200
+
+                with cas_server_status('503 Service Not Available'):
+                    when(
+                        'CAS server is not available',
+                    )
+                    assert status == '800 CAS Server Not Available'
+
+                with cas_server_status('500 Internal Service Error'):
+                    when(
+                        'CAS server faces with internal error',
+                    )
+                    assert status == '801 CAS Server Internal Error'
+
+                with cas_server_status('404 Not Found'):
+                    when(
+                        'CAS server is not found',
+                    )
+                    assert status == '617 CAS Server Not Found'
 

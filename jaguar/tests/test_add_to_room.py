@@ -23,7 +23,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             email='blocked1@example.com',
             title='blocked1',
             access_token='access token3',
-            reference_id=2
+            reference_id=4
         )
         room_member = User(
             email='member@example.com',
@@ -36,12 +36,12 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             title='never',
             access_token='access token',
             add_to_room=False,
-            reference_id=4
+            reference_id=2
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
-            access_token='access token',
+            access_token='access token4',
             reference_id=5
         )
         blocked2 = User(

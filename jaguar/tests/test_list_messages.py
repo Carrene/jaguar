@@ -1,6 +1,6 @@
 from bddrest.authoring import given, when, Update, status, response
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import Room, User, Message
 
 
@@ -12,14 +12,14 @@ class TestListMessages(AutoDocumentationBDDTest):
         user1 = User(
             email='user1@example.com',
             title='user',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         user2 = User(
             email='user2@example.com',
             title='user2',
-            access_token='access token',
-            reference_id=2
+            access_token='access token2',
+            reference_id=3
         )
         room1 = Room(title='room1', type='room')
         room2 = Room(title='room2', type='room')
@@ -51,7 +51,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def test_list_messages_of_target(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'List messages of a target',
             '/apiv1/targets/id:1/messages',
             'LIST',
@@ -68,7 +68,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def test_sorting(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Sorting the response',
             '/apiv1/targets/id:1/messages',
             'LIST',
@@ -83,7 +83,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def test_pagination(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Testing pagination',
             '/apiv1/targets/id:1/messages',
             'LIST',
@@ -101,7 +101,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def test_filtering(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Filtering the response',
             '/apiv1/targets/id:1/messages',
             'LIST',
@@ -115,7 +115,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def test_forbidden_request(self):
         self.login('user2@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Not member tries to list messages of a target',
             '/apiv1/targets/id:1/messages',
             'LIST',

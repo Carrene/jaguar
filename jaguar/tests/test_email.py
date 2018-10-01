@@ -1,7 +1,7 @@
 from bddrest.authoring import response, when, Remove, Update
 
 from jaguar.models.membership import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestEmail(AutoDocumentationBDDTest):
@@ -19,7 +19,7 @@ class TestEmail(AutoDocumentationBDDTest):
         session.commit()
 
     def test_claim_email(self):
-        with self.given(
+        with cas_mockup_server(), self.given(
             'claim a user',
             '/apiv1/emails',
             'CLAIM',

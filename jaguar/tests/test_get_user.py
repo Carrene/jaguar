@@ -1,7 +1,7 @@
 from bddrest import when, status, response, Update
 
 from jaguar.models import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestGetUser(AutoDocumentationBDDTest):
@@ -13,16 +13,16 @@ class TestGetUser(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user1',
             username='user1',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         session.add(user1)
         user2 = User(
             email='user2@example.com',
             title='user2',
             username='user2',
-            access_token='access token',
-            reference_id=2
+            access_token='access token2',
+            reference_id=3
         )
         session.add(user2)
         session.commit()
@@ -30,7 +30,7 @@ class TestGetUser(AutoDocumentationBDDTest):
     def test_get_user_by_id(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Get a user by her or his id',
             '/apiv1/users/id:1',
             'GET',
