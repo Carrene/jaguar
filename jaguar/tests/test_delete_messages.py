@@ -41,7 +41,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         with cas_mockup_server(), self.given(
             'Try to delete a message',
             '/apiv1/messages/id:1',
-           'DELETE'
+            'DELETE'
         ):
             assert status == 200
             assert response.json['body'] == 'This is message 1'

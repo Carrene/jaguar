@@ -41,7 +41,7 @@ class TokenController(RestController):
         access_token, member_id = cas_server \
             .get_access_token(context.form.get('authorizationCode'))
 
-        member = cas_server.get_member(access_token )
+        member = cas_server.get_member(access_token)
         user = DBSession.query(User) \
             .filter(User.email == member['email']) \
             .one_or_none()

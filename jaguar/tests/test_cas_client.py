@@ -61,7 +61,7 @@ def cas_server_status(status):
     _cas_server_status = 'idle'
 
 
-class TestTOken(AutoDocumentationBDDTest):
+class TestCASClient(AutoDocumentationBDDTest):
 
     def test_redirect_to_cas(self):
         settings.merge(f'''
@@ -118,20 +118,14 @@ class TestTOken(AutoDocumentationBDDTest):
                 assert status == 403
 
                 with cas_server_status('503 Service Not Available'):
-                    when(
-                        'CAS server is not available',
-                    )
+                    when('CAS server is not available')
                     assert status == '800 CAS Server Not Available'
 
                 with cas_server_status('500 Internal Service Error'):
-                    when(
-                        'CAS server faces with internal error',
-                    )
+                    when('CAS server faces with internal error')
                     assert status == '801 CAS Server Internal Error'
 
                 with cas_server_status('404 Not Found'):
-                    when(
-                        'CAS server is not found',
-                    )
+                    when('CAS server is not found')
                     assert status == '617 CAS Server Not Found'
 

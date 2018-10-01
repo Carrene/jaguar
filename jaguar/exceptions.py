@@ -11,3 +11,4 @@ class CASServerNotAvailable(HTTPKnownStatus):
 
 class CASInternallError(HTTPKnownStatus):
     status = '801 CAS Server Internal Error'
+

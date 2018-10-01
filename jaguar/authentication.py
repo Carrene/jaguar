@@ -56,6 +56,7 @@ class Authenticator(StatefulAuthenticator):
             ))
         elif member.title != cas_member['title']:
             member.title = cas_member['title']
+
         DBSession.commit()
         return principal
 
