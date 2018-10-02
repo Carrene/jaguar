@@ -34,11 +34,6 @@ class ApiV1(Controller):
             'version': jaguar.__version__
         }
 
-    @authorize
-    @action
-    def index(self):
-        return 'Index'
-
 
 class Root(RootController):
     apiv1 = ApiV1()

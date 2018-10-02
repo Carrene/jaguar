@@ -3,7 +3,8 @@ from contextlib import contextmanager
 from bddrest.authoring import given, status, response, when, Update, Remove
 from restfulpy.principal import JwtPrincipal
 from restfulpy.mockup import mockup_http_server
-from nanohttp import settings, json, context
+from restfulpy.authorization import authorize
+from nanohttp import settings, json, context, action
 from nanohttp import RegexRouteController
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication, \
@@ -11,7 +12,20 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication, \
 from jaguar.models import User
 
 
-class TestLoginWithCAS(AutoDocumentationBDDTest):
+
+class Root(RegexRouteController):
+
+    def __init__(self):
+        return super().__init__([('/apiv1/resources', self.get),])
+
+    @authorize
+    @action
+    def get(self):
+        return 'Index'
+
+
+class TestApplication(AutoDocumentationBDDTest):
+    __controller_factory__ = Root
 
     @classmethod
     def mockup(cls):
@@ -43,13 +57,12 @@ class TestLoginWithCAS(AutoDocumentationBDDTest):
             with self.given(
                 title='Try to access an authorized resource',
                 description='Members are got from the cas',
-                url='/apiv1/index',
+                url='/apiv1/resources',
                 headers={
                     'X-Access-Token: access token2'
                 }
             ):
                 assert status == 200
-
                 mismathc_token = JwtPrincipal(dict(
                     email='user3@example.com',
                     title='user3',

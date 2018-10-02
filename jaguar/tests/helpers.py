@@ -33,7 +33,6 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 @contextmanager
 def cas_mockup_server():
 
-
     class Root(RegexRouteController):
 
         def __init__(self):
