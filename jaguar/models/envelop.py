@@ -47,6 +47,38 @@ class Message(Envelop):
         secondary=user_message,
         lazy='selectin'
     )
+
+    # Since collections would be fairly small,
+    # selecin loding is chosen for this relationship.
+    seen_by = relationship(
+        'User',
+        protected=False,
+        secondary=user_message,
+        lazy='selectin'
+    )
+
+    @property
+    def is_mine(self):
+        return Member.current().id == self.sender_id
+
+    def to_dict(self):
+        message_dictionary = super().to_dict()
+        message_dictionary.update(isMine=self.is_mine)
+        message_dictionary.update(activated_at=self.activated_at)
+        return message_dictionary
+
+    @classmethod
+    def json_metadata(cls):
+        metadata = super().json_metadata()
+        metadata['fields']['isMine'] = {
+            'type': None, 'not_none': None,'required': None, 'pattern': None,
+            'maxLength': None, 'minLength': None, 'readonly': None,
+            'protected': None, 'minimum': None, 'maximum': None,
+            'default': None, 'name': 'isMine', 'example': None,
+            'watermark': None, 'label': None, 'key': 'is_mine',
+            'primaryKey': False
+        }
+        return metadata
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
     }
