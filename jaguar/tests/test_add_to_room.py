@@ -5,7 +5,7 @@ from bddrest.authoring import response, when, Update, Remove, status
 
 from jaguar.models.membership import User
 from jaguar.models.target import Room
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestAddToRoom(AutoDocumentationBDDTest):
@@ -22,8 +22,8 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         blocked1 = User(
             email='blocked1@example.com',
             title='blocked1',
-            access_token='access token',
-            reference_id=2
+            access_token='access token3',
+            reference_id=4
         )
         room_member = User(
             email='member@example.com',
@@ -36,12 +36,12 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             title='never',
             access_token='access token',
             add_to_room=False,
-            reference_id=4
+            reference_id=2
         )
         blocker = User(
             email='blocker@example.com',
             title='blocker',
-            access_token='access token',
+            access_token='access token4',
             reference_id=5
         )
         blocked2 = User(
@@ -62,7 +62,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
     def test_add_user_to_room(self):
         self.login('user@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Add to a room',
             '/apiv1/rooms/id:1',
             'ADD',
@@ -89,7 +89,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         self.logout()
         self.login('blocked1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Blocked by the target user',
             '/apiv1/rooms/1',
             'ADD',
@@ -100,7 +100,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         self.logout()
         self.login('blocker@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'The blocker can not add the user he blocked',
             '/apiv1/rooms/1',
             'ADD',

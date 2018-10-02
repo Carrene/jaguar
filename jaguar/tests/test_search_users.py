@@ -1,7 +1,7 @@
 from bddrest.authoring import given, when, status, Update, response, Remove
 
 from jaguar.models import User
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestSearchUser(AutoDocumentationBDDTest):
@@ -13,15 +13,15 @@ class TestSearchUser(AutoDocumentationBDDTest):
             email='user1@example.com',
             title='user1',
             username='user1',
-            access_token='access token',
-            reference_id=1
+            access_token='access token1',
+            reference_id=2
         )
         user2 = User(
             email='user2@gmail.com',
             title='user2',
             username='user2',
-            access_token='access token',
-            reference_id=2
+            access_token='access token2',
+            reference_id=3
         )
         session.add_all([user1, user2])
         session.commit()
@@ -29,7 +29,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
     def test_search_user(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Search for a user',
             '/apiv1/users',
             'SEARCH',
@@ -64,7 +64,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
     def test_sorting(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Test sorting',
             '/apiv1/users',
             'SEARCH',
@@ -82,7 +82,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
     def test_filtering(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Test filtering',
             '/apiv1/users',
             'SEARCH',
@@ -101,7 +101,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
     def test_pagination(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Test pagination',
             '/apiv1/users',
             'SEARCH',
@@ -118,7 +118,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
     def test_request_with_query_string(self):
         self.login('user1@example.com')
 
-        with self.given(
+        with cas_mockup_server(), self.given(
             'Test request using query string',
             '/apiv1/users',
             'SEARCH',

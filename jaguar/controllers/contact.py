@@ -28,25 +28,31 @@ class ContactController(ModelRestController):
         if destination is None:
             raise HTTPStatus('611 User Not Found')
 
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         is_contact = DBSession.query(Contact) \
             .filter(
-                Contact.source == context.identity.id,
+                Contact.source == current_member.id,
                 Contact.destination == user_id
             ) \
             .count()
         if is_contact:
             raise HTTPStatus('603 Already Added To Contacts')
 
-        DBSession.add(Contact(source=context.identity.id, destination=user_id))
+        DBSession.add(Contact(source=current_member.id, destination=user_id))
         return destination
 
     @authorize
     @json
     @User.expose
     def list(self):
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         query = DBSession.query(User) \
             .filter(
-                Contact.source == context.identity.id,
+                Contact.source == current_member.id,
                 Contact.destination == User.id
             )
         return query

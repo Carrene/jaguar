@@ -23,9 +23,12 @@ class RoomController(ModelRestController):
     )
     def create(self):
         title = context.form.get('title')
+        current_user = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         is_exist = DBSession.query(Room) \
             .filter(
-                Room.title == title, Room.owner_id == context.identity.id
+                Room.title == title, Room.owner_id == current_user.id
             ) \
             .count()
         if  is_exist:
@@ -65,14 +68,17 @@ class RoomController(ModelRestController):
         if not user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
 
+        current_user = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         is_blocked = DBSession.query(blocked) \
             .filter(or_(
                 and_(
                     blocked.c.source == user_id,
-                    blocked.c.destination == context.identity.id
+                    blocked.c.destination == current_user.id
                 ),
                 and_(
-                    blocked.c.source == context.identity.id,
+                    blocked.c.source == current_user.id,
                     blocked.c.destination == user_id
                 )
             )) \

@@ -1,6 +1,7 @@
 
-from nanohttp import Controller, json
+from nanohttp import Controller, json, action
 from restfulpy.controllers import RootController
+from restfulpy.authorization import authorize
 
 import jaguar
 
