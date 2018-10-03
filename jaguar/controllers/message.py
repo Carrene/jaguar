@@ -73,6 +73,9 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
+        if message.is_deleted:
+            raise HTTPStatus('616 Message Already Deleted')
+
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
@@ -85,7 +88,9 @@ class MessageController(ModelRestController):
         if not is_member:
             raise HTTPForbidden()
 
-        DBSession.delete(message)
+        message.body = 'This message is deleted'
+        message.mime_type = 'text/plain'
+        message.is_deleted = True
         return message
 
     @authorize
