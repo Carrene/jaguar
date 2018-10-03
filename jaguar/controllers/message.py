@@ -10,7 +10,7 @@ SUPPORTED_MIME_TYPES=['text/plain']
 
 
 class MessageController(ModelRestController):
-    __model__ = Envelop
+    __model__ = Message
 
     @authorize
     @validate(

@@ -9,11 +9,28 @@ class TestListMessages(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
+        message1 = Message(
+            body='This is message 1',
+            mime_type='text/plain',
+        )
+        message2 = Message(
+            body='This is message 2',
+            mime_type='text/plain',
+        )
+        message3 = Message(
+            body='This is message 3',
+            mime_type='text/plain',
+        )
+        message4 = Message(
+            body='This is message 4',
+            mime_type='text/plain',
+        )
         user1 = User(
             email='user1@example.com',
             title='user',
             access_token='access token1',
-            reference_id=2
+            reference_id=2,
+            messages=[message1, message2, message3]
         )
         user2 = User(
             email='user2@example.com',
@@ -21,31 +38,23 @@ class TestListMessages(AutoDocumentationBDDTest):
             access_token='access token2',
             reference_id=3
         )
-        room1 = Room(title='room1', type='room')
-        room2 = Room(title='room2', type='room')
-        room1.members.append(user1)
-        session.add_all([room1, room2])
         session.add(user2)
-        session.flush()
-        message1 = Message(
-            body='This is message 1',
-            mime_type='text/plain',
-            sender_id=user1.id,
-            target_id=room1.id,
+        user3 = User(
+            email='user3@example.com',
+            title='user3',
+            access_token='access token3',
+            reference_id=4,
+            messages=[message4]
         )
-        message2 = Message(
-            body='This is message 2',
-            mime_type='text/plain',
-            sender_id=user1.id,
-            target_id=room2.id
+        room1 = Room(
+            title='room1',
+            type='room',
+            members=[user1, user3],
+            messages=[message1, message3, message4]
         )
-        message3 = Message(
-            body='This is message 3',
-            mime_type='test/plain',
-            sender_id=user1.id,
-            target_id=room1.id
-        )
-        session.add_all([message1, message2, message3])
+        session.add(room1)
+        room2 = Room(title='room2', type='room', messages=[message2])
+        session.add(room2)
         session.commit()
 
     def test_list_messages_of_target(self):
@@ -57,7 +66,12 @@ class TestListMessages(AutoDocumentationBDDTest):
             'LIST',
         ):
             assert status == 200
-            assert len(response.json) == 2
+            assert len(response.json) == 3
+            assert response.json[0]['body'] == 'This is message 1'
+            assert response.json[0]['isMine'] == True
+
+            assert response.json[2]['body'] == 'This is message 4'
+            assert response.json[2]['isMine'] == False
 
             when(
                 'Try to send form in the request',
@@ -74,11 +88,11 @@ class TestListMessages(AutoDocumentationBDDTest):
             'LIST',
             query=dict(sort='id')
         ):
-            assert len(response.json) == 2
+            assert len(response.json) == 3
             assert response.json[0]['body'] == 'This is message 1'
 
             when('Sorting the response descending', query=Update(sort='-id'))
-            assert response.json[0]['body'] == 'This is message 3'
+            assert response.json[0]['body'] == 'This is message 4'
 
     def test_pagination(self):
         self.login('user1@example.com')
@@ -94,9 +108,10 @@ class TestListMessages(AutoDocumentationBDDTest):
 
             when(
                 'Sorting befor pagination',
-                query=dict(sort='-id', take=1, skip=1)
+                query=dict(sort='-id', take=2, skip=1)
             )
-            assert response.json[0]['body'] == 'This is message 1'
+            assert len(response.json) == 2
+            assert response.json[0]['body'] == 'This is message 3'
 
     def test_filtering(self):
         self.login('user1@example.com')

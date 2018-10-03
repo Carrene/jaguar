@@ -15,7 +15,6 @@ from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
     FilteringMixin, PaginationMixin, OrderingMixin
 from cas import CASPrincipal
 
-from .envelop import Envelop
 from .messaging import ActivationEmail
 
 
