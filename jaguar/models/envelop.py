@@ -6,6 +6,8 @@ from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
 from sqlalchemy.dialects.postgresql.json import JSONB
 
+from .membership import Member
+
 
 user_message = Table(
     'user_message',
