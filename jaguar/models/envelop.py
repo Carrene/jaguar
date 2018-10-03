@@ -72,9 +72,8 @@ class Message(Envelop):
     @classmethod
     def json_metadata(cls):
         is_mine = Field(Boolean, not_none=True, readonly=True)
-        is_mine_info = is_mine.info
         metadata = super().json_metadata()
-        metadata['fields']['isMine'] = is_mine_info
+        metadata['fields']['isMine'] = is_mine.info
         return metadata
 
     __mapper_args__ = {
