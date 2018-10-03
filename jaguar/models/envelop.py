@@ -3,7 +3,7 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin
 from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table
+from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
 from sqlalchemy.dialects.postgresql.json import JSONB
 
 from .membership import Member
@@ -71,16 +71,12 @@ class Message(Envelop):
 
     @classmethod
     def json_metadata(cls):
+        is_mine = Field(Boolean, not_none=True, readonly=True)
+        is_mine_info = is_mine.info
         metadata = super().json_metadata()
-        metadata['fields']['isMine'] = {
-            'type': None, 'not_none': None,'required': None, 'pattern': None,
-            'maxLength': None, 'minLength': None, 'readonly': None,
-            'protected': None, 'minimum': None, 'maximum': None,
-            'default': None, 'name': 'isMine', 'example': None,
-            'watermark': None, 'label': None, 'key': 'is_mine',
-            'primaryKey': False
-        }
+        metadata['fields']['isMine'] = is_mine_info
         return metadata
+
     __mapper_args__ = {
         'polymorphic_identity' : __tablename__,
     }
