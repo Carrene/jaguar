@@ -61,7 +61,7 @@ class RoomController(ModelRestController):
         if is_member:
             raise HTTPStatus('604 Already Added To Target')
 
-        user = DBSession.query(User).filter(User.id == user_id).one_or_none()
+        user = DBSession.query(User).filter(User.reference_id == user_id).one_or_none()
         if user is None:
             raise HTTPStatus('611 User Not Found')
 
