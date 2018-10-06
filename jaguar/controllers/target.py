@@ -29,15 +29,3 @@ class TargetController(ModelRestController):
 
         return target
 
-    @authorize
-    @json
-    @Target.expose
-    def list(self):
-        query = DBSession.query(Room)
-        if not context.identity.is_in_roles('admin'):
-            query =  query.filter(
-                Room.owner_id == context.identity.id
-            )
-
-        return query
-

@@ -33,7 +33,7 @@ class TestListTarget(AutoDocumentationBDDTest):
 
          with cas_mockup_server(), self.given(
              'List targets of a user',
-             '/apiv1/targets',
+             '/apiv1/rooms',
              'LIST',
          ):
              assert status == 200
