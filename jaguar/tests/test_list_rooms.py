@@ -2,11 +2,11 @@
 from bddrest.authoring import response, when, Update, Remove, status
 
 from jaguar.models.membership import User
-from jaguar.models.target import Room, Direct
+from jaguar.models.target import Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-class TestListTarget(AutoDocumentationBDDTest):
+class TestListRooms(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -28,12 +28,12 @@ class TestListTarget(AutoDocumentationBDDTest):
         session.add_all([user1_room1, user2_room1])
         session.commit()
 
-    def test_list_targets_of_user(self):
+    def test_list_rooms_of_user(self):
          self.login('user1@example.com')
 
          with cas_mockup_server(), self.given(
-             'List targets of a user',
-             '/apiv1/targets',
+             'List all the rooms a user owns',
+             '/apiv1/rooms',
              'LIST',
          ):
              assert status == 200
