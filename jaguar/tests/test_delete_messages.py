@@ -9,8 +9,8 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         cls.session = cls.create_session(expire_on_commit=True)
-        message1 = Message(body='This is message 1', mime_type='text/plain')
-        message2 = Message(body='This is message 2', mime_type='text/plain')
+        message1 = Message(body='This is message 1', mimetype='text/plain')
+        message2 = Message(body='This is message 2', mimetype='text/plain')
         user1 = User(
             email='user1@example.com',
             title='user1',

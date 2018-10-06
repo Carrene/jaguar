@@ -22,7 +22,7 @@ def test_message_model(db):
     # Test message model. As every message should have a sender
     # to be send, sender_id and target_id can not be nullable
     message = Message(
-        mime_type='message',
+        mimetype='message',
         body='Hello world!',
         sender_id=member.id,
         target_id=room.id,

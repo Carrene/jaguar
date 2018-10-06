@@ -11,19 +11,19 @@ class TestListMessages(AutoDocumentationBDDTest):
         session = cls.create_session()
         message1 = Message(
             body='This is message 1',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         message2 = Message(
             body='This is message 2',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         message3 = Message(
             body='This is message 3',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         message4 = Message(
             body='This is message 4',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         user1 = User(
             email='user1@example.com',

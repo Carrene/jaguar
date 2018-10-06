@@ -12,15 +12,15 @@ class TestGetUser(AutoDocumentationBDDTest):
         session = cls.create_session()
         cls.message1 = Message(
             body='This is message 1',
-            mime_type='text/plain'
+            mimetype='text/plain'
         )
         cls.message2 = Message(
             body='This is message 2',
-            mime_type='text/plain'
+            mimetype='text/plain'
         )
         cls.message3 = Message(
             body='This is message 3',
-            mime_type='text/plain'
+            mimetype='text/plain'
         )
         user1 = User(
             email='user1@example.com',
