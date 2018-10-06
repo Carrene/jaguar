@@ -3,7 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 
-from ..models import Envelop, Message, target_member, User
+from ..models import Envelop, Message, target_member, User, Target
 
 
 SUPPORTED_MIME_TYPES=['text/plain']
@@ -124,5 +124,35 @@ class MessageController(ModelRestController):
 
         message.body = new_message_body
         DBSession.add(message)
+        return message
+
+    @authorize
+    @json
+    @Message.expose
+    def get(self, id):
+        try:
+            id = int(id)
+        except(ValueError, TypeError):
+            raise HTTPStatus('707 Invalid Message Id')
+
+        message = DBSession.query(Message) \
+            .filter(Message.id == id) \
+            .one_or_none()
+        if message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        current_user = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
+        is_subscribe = DBSession.query(Target) \
+            .filter(
+                Target.id == message.target_id,
+                target_member.c.target_id == message.target_id,
+                target_member.c.member_id == current_user.id
+            ) \
+            .count()
+        if not is_subscribe:
+            raise HTTPForbidden()
+
         return message
 
