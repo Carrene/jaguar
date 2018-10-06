@@ -28,7 +28,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             'Send a message to a target',
             '/apiv1/targets/id:1/messages',
             'SEND',
-            form=dict(body='hello world!', mimeType='text/plain')
+            form=dict(body='hello world!', mimetype='text/plain')
         ):
             assert status == 200
             assert response.json['body'] == 'hello world!'
@@ -42,7 +42,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
 
             when(
                 'Try to send unsopported media type',
-                form=Update(mimeType='video/3gpp')
+                form=Update(mimetype='video/3gpp')
             )
             assert status == 415
 

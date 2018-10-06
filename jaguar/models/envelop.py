@@ -40,7 +40,7 @@ class Message(Envelop):
         ForeignKey('envelop.id'),
         primary_key=True,
     )
-    mime_type=Field(Unicode(25))
+    mimetype=Field(Unicode(25))
     is_deleted=Field(Boolean, default=False)
 
     # Since collections would be fairly small,

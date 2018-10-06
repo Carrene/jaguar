@@ -24,14 +24,14 @@ class MessageController(ModelRestController):
     @commit
     def send(self, target_id):
         body = context.form.get('body')
-        mime_type = context.form.get('mimeType')
-        if not mime_type in SUPPORTED_MIME_TYPES:
+        mimetype = context.form.get('mimetype')
+        if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        message = Message(body=body, mime_type=mime_type)
+        message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
         message.sender_id = current_member.id
         DBSession.add(message)
@@ -89,7 +89,7 @@ class MessageController(ModelRestController):
             raise HTTPForbidden()
 
         message.body = 'This message is deleted'
-        message.mime_type = 'text/plain'
+        message.mimetype = 'text/plain'
         message.is_deleted = True
         return message
 

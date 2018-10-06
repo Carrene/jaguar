@@ -27,13 +27,13 @@ class TestEditMessage(AutoDocumentationBDDTest):
         cls.session.add(room)
         message1 = Message(
             body='This is message 1',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         room.messages.append(message1)
         user1.messages.append(message1)
         message2 = Message(
             body='This is message 2',
-            mime_type='text/plain',
+            mimetype='text/plain',
         )
         room.messages.append(message2)
         user1.messages.append(message2)
