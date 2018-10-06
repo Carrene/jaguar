@@ -59,13 +59,13 @@ class TestGetUser(AutoDocumentationBDDTest):
             assert response.json['body'] == 'This is message 1'
 
             when(
-                'get The message sent by another user in the same room',
+                'Get The message sent by another user in the same room',
                 url_parameters=Update(id=f'{self.message3.id}')
             )
             assert status == 200
             assert response.json['body'] == 'This is message 3'
 
-            when('Ivalid message id', url_parameters=Update(id='message1'))
+            when('Invalid message id', url_parameters=Update(id='message1'))
             assert status == 707
 
             when('Message not found', url_parameters=Update(id=5))
