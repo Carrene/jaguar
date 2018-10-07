@@ -1,7 +1,8 @@
 
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
-    ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin
+    ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
+    SoftDeleteMixin
 from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
 from sqlalchemy.dialects.postgresql.json import JSONB
@@ -18,7 +19,7 @@ user_message = Table(
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
-              ModifiedMixin, DeclarativeBase):
+              ModifiedMixin, SoftDeleteMixin, DeclarativeBase):
     __tablename__ = 'envelop'
 
     id = Field(Integer, primary_key=True)
@@ -41,7 +42,6 @@ class Message(Envelop):
         primary_key=True,
     )
     mimetype=Field(Unicode(25))
-    is_deleted=Field(Boolean, default=False)
 
     # Since collections would be fairly small,
     # selecin loding is chosen for this relationship.

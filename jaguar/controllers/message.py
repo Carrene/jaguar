@@ -90,7 +90,7 @@ class MessageController(ModelRestController):
 
         message.body = 'This message is deleted'
         message.mimetype = 'text/plain'
-        message.is_deleted = True
+        message.soft_delete()
         return message
 
     @authorize
