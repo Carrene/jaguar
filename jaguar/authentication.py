@@ -37,11 +37,11 @@ class Authenticator(StatefulAuthenticator):
         member = DBSession.query(User) \
             .filter(User.reference_id == principal.reference_id) \
             .one_or_none()
-        if not member and not 'HTTP_X_ACCESS_TOKEN' in context.environ:
+        if not member and not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
             raise HTTPBadRequest()
 
         access_token = member.access_token if member \
-            else context.environ['HTTP_X_ACCESS_TOKEN']
+            else context.environ['HTTP_X_OAUTH2_ACCESS_TOKEN']
 
         cas_member = CASClient().get_member(access_token)
         if cas_member['email'] != principal.email:
