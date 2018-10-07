@@ -48,6 +48,12 @@ class RoomController(ModelRestController):
     @commit
     def add(self, id: int):
         user_id = context.form.get('userId')
+        requested_user = DBSession.query(User) \
+        .filter(User.reference_id == user_id) \
+            .one_or_none()
+        if requested_user is None:
+            raise HTTPStatus('611 User Not Found')
+
         room = DBSession.query(Room).filter(Room.id == id).one_or_none()
         if room is None:
             raise HTTPStatus('612 Room Not Found')
@@ -55,17 +61,13 @@ class RoomController(ModelRestController):
         is_member = DBSession.query(target_member) \
             .filter(
                 target_member.c.target_id == id,
-                target_member.c.member_id == user_id
+                target_member.c.member_id == requested_user.id
             ) \
             .count()
         if is_member:
             raise HTTPStatus('604 Already Added To Target')
 
-        user = DBSession.query(User).filter(User.reference_id == user_id).one_or_none()
-        if user is None:
-            raise HTTPStatus('611 User Not Found')
-
-        if not user.add_to_room:
+        if not requested_user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
 
         current_user = DBSession.query(User) \
@@ -74,19 +76,19 @@ class RoomController(ModelRestController):
         is_blocked = DBSession.query(blocked) \
             .filter(or_(
                 and_(
-                    blocked.c.source == user_id,
+                    blocked.c.source == requested_user.id,
                     blocked.c.destination == current_user.id
                 ),
                 and_(
                     blocked.c.source == current_user.id,
-                    blocked.c.destination == user_id
+                    blocked.c.destination == requested_user.id
                 )
             )) \
             .count()
         if is_blocked:
             raise HTTPStatus('601 Not Allowed To Add User To Any Room')
 
-        room.members.append(user)
+        room.members.append(requested_user)
         return room
 
     @authorize
