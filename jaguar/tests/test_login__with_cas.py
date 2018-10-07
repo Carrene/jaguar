@@ -58,7 +58,7 @@ class TestApplication(AutoDocumentationBDDTest):
                 title='Try to access an authorized resource',
                 description='Members are got from the cas',
                 url='/apiv1/resources',
-                headers={'X-Access-Token: access token2'}
+                headers={'X-Oauth2-Access-Token: access token2'}
             ):
                 assert status == 200
                 mismathc_token = JwtPrincipal(dict(
