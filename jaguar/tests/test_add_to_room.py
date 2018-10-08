@@ -102,7 +102,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'Blocked by the target user',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(userId = self.blocker.reference_id)
+            form=dict(userId=self.blocker.reference_id)
         ):
             assert status == '601 Not Allowed To Add User To Any Room'
 
