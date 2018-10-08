@@ -49,7 +49,7 @@ class RoomController(ModelRestController):
     def add(self, id: int):
         user_id = context.form.get('userId')
         requested_user = DBSession.query(User) \
-        .filter(User.reference_id == user_id) \
+            .filter(User.reference_id == user_id) \
             .one_or_none()
         if requested_user is None:
             raise HTTPStatus('611 User Not Found')
