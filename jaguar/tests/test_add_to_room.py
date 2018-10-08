@@ -13,50 +13,56 @@ class TestAddToRoom(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
+        cls.user = User(
             email='user@example.com',
             title='user',
             access_token='access token',
             reference_id=1
         )
-        blocked1 = User(
+        session.add(cls.user)
+        cls.user1 = User(
+            email='user1@example.com',
+            title='user1',
+            access_token='access token1',
+            reference_id=2
+        )
+        session.add(cls.user1)
+        cls.blocked1 = User(
             email='blocked1@example.com',
             title='blocked1',
             access_token='access token3',
             reference_id=4
         )
-        room_member = User(
-            email='member@example.com',
-            title='member',
-            access_token='access token',
-            reference_id=3
-        )
-        never = User(
-            email='never@example.com',
-            title='never',
-            access_token='access token',
-            add_to_room=False,
-            reference_id=2
-        )
-        blocker = User(
-            email='blocker@example.com',
-            title='blocker',
-            access_token='access token4',
-            reference_id=5
-        )
-        blocked2 = User(
+        cls.blocked2 = User(
             email='blocked2@example.com',
             title='blocked2',
             access_token='access token',
             reference_id=6
         )
-        blocker.blocked_users.append(blocked1)
-        blocker.blocked_users.append(blocked2)
-        room = Room(title='example', type='room')
-        room.members.append(room_member)
-        session.add_all(
-            [user, blocker, room, never]
+        cls.room_member = User(
+            email='member@example.com',
+            title='member',
+            access_token='access token',
+            reference_id=3
         )
+        cls.never = User(
+            email='never@example.com',
+            title='never',
+            access_token='access token',
+            add_to_room=False,
+            reference_id=7
+        )
+        session.add(cls.never)
+        cls.blocker = User(
+            email='blocker@example.com',
+            title='blocker',
+            access_token='access token4',
+            reference_id=5,
+            blocked_users=[cls.blocked1, cls.blocked2]
+        )
+        session.add(cls.blocker)
+        room = Room(title='example', type='room', members=[cls.room_member])
+        session.add(room)
         session.commit()
 
     def test_add_user_to_room(self):
@@ -66,12 +72,15 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'Add to a room',
             '/apiv1/rooms/id:1',
             'ADD',
-            form=dict(userId=1),
+            form=dict(userId=self.user1.reference_id),
         ):
             assert status == 200
             assert len(response.json['memberIds']) == 2
 
-            when('Already added to the room', form=Update(userId=5))
+            when(
+                'Already added to the room',
+                form=Update(userId=self.room_member.reference_id)
+            )
             assert status == '604 Already Added To Target'
 
             when('User not exists', form=Update(userId=10))
@@ -79,7 +88,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
 
             when(
                 'Not allowed to add this person to any room',
-                 form=Update(userId=6)
+                 form=Update(userId=self.never.reference_id)
             )
             assert status == '602 Not Allowed To Add This Person To Any Room'
 
@@ -93,7 +102,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             'Blocked by the target user',
             '/apiv1/rooms/1',
             'ADD',
-            form=dict(userId = 2)
+            form=dict(userId=self.blocker.reference_id)
         ):
             assert status == '601 Not Allowed To Add User To Any Room'
 

@@ -48,7 +48,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
-    reference_id = Field(Integer)
+    reference_id = Field(Integer, unique=True)
     email = Field(
         Unicode(100),
         unique=True,
