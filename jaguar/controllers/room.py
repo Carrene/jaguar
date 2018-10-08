@@ -95,10 +95,13 @@ class RoomController(ModelRestController):
     @json
     @Target.expose
     def list(self):
+        current_user = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
         query = DBSession.query(Room)
         if not context.identity.is_in_roles('admin'):
             query =  query.filter(
-                Room.owner_id == context.identity.id
+                Room.owner_id == current_user.id
             )
 
         return query

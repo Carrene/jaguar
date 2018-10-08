@@ -23,9 +23,12 @@ class TestListRooms(AutoDocumentationBDDTest):
             access_token='access token2',
             reference_id=3
         )
-        user1_room1 = Room(title='room1', owner=cls.user1)
-        user2_room1 = Room(title='room1', owner=user2)
-        session.add_all([user1_room1, user2_room1])
+        room1 = Room(title='room1', owner=cls.user1)
+        session.add(room1)
+        room2 = Room(title='room2', owner=cls.user1)
+        session.add(room2)
+        room3 = Room(title='room3', owner=user2)
+        session.add(room3)
         session.commit()
 
     def test_list_rooms_of_user(self):
@@ -37,7 +40,18 @@ class TestListRooms(AutoDocumentationBDDTest):
              'LIST',
          ):
              assert status == 200
-             assert len(response.json) == 1
+             assert len(response.json) == 2
              assert response.json[0]['title'] == 'room1'
              assert response.json[0]['ownerId'] == self.user1.id
+
+         self.logout()
+         self.login('user2@example.com')
+         with cas_mockup_server(), self.given(
+             'User2 tries to list his rooms',
+             '/apiv1/rooms',
+             'LIST',
+         ):
+             assert status == 200
+             assert len(response.json) == 1
+             assert response.json[0]['title'] == 'room3'
 
