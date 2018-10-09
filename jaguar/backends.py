@@ -14,8 +14,8 @@ class CASClient:
             raise HTTPForbidden()
 
         response = requests.request(
-            settings.oauth.access_token.verb.upper(),
-            settings.oauth.access_token.url,
+            'CREATE',
+            f'{settings.oauth.url}/apiv1/accesstokens',
             data=dict(
                 code=authorization_code,
                 secret=settings.oauth['secret'],
@@ -41,8 +41,8 @@ class CASClient:
 
     def get_member(self, access_token):
         response = requests.request(
-            settings.oauth.member.verb.upper(),
-            f'{settings.oauth.member.url}/me',
+            'GET',
+            f'{settings.oauth.url}/apiv1/members/me',
             headers={'authorization': f'oauth2-accesstoken {access_token}'}
         )
         if response.status_code == 403:

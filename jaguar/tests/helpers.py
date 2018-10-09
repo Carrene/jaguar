@@ -74,9 +74,7 @@ def cas_mockup_server():
           tokenizer:
             url: {url}
           oauth:
-            member:
-              url: {url}/apiv1/members
-              verb: get
+              url: {url}
         ''')
 
         yield app
