@@ -119,6 +119,9 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
+        if message.is_deleted:
+            raise HTTPStatus('616 Message Already Deleted')
+
         if message.sender_id != current_member.id:
             raise HTTPForbidden()
 
