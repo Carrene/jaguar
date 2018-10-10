@@ -47,14 +47,6 @@ class Message(Envelop):
     # selecin loding is chosen for this relationship.
     seen_by = relationship(
         'User',
-        secondary=user_message,
-        lazy='selectin'
-    )
-
-    # Since collections would be fairly small,
-    # selecin loding is chosen for this relationship.
-    seen_by = relationship(
-        'User',
         protected=False,
         secondary=user_message,
         lazy='selectin'
