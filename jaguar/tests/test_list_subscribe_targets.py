@@ -69,16 +69,16 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             'Testing pagination',
             '/apiv1/subscribetargets',
             'LIST',
-            query=dict(take=1, skip=1)
+            query=dict(sort='id', take=1, skip=1)
         ):
             assert len(response.json) == 1
-            assert response.json[0]['title'] == 'direct'
+            assert response.json[0]['title'] == 'room1'
 
             when(
                 'Sorting befor pagination',
-                query=dict(sort='-id', take=2, skip=1)
+                query=dict(sort='-id', take=1, skip=1)
             )
-            assert len(response.json) == 2
+            assert len(response.json) == 1
             assert response.json[0]['title'] == 'room1'
 
     def test_filtering(self):
