@@ -13,7 +13,7 @@ from .membership import Member
 user_message = Table(
     'user_message',
     DeclarativeBase.metadata,
-    Field('message_id', Integer, ForeignKey('message.id')),
+    Field('message_id', Integer, ForeignKey('envelop.id')),
     Field('user_id', Integer, ForeignKey('user.id')),
 )
 
@@ -34,13 +34,7 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
 
 
 class Message(Envelop):
-    __tablename__ = 'message'
 
-    id = Field(
-        Integer,
-        ForeignKey('envelop.id'),
-        primary_key=True,
-    )
     mimetype=Field(Unicode(25))
 
     # Since collections would be fairly small,
@@ -70,6 +64,6 @@ class Message(Envelop):
         return metadata
 
     __mapper_args__ = {
-        'polymorphic_identity' : __tablename__,
+        'polymorphic_identity' : 'message',
     }
 
