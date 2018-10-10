@@ -57,7 +57,6 @@ class TestEditMessage(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'Message 1 is edited'
             assert response.json['id'] == 1
-            assert len(self.session.query(Message).all()) == 3
 
             when('The message not exists', url_parameters=Update(id=4))
             assert status == '614 Message Not Found'
