@@ -1,5 +1,3 @@
-
-
 from nanohttp import json, context, HTTPUnauthorized, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController

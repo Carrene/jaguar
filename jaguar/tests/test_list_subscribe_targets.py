@@ -40,7 +40,7 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
          self.login('user@example.com')
 
          with cas_mockup_server(), self.given(
-             'List targets  a user subscribe to',
+             'List targets a user subscribe to',
              '/apiv1/subscribetargets',
              'LIST',
          ):
