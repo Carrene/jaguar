@@ -9,11 +9,24 @@ class TestEditMessage(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         cls.session = cls.create_session()
+        message1 = Message(
+            body='This is message 1',
+            mimetype='text/plain',
+        )
+        message2 = Message(
+            body='This is message 2',
+            mimetype='text/plain',
+        )
+        cls.message3 = Message(
+            body='This is message 3',
+            mimetype='text/plain',
+        )
         user1 = User(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
-            reference_id=2
+            reference_id=2,
+            messages=[message1, message2, cls.message3]
         )
         user2 = User(
             email='user2@example.com',
@@ -21,22 +34,15 @@ class TestEditMessage(AutoDocumentationBDDTest):
             access_token='access token2',
             reference_id=3
         )
-        room = Room(title='room', type='room')
-        room.members.append(user1)
+        room = Room(
+            title='room',
+            type='room',
+            members=[user1],
+            messages=[message1, message2, cls.message3]
+        )
         cls.session.add(user2)
         cls.session.add(room)
-        message1 = Message(
-            body='This is message 1',
-            mimetype='text/plain',
-        )
-        room.messages.append(message1)
-        user1.messages.append(message1)
-        message2 = Message(
-            body='This is message 2',
-            mimetype='text/plain',
-        )
-        room.messages.append(message2)
-        user1.messages.append(message2)
+        cls.message3.soft_delete()
         cls.session.commit()
 
     def test_edit_the_message(self):
@@ -51,9 +57,9 @@ class TestEditMessage(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'Message 1 is edited'
             assert response.json['id'] == 1
-            assert len(self.session.query(Message).all()) == 2
+            assert len(self.session.query(Message).all()) == 3
 
-            when('The message not exists', url_parameters=Update(id=3))
+            when('The message not exists', url_parameters=Update(id=4))
             assert status == '614 Message Not Found'
 
             when(
@@ -67,6 +73,12 @@ class TestEditMessage(AutoDocumentationBDDTest):
                 form=Update(body=(1024 + 1) * 'a')
             )
             assert status == '702 Must be less than 1024 charecters'
+
+            when(
+                'Try to edit a deleted message',
+                url_parameters=Update(id=self.message3.id)
+            )
+            assert status == 616
 
     # TODO: More test scenarios should be checked when other
     # Authorizations would be implemented
