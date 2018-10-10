@@ -14,6 +14,7 @@ from .contact import ContactController
 from .direct import DirectController
 from .message import MessageController
 from .oauth2 import OAUTHController
+from .subscribetarget import SubscribeTargetController
 
 
 class ApiV1(Controller):
@@ -27,6 +28,7 @@ class ApiV1(Controller):
     directs = DirectController()
     messages = MessageController()
     oauth2 = OAUTHController()
+    subscribetargets = SubscribeTargetController()
 
     @json
     def version(self):
