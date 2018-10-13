@@ -35,7 +35,19 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
 
 class Message(Envelop):
 
-    mimetype=Field(Unicode(25))
+    mimetype = Field(Unicode(25))
+
+    # A message can be a reply to another message, so The id of
+    # the source message is set in reply_root
+    reply_root = Field(Integer, ForeignKey('envelop.id'), nullable=True)
+
+    # Since this relationship should be a many to one relationship,
+    # The remote_side is declared
+    reply_to = relationship(
+        'Message',
+        remote_side=[Envelop.id],
+        protected=False
+    )
 
     # Since collections would be fairly small,
     # selecin loding is chosen for this relationship.
