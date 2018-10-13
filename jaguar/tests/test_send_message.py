@@ -69,6 +69,15 @@ class TestSendMessage(AutoDocumentationBDDTest):
             assert response.json['replyRoot'] == self.message1.id
             assert response.json['replyTo']['body'] == 'This is message 1'
 
+            when(
+                'Reply to invalid message id',
+                form=Append(replyTo='message1')
+            )
+            assert status == '707 Invalid MessageId'
+
+            when('Requested message not found', form=Append(replyTo=4))
+            assert status == '614 Message Not Found'
+
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
 
