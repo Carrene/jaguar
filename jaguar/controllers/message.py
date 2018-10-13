@@ -34,6 +34,15 @@ class MessageController(ModelRestController):
         message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
         message.sender_id = current_member.id
+        if 'replyTo' in context.form:
+            requested_message = DBSession.query(Message) \
+                .filter(Message.id == context.form.get('replyTo')) \
+                .one_or_none()
+            if requested_message is None:
+                raise HTTPStatus('614 Message Not Found')
+
+            message.reply_to = requested_message
+
         DBSession.add(message)
         return message
 

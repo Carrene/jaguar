@@ -52,8 +52,8 @@ def test_message_model(db):
     assert len(message1.seen_by) == 1
 
     # The replied_to is a many to one relationship
-    message2.replied_to = message1
-    message3.replied_to = message1
+    message2.reply_to = message1
+    message3.reply_to = message1
     session.flush()
     assert message2.reply_root == message1.id
     assert message3.reply_root == message1.id
