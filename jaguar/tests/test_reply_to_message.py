@@ -20,14 +20,14 @@ class TestReplyMessage(AutoDocumentationBDDTest):
         user = User(
             title='user',
             email='user@example.com',
-            access_token= 'access token',
+            access_token='access token',
             reference_id=1
         )
         session.add(user)
         user1 = User(
             title='user1',
             email='user1@example.com',
-            access_token= 'access token1',
+            access_token='access token1',
             reference_id=2,
             messages=[cls.message1, cls.message2]
         )

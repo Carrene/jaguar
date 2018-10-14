@@ -34,7 +34,7 @@ def test_message_model(db):
         members=[user]
     )
     session.add(room)
-    session.flush()
+    session.commit()
 
     # Test message model. As every message should have a sender
     # to be send, sender_id and target_id can not be nullable
@@ -55,7 +55,7 @@ def test_message_model(db):
     # The replied_to is a many to one relationship
     message2.reply_to = message1
     message3.reply_to = message1
-    session.flush()
+    session.commit()
     assert message2.reply_root == message1.id
     assert message3.reply_root == message1.id
 
