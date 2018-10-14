@@ -3,6 +3,7 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
+from restfulpy.orm.metadata import FieldInfo
 from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
 from sqlalchemy.dialects.postgresql.json import JSONB
@@ -31,6 +32,9 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
         'polymorphic_identity' :__tablename__,
         'polymorphic_on' : type,
     }
+
+
+is_mine_fieldinfo = FieldInfo(Boolean, not_none=True, readonly=True)
 
 
 class Message(Envelop):
@@ -70,9 +74,8 @@ class Message(Envelop):
 
     @classmethod
     def json_metadata(cls):
-        is_mine = Field(Boolean, not_none=True, readonly=True)
         metadata = super().json_metadata()
-        metadata['fields']['isMine'] = is_mine.info
+        metadata['fields']['isMine'] = is_mine_fieldinfo.to_json()
         return metadata
 
     __mapper_args__ = {
