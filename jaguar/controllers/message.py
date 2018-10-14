@@ -159,3 +159,45 @@ class MessageController(ModelRestController):
 
         return message
 
+    @authorize
+    @validate(
+        body=dict(
+            max_length=(1024, '702 Must be less than 1024 charecters'),
+            required='712 Message Body Required',
+        ),
+        mimetype=dict(
+            required='713 Message Mimetype Required'
+        )
+    )
+    @json
+    @Message.expose
+    @commit
+    def reply(self, message_id):
+        try:
+            message_id = int(message_id)
+        except(ValueError, TypeError):
+            raise HTTPStatus('707 Invalid MessageId')
+
+        mimetype = context.form.get('mimetype')
+        if not mimetype in SUPPORTED_MIME_TYPES:
+            raise HTTPStatus('415 Unsupported Media Type')
+
+        requested_message = DBSession.query(Message) \
+            .filter(Message.id == message_id) \
+            .one_or_none()
+        if requested_message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        if requested_message.is_deleted:
+            raise HTTPStatus('616 Message Already Deleted')
+
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
+        message = Message(body=context.form.get('body'), mimetype=mimetype)
+        message.target_id = requested_message.target_id
+        message.sender_id = current_member.id
+        message.reply_to = requested_message
+        DBSession.add(message)
+        return message
+

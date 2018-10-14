@@ -3,6 +3,7 @@ from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
+from restfulpy.orm.metadata import FieldInfo
 from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
 from sqlalchemy.dialects.postgresql.json import JSONB
@@ -33,9 +34,24 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
     }
 
 
+is_mine_fieldinfo = FieldInfo(Boolean, not_none=True, readonly=True)
+
+
 class Message(Envelop):
 
-    mimetype=Field(Unicode(25))
+    mimetype = Field(Unicode(25))
+
+    # A message can be a reply to another message, so The id of
+    # the source message is set in reply_root
+    reply_root = Field(Integer, ForeignKey('envelop.id'), nullable=True)
+
+    # Since this relationship should be a many to one relationship,
+    # The remote_side is declared
+    reply_to = relationship(
+        'Message',
+        remote_side=[Envelop.id],
+        protected=False
+    )
 
     # Since collections would be fairly small,
     # selecin loding is chosen for this relationship.
@@ -58,9 +74,8 @@ class Message(Envelop):
 
     @classmethod
     def json_metadata(cls):
-        is_mine = Field(Boolean, not_none=True, readonly=True)
         metadata = super().json_metadata()
-        metadata['fields']['isMine'] = is_mine.info
+        metadata['fields']['isMine'] = is_mine_fieldinfo.to_json()
         return metadata
 
     __mapper_args__ = {
