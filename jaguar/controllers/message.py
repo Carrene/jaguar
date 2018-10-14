@@ -178,7 +178,6 @@ class MessageController(ModelRestController):
         except(ValueError, TypeError):
             raise HTTPStatus('707 Invalid MessageId')
 
-        body = context.form.get('body')
         mimetype = context.form.get('mimetype')
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
@@ -195,7 +194,7 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        message = Message(body=body, mimetype=mimetype)
+        message = Message(body=context.form.get('body'), mimetype=mimetype)
         message.target_id = requested_message.target_id
         message.sender_id = current_member.id
         message.reply_to = requested_message
