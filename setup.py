@@ -16,9 +16,11 @@ dependencies = [
     'restfulpy >= 2.6.2',
     'sqlalchemy_media >= 0.17.1',
 
-    # AIO messaging
+    # Messaging
     'pika',
-    'aio-pika'
+    'aio-pika',
+    'aiohttp',
+    'cchardet',
 ]
 
 
