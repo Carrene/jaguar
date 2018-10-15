@@ -106,5 +106,9 @@ ENV/
 # Project specefic data
 data
 
-#pytest cached
+# pytest
 .pytest_cache
+
+# vim
+.*.sw[po]
+
