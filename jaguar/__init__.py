@@ -8,6 +8,7 @@ from nanohttp import settings
 from .authentication import Authenticator
 from .controllers.root import Root
 from .cli.email import EmailLauncher
+from .messaging.cli import WebsocketLauncher
 
 
 __version__ = '0.3.5nightly'
@@ -35,6 +36,9 @@ class Jaguar(Application):
     storage:
       local_directory: %(root_path)s/data/assets
       base_url: http://localhost:8080/assets
+
+    rabbitmq:
+        url: amqp://guest:guest@127.0.0.1/
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):
@@ -51,6 +55,7 @@ class Jaguar(Application):
 
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
+        WebsocketLauncher.register(subparsers)
 
     @classmethod
     def initialize_orm(cls, engine=None):

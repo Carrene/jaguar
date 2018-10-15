@@ -16,12 +16,20 @@ Setting up development Environment on Linux
 
 ### Install Project (edit mode)
 
+##### NOTE: You need to have RabbitMQ installed on your machine. you can install it from [RabbitMQ guide](https://www.rabbitmq.com/install-debian.html).
+
+### Install Project (edit mode)
+
 #### Working copy
-    
-    $ cd /path/to/workspace
-    $ git clone git@github.com:Carrene/jaguar.git
-    $ cd jaguar
-    $ pip install -e .
+
+```bash
+
+cd /path/to/workspace
+git clone git@github.com:Carrene/jaguar.git
+cd jaguar
+pip install -e .
+
+```
  
 ### Setup Database
 
@@ -43,25 +51,75 @@ storage:
   local_directory: %(root_path)s/data/assets
   base_url: http://localhost:8080/assets
   
- ```
+```
 
 #### Remove old abd create a new database **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar db create --drop --mockup
+```bash
+
+jaguar db create --drop --mockup
+
+```
 
 And or
 
-    $ jaguar db create --drop --basedata 
+```bash
+
+jaguar db create --drop --basedata 
+
+```
 
 #### Drop old database: **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar [-c path/to/config.yml] db --drop
+```bash
+
+jaguar [-c path/to/config.yml] db --drop
+
+```
 
 #### Create database
 
-    $ jaguar [-c path/to/config.yml] db --create
+```bash
+
+jaguar [-c path/to/config.yml] db --create
+
+```
 
 Or, you can add `--drop` to drop the previously created database: **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar [-c path/to/config.yml] db create --drop
+```bash
+
+jaguar [-c path/to/config.yml] db create --drop
+
+```
+
+### Testing the websocket server
+
+To start the websocket server run the following command:
+
+```bash
+
+jaguar websocket start
+
+```
+
+To enqueue the message, run the following command:
+
+```bash
+
+./scripts/rabbitmq_enqueue_async.py <session_id> [payload]
+
+```
+
+The *session_id* is a required parameter which must be the same as *session_id* in the token payload.
+
+The *payload*  is a optional parameter which has a default value. You can observe the default value by running: `jaguar -h`.
+
+As a client you can recieve the message enqueued by the `wscat` cli app. Like:
+
+```bash
+
+wscat -c localhost:8085?token=<token>
+
+```
 
