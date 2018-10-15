@@ -3,7 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 
-from ..models import Envelop, Message, target_member, User, Target
+from ..models import Envelop, Message, TargetMember, User, Target
 
 
 SUPPORTED_MIME_TYPES=['text/plain']
@@ -44,10 +44,10 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        is_member = DBSession.query(target_member) \
+        is_member = DBSession.query(TargetMember) \
             .filter(
-                target_member.c.target_id == target_id,
-                target_member.c.member_id == current_member.id
+                TargetMember.target_id == target_id,
+                TargetMember.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -79,10 +79,10 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        is_member = DBSession.query(target_member) \
+        is_member = DBSession.query(TargetMember) \
             .filter(
-                target_member.c.target_id == message.target_id,
-                target_member.c.member_id == current_member.id
+                TargetMember.target_id == message.target_id,
+                TargetMember.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -150,8 +150,8 @@ class MessageController(ModelRestController):
         is_subscribe = DBSession.query(Target) \
             .filter(
                 Target.id == message.target_id,
-                target_member.c.target_id == message.target_id,
-                target_member.c.member_id == current_user.id
+                TargetMember.target_id == message.target_id,
+                TargetMember.member_id == current_user.id
             ) \
             .count()
         if not is_subscribe:
