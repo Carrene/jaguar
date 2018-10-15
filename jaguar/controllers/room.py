@@ -117,13 +117,13 @@ class RoomController(ModelRestController):
     @json
     @Room.expose
     @commit
-    def kick(self, room_id):
+    def kick(self, id):
         try:
-            room_id = int(room_id)
+            id = int(id)
         except(ValueError, TypeError):
             raise HTTPBadRequest()
 
-        room = DBSession.query(Room).filter(Room.id == room_id).one_or_none()
+        room = DBSession.query(Room).filter(Room.id == id).one_or_none()
         if room is None:
             raise HTTPStatus('404 Not Found')
 
@@ -134,7 +134,7 @@ class RoomController(ModelRestController):
 
         is_member = DBSession.query(User) \
             .filter(
-                TargetMember.target_id == room_id,
+                TargetMember.target_id == id,
                 TargetMember.member_id == member_id
             ) \
             .count()
@@ -143,7 +143,7 @@ class RoomController(ModelRestController):
 
         DBSession.query(TargetMember) \
             .filter(
-                TargetMember.target_id == room_id,
+                TargetMember.target_id == id,
                 TargetMember.member_id == member_id
             ) \
             .delete()

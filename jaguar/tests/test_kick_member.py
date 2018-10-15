@@ -3,6 +3,7 @@ from bddrest.authoring import given, when, status, response, Update, Remove
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import User, Room
 
+
 class TestKickFromRoom(AutoDocumentationBDDTest):
 
     @classmethod
@@ -49,7 +50,7 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
             )
             assert status == '617 Not A Member'
 
-            when('User not found' , form=Update(memberId=5))
+            when('User not found', form=Update(memberId=5))
             assert status == '611 User Not Found'
 
             when('Try to pass without memberId', form=Remove('memberId'))
