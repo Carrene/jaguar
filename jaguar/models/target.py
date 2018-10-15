@@ -10,12 +10,6 @@ from .membership import User
 from .envelop import Envelop
 
 
-#target_member = Table(
-#    'target_member',
-#    DeclarativeBase.metadata,
-#    Field('target_id', Integer, ForeignKey('target.id')),
-#    Field('member_id', Integer, ForeignKey('user.id'))
-#)
 class TargetMember(DeclarativeBase):
     __tablename__ = 'target_member'
 
