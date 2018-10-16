@@ -36,7 +36,7 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
         self.login('user1@example.com')
 
         with cas_mockup_server(), self.given(
-            f'kick a member from a room',
+            f'Kick a member from a room',
             f'/apiv1/rooms/id:{self.room.id}',
             f'KICK',
             form=dict(memberId=self.user2.id)
@@ -60,7 +60,7 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
             assert status == '705 Invalid User Id'
 
             when('Request with bad room id', url_parameters=Update(id='room'))
-            assert status == 400
+            assert status == 404
 
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
