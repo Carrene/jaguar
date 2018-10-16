@@ -1,2 +1,2 @@
-git+ssh://git@github.com/Carrene/cas-common.git
+git+https://github.com/Carrene/cas-common.git
 
