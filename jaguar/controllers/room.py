@@ -1,5 +1,6 @@
 from sqlalchemy import and_, or_
-from nanohttp import json, context, validate, HTTPStatus, HTTPBadRequest
+from nanohttp import json, context, validate, HTTPStatus, HTTPBadRequest, \
+    HTTPNotFound
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
@@ -121,11 +122,11 @@ class RoomController(ModelRestController):
         try:
             id = int(id)
         except(ValueError, TypeError):
-            raise HTTPBadRequest()
+            raise HTTPNotFound()
 
         room = DBSession.query(Room).filter(Room.id == id).one_or_none()
         if room is None:
-            raise HTTPStatus('404 Not Found')
+            raise HTTPNotFound()
 
         member_id = context.form.get('memberId')
         user = DBSession.query(User).filter(User.id == member_id).one_or_none()
