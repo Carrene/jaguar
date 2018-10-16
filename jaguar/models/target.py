@@ -10,12 +10,11 @@ from .membership import User
 from .envelop import Envelop
 
 
-target_member = Table(
-    'target_member',
-    DeclarativeBase.metadata,
-    Field('target_id', Integer, ForeignKey('target.id')),
-    Field('member_id', Integer, ForeignKey('user.id'))
-)
+class TargetMember(DeclarativeBase):
+    __tablename__ = 'target_member'
+
+    target_id = Field(Integer, ForeignKey('target.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('user.id'), primary_key=True)
 
 
 room_administrator = Table(
@@ -42,7 +41,7 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     # more efficient for loading
     members = relationship(
         'User',
-        secondary=target_member,
+        secondary='target_member',
         backref='rooms',
         lazy='selectin',
     )
