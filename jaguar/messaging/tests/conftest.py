@@ -21,3 +21,11 @@ async def websocket_server(loop, free_port):
     await runner.shutdown()
     await runner.cleanup()
 
+
+@pytest.fixture
+async def websocket_session(websocket_server):
+    async with aiohttp.ClientSession() as session:
+        def connect(**kw):
+            return session.ws_connect(websocket_server, **kw)
+        yield connect
+
