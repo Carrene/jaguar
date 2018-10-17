@@ -10,7 +10,6 @@ from ..websocket import app as websocket_application
 
 @pytest.fixture
 async def websocket_server(loop, free_port):
-    #loop = asyncio.get_event_loop()
     host = 'localhost'
     runner = AppRunner(websocket_application)
     await runner.setup()
