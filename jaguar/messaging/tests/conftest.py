@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 import pytest
 import aiohttp
 from aiohttp.web_runner import AppRunner, TCPSite
@@ -24,8 +26,10 @@ async def websocket_server(loop, free_port):
 
 @pytest.fixture
 async def websocket_session(websocket_server):
+    @asynccontextmanager
     async def connect(**kw):
-        async with aiohttp.ClientSession() as session:
-            return await session.ws_connect(websocket_server, **kw)
+        async with aiohttp.ClientSession() as session, \
+                session.ws_connect(websocket_server, **kw) as ws:
+            yield ws
     yield connect
 

@@ -63,7 +63,7 @@ async def configure(app, force=None):
     # FIXME: Configuratio file?
 
 app = web.Application()
-app.on_startup.append(configure)
+#app.on_startup.append(configure)
 app.add_routes([web.get('/', websocket_handler)])
 
 
