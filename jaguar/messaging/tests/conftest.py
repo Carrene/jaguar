@@ -7,8 +7,8 @@ from nanohttp.tests.conftest import free_port
 
 
 pytest_plugins = ['aiohttp.pytest_plugin']
-from ..websocket import app as websocket_application
-
+from jaguar.messaging.websocket import app as websocket_application
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 @pytest.fixture
 async def websocket_server(loop, free_port):
