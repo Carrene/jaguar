@@ -25,7 +25,7 @@ async def websocket_server(loop, free_port):
 @pytest.fixture
 async def websocket_session(websocket_server):
     async with aiohttp.ClientSession() as session:
-        def connect(**kw):
-            return session.ws_connect(websocket_server, **kw)
+        async def connect(**kw):
+            return await session.ws_connect(websocket_server, **kw)
         yield connect
 
