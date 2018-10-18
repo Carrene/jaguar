@@ -28,7 +28,6 @@ async def authenticate(request):
 
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
-    import pudb; pudb.set_trace()  # XXX BREAKPOINT
     identity = await authenticate(request)
 
     ws = web.WebSocketResponse()
