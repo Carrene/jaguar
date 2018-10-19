@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 import pytest
 import aiohttp
+from multidict import CIMultiDict
 from aiohttp.web_runner import AppRunner, TCPSite
 from nanohttp.tests.conftest import free_port
 
@@ -9,6 +10,7 @@ from nanohttp.tests.conftest import free_port
 pytest_plugins = ['aiohttp.pytest_plugin']
 from jaguar.messaging.websocket import app as websocket_application
 from jaguar.tests.helpers import AutoDocumentationBDDTest
+
 
 @pytest.fixture
 async def websocket_server(loop, free_port):
@@ -27,7 +29,12 @@ async def websocket_server(loop, free_port):
 @pytest.fixture
 async def websocket_session(websocket_server):
     @asynccontextmanager
-    async def connect(**kw):
+    async def connect(token=None, **kw):
+        if token:
+            headers = CIMultiDict()
+            headers['Authorization'] = token
+            kw['headers'] = headers
+
         async with aiohttp.ClientSession() as session, \
                 session.ws_connect(websocket_server, **kw) as ws:
             yield ws

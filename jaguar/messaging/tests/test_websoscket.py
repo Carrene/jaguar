@@ -1,6 +1,5 @@
 import pytest
 import aiohttp
-from multidict import CIMultiDict
 
 from bddrest.authoring import when, Update, Remove, status
 
@@ -36,9 +35,7 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
             async with websocket_session() as ws:
                pass
 
-        headers = CIMultiDict()
-        headers['Authorization'] = self._authentication_token
-        async with websocket_session(headers=headers) as ws:
+        async with websocket_session(token=self._authentication_token) as ws:
             await ws.send_str('close')
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.TEXT:
