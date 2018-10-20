@@ -13,7 +13,11 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'restfulpy >= 1.3',
+    'restfulpy >= 2.5',
+
+    # AIO messaging
+    'pika',
+    'aio-pika'
 ]
 
 

@@ -1,0 +1,5 @@
+coverage
+coveralls
+pytest-cov
+-r requirements-private.txt
+

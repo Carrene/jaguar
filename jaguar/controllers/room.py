@@ -1,10 +1,10 @@
 from sqlalchemy import and_, or_
-from nanohttp import json, context, validate, HTTPStatus
+from nanohttp import json, context, validate, HTTPStatus, HTTPNotFound
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from ..models import Target, Room, blocked, User, target_member
+from ..models import Target, Room, blocked, User, TargetMember
 
 
 class RoomController(ModelRestController):
@@ -58,10 +58,10 @@ class RoomController(ModelRestController):
         if room is None:
             raise HTTPStatus('612 Room Not Found')
 
-        is_member = DBSession.query(target_member) \
+        is_member = DBSession.query(TargetMember) \
             .filter(
-                target_member.c.target_id == id,
-                target_member.c.member_id == requested_user.id
+                TargetMember.target_id == id,
+                TargetMember.member_id == requested_user.id
             ) \
             .count()
         if is_member:
@@ -105,4 +105,46 @@ class RoomController(ModelRestController):
             )
 
         return query
+
+    @authorize
+    @validate(
+        memberId=dict(
+            type_=(int, '705 Invalid User Id'),
+            required='709 User Id Is Required',
+        )
+    )
+    @json
+    @Room.expose
+    @commit
+    def kick(self, id):
+        try:
+            id = int(id)
+        except(ValueError, TypeError):
+            raise HTTPNotFound()
+
+        room = DBSession.query(Room).filter(Room.id == id).one_or_none()
+        if room is None:
+            raise HTTPNotFound()
+
+        member_id = context.form.get('memberId')
+        user = DBSession.query(User).filter(User.id == member_id).one_or_none()
+        if user is None:
+            raise HTTPStatus('611 User Not Found')
+
+        is_member = DBSession.query(User) \
+            .filter(
+                TargetMember.target_id == id,
+                TargetMember.member_id == member_id
+            ) \
+            .count()
+        if not is_member:
+            raise HTTPStatus('617 Not A Member')
+
+        DBSession.query(TargetMember) \
+            .filter(
+                TargetMember.target_id == id,
+                TargetMember.member_id == member_id
+            ) \
+            .delete()
+        return room
 

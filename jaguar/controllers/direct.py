@@ -5,7 +5,7 @@ from restfulpy.orm import DBSession, commit
 from sqlalchemy import or_, and_, select, func, ARRAY, Integer
 from sqlalchemy.dialects.postgresql import aggregate_order_by
 
-from ..models import Direct, User, blocked, target_member
+from ..models import Direct, User, blocked, TargetMember
 
 
 class DirectController(ModelRestController):
@@ -44,15 +44,15 @@ class DirectController(ModelRestController):
         source = User.current()
 
         cte = select([
-            target_member.c.target_id.label('direct_id'),
+            TargetMember.target_id.label('direct_id'),
             func.array_agg(
                 aggregate_order_by(
-                    target_member.c.member_id,
-                    target_member.c.member_id
+                    TargetMember.member_id,
+                    TargetMember.member_id
                 )
                 ,type_=ARRAY(Integer)
             ).label('members')
-        ]).group_by(target_member.c.target_id).cte()
+        ]).group_by(TargetMember.target_id).cte()
 
         direct = DBSession.query(Direct) \
             .join(cte, cte.c.direct_id == Direct.id) \

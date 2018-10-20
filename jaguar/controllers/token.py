@@ -11,17 +11,6 @@ from ..models import User
 
 class TokenController(RestController):
 
-    @validate(
-        email=dict(required='400 Invalid email or password')
-    )
-    @json
-    def create(self):
-        email = context.form.get('email')
-        principal = context.application.__authenticator__.login(email)
-        if principal is None:
-            raise HTTPBadRequest('Invalid email or password')
-        return dict(token=principal.dump())
-
     @authorize
     @json
     def invalidate(self):
@@ -37,6 +26,7 @@ class TokenController(RestController):
 
     @json
     def obtain(self):
+        # FIXME: Validation and prevent form.
         cas_server = CASClient()
         access_token, member_id = cas_server \
             .get_access_token(context.form.get('authorizationCode'))

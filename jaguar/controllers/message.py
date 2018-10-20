@@ -3,7 +3,7 @@ from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 
-from ..models import Envelop, Message, target_member, User, Target
+from ..models import Envelop, Message, TargetMember, User, Target
 
 
 SUPPORTED_MIME_TYPES=['text/plain']
@@ -44,10 +44,10 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        is_member = DBSession.query(target_member) \
+        is_member = DBSession.query(TargetMember) \
             .filter(
-                target_member.c.target_id == target_id,
-                target_member.c.member_id == current_member.id
+                TargetMember.target_id == target_id,
+                TargetMember.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -79,10 +79,10 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        is_member = DBSession.query(target_member) \
+        is_member = DBSession.query(TargetMember) \
             .filter(
-                target_member.c.target_id == message.target_id,
-                target_member.c.member_id == current_member.id
+                TargetMember.target_id == message.target_id,
+                TargetMember.member_id == current_member.id
             ) \
             .count()
         if not is_member:
@@ -119,6 +119,9 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
+        if message.is_deleted:
+            raise HTTPStatus('616 Message Already Deleted')
+
         if message.sender_id != current_member.id:
             raise HTTPForbidden()
 
@@ -147,12 +150,54 @@ class MessageController(ModelRestController):
         is_subscribe = DBSession.query(Target) \
             .filter(
                 Target.id == message.target_id,
-                target_member.c.target_id == message.target_id,
-                target_member.c.member_id == current_user.id
+                TargetMember.target_id == message.target_id,
+                TargetMember.member_id == current_user.id
             ) \
             .count()
         if not is_subscribe:
             raise HTTPForbidden()
 
+        return message
+
+    @authorize
+    @validate(
+        body=dict(
+            max_length=(1024, '702 Must be less than 1024 charecters'),
+            required='712 Message Body Required',
+        ),
+        mimetype=dict(
+            required='713 Message Mimetype Required'
+        )
+    )
+    @json
+    @Message.expose
+    @commit
+    def reply(self, message_id):
+        try:
+            message_id = int(message_id)
+        except(ValueError, TypeError):
+            raise HTTPStatus('707 Invalid MessageId')
+
+        mimetype = context.form.get('mimetype')
+        if not mimetype in SUPPORTED_MIME_TYPES:
+            raise HTTPStatus('415 Unsupported Media Type')
+
+        requested_message = DBSession.query(Message) \
+            .filter(Message.id == message_id) \
+            .one_or_none()
+        if requested_message is None:
+            raise HTTPStatus('614 Message Not Found')
+
+        if requested_message.is_deleted:
+            raise HTTPStatus('616 Message Already Deleted')
+
+        current_member = DBSession.query(User) \
+            .filter(User.reference_id == context.identity.reference_id) \
+            .one()
+        message = Message(body=context.form.get('body'), mimetype=mimetype)
+        message.target_id = requested_message.target_id
+        message.sender_id = current_member.id
+        message.reply_to = requested_message
+        DBSession.add(message)
         return message
 

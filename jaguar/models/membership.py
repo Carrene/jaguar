@@ -105,8 +105,8 @@ class User(Member):
         min_length=10,
         watermark='Phone',
         example='734 555 1212',
-        pattern='\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
-            '[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
+        pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
+            r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
     )
     show_email = Field(Boolean, default=False)
     show_phone = Field(Boolean, default=False)
