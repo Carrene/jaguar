@@ -5,7 +5,8 @@ from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     SoftDeleteMixin
 from restfulpy.orm.metadata import FieldInfo
 from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
+from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
+    Boolean, JSON
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 
@@ -23,7 +24,8 @@ user_message = Table(
 class FileAttachment(File):
     __pre_processors__ = [
         MagicAnalyzer(),
-        ContentTypeValidator(['image/jpeg', 'image/png', 'plain/text'])
+        ContentTypeValidator(['image/jpeg', 'image/png', 'text/plain'])
+    ]
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
@@ -51,6 +53,24 @@ class Message(Envelop):
     # A message can be a reply to another message, so The id of
     # the source message is set in reply_root
     reply_root = Field(Integer, ForeignKey('envelop.id'), nullable=True)
+
+    _attachment = Field(
+        FileAttachment.as_mutable(JSON),
+        nullable=True,
+        label='Attachment'
+    )
+
+    @property
+    def attachment(self):
+        return self._attachment.locate() if self._attachment else None
+
+    @attachment.setter
+    def attachment(self, value):
+        if value is not None:
+            self._attachment = FileAttachment.create_from(value)
+        else:
+            self._attachment = None
+
 
     # Since this relationship should be a many to one relationship,
     # The remote_side is declared
