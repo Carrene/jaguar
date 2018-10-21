@@ -50,10 +50,19 @@ class TestFileSharing(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] == True
+            assert 'Attachment' in response.json
+            assert response.json['Attachment']['content_type'] == 'image/png'
 
             when(
-                'Attaching a none supported file',
+                'does not match file content type',
                 multipart = Update(attachment=tex_path)
             )
-            assert status != 200
+            assert status == 400
+
+            from pudb import set_trace; set_trace()
+            when(
+                'mime type does not match content type',
+                multipart=Update(attachment=text_path)
+            )
+            assert status == 400
 

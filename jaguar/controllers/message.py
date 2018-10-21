@@ -1,8 +1,10 @@
-from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden
+from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
+    HTTPBadRequest
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
+from sqlalchemy_media.exceptions import ContentTypeValidationError
 
 from ..models import Envelop, Message, TargetMember, User, Target
 
@@ -38,7 +40,13 @@ class MessageController(ModelRestController):
         message.target_id = target_id
         message.sender_id = current_member.id
         if attachment:
-            message.attachment = attachment
+            try:
+                message.attachment = attachment
+            except ContentTypeValidationError:
+                raise HTTPBadRequest()
+            from pudb import set_trace; set_trace()
+            if message._attachment.content_type != mimetype:
+                raise HTTPBadRequest()
 
         DBSession.add(message)
         return message
