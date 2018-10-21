@@ -15,15 +15,6 @@ this_dir = abspath(join(dirname(__file__)))
 text_path = join(this_dir, 'stuff', 'text_file.txt')
 tex_path = join(this_dir, 'stuff', 'sample_tex_file.tex')
 image_path = join(this_dir, 'stuff', '150x150.png')
-temp_path = join(this_dir, 'temp')
-base_url = 'http://static1.example.orm'
-
-
-StoreManager.register(
-    'fs',
-    functools.partial(FileSystemStore, temp_path, base_url),
-    default=True
-)
 
 
 class TestFileSharing(AutoDocumentationBDDTest):
@@ -59,4 +50,10 @@ class TestFileSharing(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] == True
+
+            when(
+                'Attaching a none supported file',
+                multipart = Update(attachment=tex_path)
+            )
+            assert status != 200
 
