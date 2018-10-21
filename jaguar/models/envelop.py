@@ -7,6 +7,7 @@ from restfulpy.orm.metadata import FieldInfo
 from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
 from sqlalchemy.dialects.postgresql.json import JSONB
+from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 
 from .membership import Member
 
@@ -17,6 +18,12 @@ user_message = Table(
     Field('message_id', Integer, ForeignKey('envelop.id')),
     Field('user_id', Integer, ForeignKey('user.id')),
 )
+
+
+class FileAttachment(File):
+    __pre_processors__ = [
+        MagicAnalyzer(),
+        ContentTypeValidator(['image/jpeg', 'image/png', 'plain/text'])
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
