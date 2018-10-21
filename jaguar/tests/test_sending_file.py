@@ -59,7 +59,6 @@ class TestFileSharing(AutoDocumentationBDDTest):
             )
             assert status == 400
 
-            from pudb import set_trace; set_trace()
             when(
                 'mime type does not match content type',
                 multipart=Update(attachment=text_path)

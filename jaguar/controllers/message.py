@@ -44,7 +44,7 @@ class MessageController(ModelRestController):
                 message.attachment = attachment
             except ContentTypeValidationError:
                 raise HTTPBadRequest()
-            from pudb import set_trace; set_trace()
+
             if message._attachment.content_type != mimetype:
                 raise HTTPBadRequest()
 
