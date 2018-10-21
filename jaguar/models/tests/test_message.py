@@ -13,7 +13,7 @@ from jaguar.models.target import Room
 
 this_dir = abspath(join(dirname(__file__)))
 text_path = join(this_dir, 'stuff', 'text_file.txt')
-pdf_path = join(this_dir, 'stuff', 'test.pdf')
+tex_path = join(this_dir, 'stuff', 'sample_tex_file.tex')
 image_path = join(this_dir, 'stuff', '150x150.png')
 temp_path = join(this_dir, 'temp')
 base_url = 'http://static1.example.orm'
@@ -84,5 +84,8 @@ def test_message_model(db):
         session.commit()
         assert message2.reply_root == message1.id
         assert message3.reply_root == message1.id
+
+        # Testing content type validation error
         with pytest.raises(ContentTypeValidationError):
-                 message2.attachment = pdf_path
+                 message2.attachment = tex_path
+
