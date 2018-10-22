@@ -9,6 +9,7 @@ from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
     Boolean, JSON
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
+from sqlalchemy_media.constants import KB
 
 from .membership import Member
 

@@ -43,10 +43,14 @@ class MessageController(ModelRestController):
             try:
                 message.attachment = attachment
             except ContentTypeValidationError:
-                raise HTTPBadRequest()
+                raise HTTPStatus(
+                    '710 The Mimetype Does Not Match The File Type'
+                )
 
             if message._attachment.content_type != mimetype:
-                raise HTTPBadRequest()
+                raise HTTPStatus(
+                    '710 The Mimetype Does Not Match The File Type'
+                )
 
         DBSession.add(message)
         return message

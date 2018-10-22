@@ -57,11 +57,11 @@ class TestFileSharing(AutoDocumentationBDDTest):
                 'does not match file content type',
                 multipart = Update(attachment=tex_path)
             )
-            assert status == 400
+            assert status == '710 The Mimetype Does Not Match The File Type'
 
             when(
                 'mime type does not match content type',
                 multipart=Update(attachment=text_path)
             )
-            assert status == 400
+            assert status == '710 The Mimetype Does Not Match The File Type'
 
