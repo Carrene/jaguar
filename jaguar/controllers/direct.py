@@ -62,7 +62,6 @@ class DirectController(ModelRestController):
         if direct:
             return direct
 
-        direct = Direct(title=destination.title, type='direct')
-        direct.members = [source, destination]
+        direct = Direct(members=[source, destination])
         return direct
 

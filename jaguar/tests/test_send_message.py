@@ -15,8 +15,8 @@ class TestSendMessage(AutoDocumentationBDDTest):
             access_token='access token1',
             reference_id=2
         )
-        room = Room(title='example', type='room')
-        direct = Direct(title='direct', type='direct')
+        room = Room(title='example')
+        direct = Direct()
         session.add(user1)
         session.add(room)
         session.commit()
