@@ -1,15 +1,17 @@
+import io
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
     HTTPBadRequest
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
-from sqlalchemy_media.exceptions import ContentTypeValidationError
+from sqlalchemy_media.exceptions import ContentTypeValidationError, \
+    MaximumLengthIsReachedError
 
 from ..models import Envelop, Message, TargetMember, User, Target
 
 
-SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png']
+SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',]
 
 
 class MessageController(ModelRestController):
@@ -30,6 +32,7 @@ class MessageController(ModelRestController):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
         attachment = context.form.get('attachment')
+        from pudb import set_trace; set_trace()
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
@@ -39,13 +42,17 @@ class MessageController(ModelRestController):
         message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
         message.sender_id = current_member.id
-        if attachment:
+        if 'attachment' in context.form:
             try:
                 message.attachment = attachment
+
             except ContentTypeValidationError:
                 raise HTTPStatus(
                     '710 The Mimetype Does Not Match The File Type'
                 )
+
+            except MaximumLengthIsReachedError:
+                raise HTTPStatus('413 Request Entity Too Large')
 
             if message._attachment.content_type != mimetype:
                 raise HTTPStatus(
