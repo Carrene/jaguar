@@ -1,7 +1,8 @@
-from bddrest.authoring import given, when, Update, status, response, Remove
+from bddrest.authoring import given, when, Update, status, response, Remove, \
+    Append
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import User, Room, Direct
+from jaguar.models import User, Room, Direct, Message
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -9,16 +10,36 @@ class TestSendMessage(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
+        cls.message1 = Message(
+            body='This is message 1',
+            mimetype='text/plain'
+        )
+        cls.message2 = Message(
+            body='This is message 2',
+            mimetype='text/plain'
+        )
         user1 = User(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
-            reference_id=2
+            reference_id=2,
+            messages=[cls.message1, cls.message2]
         )
-        room = Room(title='example')
+        user2 = User(
+            email='user2@example.com',
+            title='user2',
+            access_token='access token2',
+            reference_id=3
+        )
+        session.add(user2)
+        room = Room(
+            title='example',
+            messages=[cls.message1, cls.message2],
+            members=[user1]
+        )
         direct = Direct()
-        session.add(user1)
         session.add(room)
+        cls.message2.soft_delete()
         session.commit()
 
     def test_send_message_to_target(self):
@@ -57,4 +78,53 @@ class TestSendMessage(AutoDocumentationBDDTest):
 
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
+
+            when('Reply a message',
+                 form=Update(
+                     body='A reply to message 1',
+                     mimetype='text/plain',
+                     replyTo=self.message1.id
+                 )
+            )
+            assert status == 200
+            assert response.json['replyTo']['body'] == self.message1.body
+
+            when(
+                'Requested message not found',
+                 form=Update(
+                     body='A reply to message 1',
+                     mimetype='text/plain',
+                     replyTo=5
+                 )
+            )
+            assert status == '614 Message Not Found'
+
+            when(
+                'Request a message with invalid message id',
+                 form=Update(
+                     body='A reply to message 1',
+                     mimetype='text/plain',
+                     replyTo='Invalid'
+                 )
+            )
+            assert status == '707 Invalid MessageId'
+
+            when(
+                'Requested message is already deleted',
+                 form=Update(
+                     body='A reply to message 1',
+                     mimetype='text/plain',
+                     replyTo=self.message2.id
+                 )
+            )
+            assert status == '616 Message Already Deleted'
+
+            self.logout()
+            self.login('user2@example.com')
+
+            when(
+                'Not member try to send a message',
+                 authorization=self._authentication_token
+            )
+            assert status != 200
 
