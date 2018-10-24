@@ -1,5 +1,5 @@
 
-from nanohttp import settings
+from nanohttp import settings, HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
@@ -10,6 +10,9 @@ from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 from sqlalchemy_media.constants import KB
+from sqlalchemy_media.exceptions import ContentTypeValidationError, \
+    MaximumLengthIsReachedError
+
 
 from .membership import Member
 
@@ -32,6 +35,9 @@ class FileAttachment(File):
             'image/jpg'
         ])
     ]
+
+    __max_length__ = 50 * KB
+    __min_length__ = 1 * KB
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
@@ -63,17 +69,27 @@ class Message(Envelop):
     _attachment = Field(
         FileAttachment.as_mutable(JSON),
         nullable=True,
-        label='Attachment'
+        protected=True
     )
 
     @property
     def attachment(self):
-        return self._attachment.locate() if self._attachment else None
+        return self._attachment if self._attachment else None
 
     @attachment.setter
     def attachment(self, value):
         if value is not None:
-            self._attachment = FileAttachment.create_from(value)
+            try:
+                self._attachment = FileAttachment.create_from(value)
+
+            except ContentTypeValidationError:
+                raise HTTPStatus(
+                    '710 The Mimetype Does Not Match The File Type'
+                )
+
+            except MaximumLengthIsReachedError:
+                raise HTTPStatus('413 Request Entity Too Large')
+
         else:
             self._attachment = None
 
@@ -103,6 +119,9 @@ class Message(Envelop):
         message_dictionary = super().to_dict()
         message_dictionary.update(isMine=self.is_mine)
         message_dictionary.update(activated_at=self.activated_at)
+        message_dictionary.update(
+            attachment=self.attachment.locate() if self.attachment else None
+        )
         return message_dictionary
 
     @classmethod

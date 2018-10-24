@@ -51,8 +51,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] == True
-            assert 'Attachment' in response.json
-            assert response.json['Attachment']['content_type'] == 'image/png'
+            assert 'attachment' in response.json
 
             when(
                 'does not match file content type',
@@ -66,7 +65,6 @@ class TestFileSharing(AutoDocumentationBDDTest):
             )
             assert status == '710 The Mimetype Does Not Match The File Type'
 
-            from pudb import set_trace; set_trace()
             when(
                 'Image size is more than maximum length',
                 multipart=Update(

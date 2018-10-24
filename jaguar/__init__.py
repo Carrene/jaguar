@@ -43,12 +43,9 @@ class Jaguar(Application):
       application_id: 1
       url: http://localhost:8080
 
-    attachment:
-      storage:
-        file_system_dir: %(root_path)s/data/attachment-storage
-        base_url: http://localhost:8080/attachment
-      length:
-        maximum: 2
+    storage:
+      file_system_dir: %(root_path)s/data/assets
+      base_url: http://localhost:8080/assets
 
     '''
 
@@ -74,8 +71,8 @@ class Jaguar(Application):
             'fs',
             functools.partial(
                 FileSystemStore,
-                settings.attachment.storage.file_system_dir,
-                base_url=settings.attachment.storage.base_url,
+                settings.storage.file_system_dir,
+                base_url=settings.storage.base_url,
             ),
             default=True
         )
