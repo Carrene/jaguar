@@ -126,5 +126,5 @@ class TestSendMessage(AutoDocumentationBDDTest):
                 'Not member try to send a message',
                  authorization=self._authentication_token
             )
-            assert status != 200
+            assert status == 403
 
