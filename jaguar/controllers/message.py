@@ -18,7 +18,7 @@ class MessageController(ModelRestController):
             max_length=(1024, '702 Must be less than 1024 charecters'),
             required='400 Bad Request',
         ),
-        replyTo = dict(type_=(int, '707 Invalid MessageId'))
+        replyTo=dict(type_=(int, '707 Invalid MessageId'))
     )
     @json
     @Message.expose
