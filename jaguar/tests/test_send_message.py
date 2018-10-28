@@ -1,5 +1,4 @@
-from bddrest.authoring import given, when, Update, status, response, Remove, \
-    Append
+from bddrest.authoring import given, when, Update, status, response, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import User, Room, Direct, Message
@@ -79,7 +78,8 @@ class TestSendMessage(AutoDocumentationBDDTest):
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
 
-            when('Reply a message',
+            when(
+                'Reply a message',
                  form=Update(
                      body='A reply to message 1',
                      mimetype='text/plain',
