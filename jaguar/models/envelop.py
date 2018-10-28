@@ -1,12 +1,18 @@
 
-from nanohttp import settings
+from nanohttp import settings, HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
 from restfulpy.orm.metadata import FieldInfo
 from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, Boolean
+from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
+    Boolean, JSON
 from sqlalchemy.dialects.postgresql.json import JSONB
+from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
+from sqlalchemy_media.constants import KB
+from sqlalchemy_media.exceptions import ContentTypeValidationError, \
+    MaximumLengthIsReachedError
+
 
 from .membership import Member
 
@@ -17,6 +23,21 @@ user_message = Table(
     Field('message_id', Integer, ForeignKey('envelop.id')),
     Field('user_id', Integer, ForeignKey('user.id')),
 )
+
+
+class FileAttachment(File):
+    __pre_processors__ = [
+        MagicAnalyzer(),
+        ContentTypeValidator([
+            'image/jpeg',
+            'image/png',
+            'text/plain',
+            'image/jpg'
+        ])
+    ]
+
+    __max_length__ = 50 * KB
+    __min_length__ = 1 * KB
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
@@ -45,6 +66,34 @@ class Message(Envelop):
     # the source message is set in reply_root
     reply_root = Field(Integer, ForeignKey('envelop.id'), nullable=True)
 
+    _attachment = Field(
+        FileAttachment.as_mutable(JSON),
+        nullable=True,
+        protected=True
+    )
+
+    @property
+    def attachment(self):
+        return self._attachment if self._attachment else None
+
+    @attachment.setter
+    def attachment(self, value):
+        if value is not None:
+            try:
+                self._attachment = FileAttachment.create_from(value)
+
+            except ContentTypeValidationError:
+                raise HTTPStatus(
+                    '710 The Mimetype Does Not Match The File Type'
+                )
+
+            except MaximumLengthIsReachedError:
+                raise HTTPStatus('413 Request Entity Too Large')
+
+        else:
+            self._attachment = None
+
+
     # Since this relationship should be a many to one relationship,
     # The remote_side is declared
     reply_to = relationship(
@@ -70,6 +119,9 @@ class Message(Envelop):
         message_dictionary = super().to_dict()
         message_dictionary.update(isMine=self.is_mine)
         message_dictionary.update(activated_at=self.activated_at)
+        message_dictionary.update(
+            attachment=self.attachment.locate() if self.attachment else None
+        )
         return message_dictionary
 
     @classmethod

@@ -14,6 +14,7 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 dependencies = [
     'restfulpy >= 2.5',
+    'sqlalchemy_media >= 0.17.1',
 
     # AIO messaging
     'pika',

@@ -1,17 +1,21 @@
-from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden
+import io
+from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
+    HTTPBadRequest
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
+from sqlalchemy_media import store_manager
 
 from ..models import Envelop, Message, TargetMember, User, Target
 
 
-SUPPORTED_MIME_TYPES=['text/plain']
+SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',]
 
 
 class MessageController(ModelRestController):
     __model__ = Message
 
+    @store_manager(DBSession)
     @authorize
     @validate(
         body=dict(
@@ -26,6 +30,7 @@ class MessageController(ModelRestController):
     def send(self, target_id):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
+        attachment = context.form.get('attachment')
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
@@ -55,6 +60,14 @@ class MessageController(ModelRestController):
                 raise HTTPStatus('616 Message Already Deleted')
 
             message.reply_to = requested_message
+
+        if 'attachment' in context.form:
+            message.attachment = attachment
+
+            if message.attachment.content_type != mimetype:
+                raise HTTPStatus(
+                    '710 The Mimetype Does Not Match The File Type'
+                )
 
         DBSession.add(message)
         return message
