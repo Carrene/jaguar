@@ -7,7 +7,7 @@ from .controllers.root import Root
 from .cli.email import EmailLauncher
 
 
-__version__ = '0.1.0-dev'
+__version__ = '0.1.0'
 
 
 class Jaguar(Application):
