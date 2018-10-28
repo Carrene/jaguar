@@ -9,7 +9,7 @@ class TestDirect(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        cls.user1 = User(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
@@ -27,7 +27,7 @@ class TestDirect(AutoDocumentationBDDTest):
             access_token='access token4',
             reference_id=5
         )
-        blocker.blocked_users.append(user1)
+        blocker.blocked_users.append(cls.user1)
         session.add_all([blocker, user2])
         session.commit()
 
@@ -41,7 +41,7 @@ class TestDirect(AutoDocumentationBDDTest):
             form=dict(userId=3)
         ):
             assert status == 200
-            assert response.json['title'] == 'user2'
+            assert response.json['type'] == 'direct'
 
             when('The user not exists', form=Update(userId=5))
             assert status == '611 User Not Found'
@@ -58,15 +58,14 @@ class TestDirect(AutoDocumentationBDDTest):
             when('Blocked user tries to create a direct', form=Update(userId=1))
             assert status == '613 Not Allowed To Create Direct With This User'
 
-        self.logout()
-        self.login('blocker@example.com')
+            self.logout()
+            self.login('blocker@example.com')
 
-        with cas_mockup_server(), self.given(
-            'Try to create a direct with a blocked user',
-            '/apiv1/directs',
-            'CREATE',
-            form=dict(userId=2)
-        ):
+            when(
+                'Try to create a direct with a blocked user',
+                form=Update(userId=self.user1.id),
+                authorization=self._authentication_token
+            )
             assert status == '613 Not Allowed To Create Direct With This User'
 
             when('Try to pass an unauthorized request', authorization=None)

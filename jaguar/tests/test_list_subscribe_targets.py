@@ -29,8 +29,8 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             reference_id=3
         )
         session.add(user2)
+        direct = Direct(members=[user, user1])
         room1 = Room(title='room1', members=[user])
-        direct = Direct(title='direct', members=[user, user1])
         room2 = Room(title='room2', members=[user1])
         room3 = Room(title='room3', members=[user, user1])
         session.add_all([direct, room1, room2, room3])
@@ -57,10 +57,14 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             query=dict(sort='title')
         ):
             assert len(response.json) == 3
-            assert response.json[0]['title'] == 'direct'
+            assert response.json[0]['type'] == 'direct'
 
             when('Sorting the response descending', query=Update(sort='-title'))
-            assert response.json[0]['title'] == 'room3'
+            assert response.json[0]['type'] == 'direct'
+            assert response.json[1]['type'] == 'room'
+            assert response.json[1]['title'] == 'room1'
+            assert response.json[2]['type'] == 'room'
+            assert response.json[2]['title'] == 'room3'
 
     def test_pagination(self):
         self.login('user@example.com')

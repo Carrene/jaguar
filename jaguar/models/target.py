@@ -10,12 +10,11 @@ from .membership import User
 from .envelop import Envelop
 
 
-target_member = Table(
-    'target_member',
-    DeclarativeBase.metadata,
-    Field('target_id', Integer, ForeignKey('target.id')),
-    Field('member_id', Integer, ForeignKey('user.id'))
-)
+class TargetMember(DeclarativeBase):
+    __tablename__ = 'target_member'
+
+    target_id = Field(Integer, ForeignKey('target.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('user.id'), primary_key=True)
 
 
 room_administrator = Table(
@@ -31,22 +30,19 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
-    title = Field(
-        Unicode(50),
-        nullable=True,
-        json='title'
-    )
     type = Field(Unicode(25))
 
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     members = relationship(
         'User',
-        secondary=target_member,
+        secondary='target_member',
         backref='rooms',
         lazy='selectin',
+        protected=True,
     )
     envelop_id = relationship('Envelop')
+
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
         'polymorphic_on': type,
@@ -57,6 +53,11 @@ class Room(Target):
 
     owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
     owner = relationship('User', back_populates='room')
+    title = Field(
+        Unicode(50),
+        nullable=True,
+        json='title'
+    )
 
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
@@ -67,20 +68,17 @@ class Room(Target):
         protected=True,
         lazy='selectin'
     )
-    UniqueConstraint(owner_id, Target.title, name='unique_room')
+    UniqueConstraint(owner_id, title, name='unique_room')
 
     def to_dict(self):
-        member_ids = [member.id for member in self.members]
-        administrator_ids =\
-            [administrator.id for administrator in self.administrators]
-        return dict(
-            id=self.id,
-            title=self.title,
-            type=self.type,
-            memberIds=member_ids,
-            administratorIds=administrator_ids,
-            ownerId=self.owner_id
+        result = super().to_dict()
+        result.update(
+            memberIds=[member.id for member in self.members],
+            administratorIds= \
+                [administrator.id for administrator in self.administrators],
         )
+        return result
+
     messages = relationship('Envelop')
     __mapper_args__ = {
         'polymorphic_identity': 'room',
