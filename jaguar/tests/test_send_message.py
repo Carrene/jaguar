@@ -15,9 +15,18 @@ class TestSendMessage(AutoDocumentationBDDTest):
             access_token='access token1',
             reference_id=2
         )
-        room = Room(title='example')
+        user2 = User(
+            email='user2@example.com',
+            title='user2',
+            access_token='access token2',
+            reference_id=3
+        )
+        session.add(user2)
+        room = Room(
+            title='example',
+            members=[user1]
+        )
         direct = Direct()
-        session.add(user1)
         session.add(room)
         session.commit()
 
@@ -57,4 +66,13 @@ class TestSendMessage(AutoDocumentationBDDTest):
 
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
+
+            self.logout()
+            self.login('user2@example.com')
+
+            when(
+                'Not member try to send a message',
+                 authorization=self._authentication_token
+            )
+            assert status == 403
 
