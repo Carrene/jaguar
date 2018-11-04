@@ -3,9 +3,8 @@ import aiohttp
 
 from bddrest.authoring import when, Update, Remove, status
 
-from jaguar.models.membership import User, Direct
+from jaguar.models import User
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.messaging import queue_message_async
 
 
 class TestWebsocketConnection(AutoDocumentationBDDTest):
@@ -25,8 +24,6 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
             access_token='access token',
             reference_id=2
         )
-        direct1 = Direct(
-            title='
         user.contacts.append(contact1)
         session.add(user)
         session.commit()
@@ -39,9 +36,6 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
                pass
 
         async with websocket_session(token=self._authentication_token) as ws:
-            await queue_message_async({
-                'body': 'Hello',
-                'targetId': cls.id,
             await ws.send_str('close')
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.TEXT:

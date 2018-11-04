@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager
+from async_generator import asynccontextmanager
 
 import pytest
 import aiohttp

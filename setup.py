@@ -21,6 +21,7 @@ dependencies = [
     'aio-pika',
     'aiohttp',
     'cchardet',
+    'async_generator',
 ]
 
 
