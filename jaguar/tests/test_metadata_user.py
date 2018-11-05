@@ -6,6 +6,6 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest
 class TestMemberMetadata(AutoDocumentationBDDTest):
 
     def test_metadata(self):
-        with self.given('Test metadata verb', '/apiv1/users', 'METADATA'):
+        with self.given('Test metadata verb', '/apiv1/members', 'METADATA'):
             assert status == 200
 

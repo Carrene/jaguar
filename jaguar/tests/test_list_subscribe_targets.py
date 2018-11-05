@@ -1,28 +1,29 @@
 
 from bddrest.authoring import response, when, Update, Remove, status
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.models.target import Room, Direct
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+
 
 class TestListSubscribeTarget(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
+        user = Member(
             email='user@example.com',
             title='user',
             access_token='access token',
             reference_id=1
         )
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',

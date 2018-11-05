@@ -3,7 +3,7 @@ from restfulpy.principal import JwtPrincipal, JwtRefreshToken
 from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -12,7 +12,7 @@ class TestRoom(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
+        user = Member(
             email='user@example.com',
             title='user',
             access_token='access token',

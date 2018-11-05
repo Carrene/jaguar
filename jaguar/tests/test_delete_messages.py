@@ -1,6 +1,6 @@
 from bddrest.authoring import when, status, response, Update
 
-from jaguar.models import User, Room, Message
+from jaguar.models import Member, Room, Message
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -11,14 +11,14 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         cls.session = cls.create_session(expire_on_commit=True)
         message1 = Message(body='This is message 1', mimetype='text/plain')
         message2 = Message(body='This is message 2', mimetype='text/plain')
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2,
             messages=[message1, message2]
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',

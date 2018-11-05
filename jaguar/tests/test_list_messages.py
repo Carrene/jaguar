@@ -1,7 +1,7 @@
 from bddrest.authoring import given, when, Update, status, response
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import Room, User, Message
+from jaguar.models import Room, Member, Message
 
 
 class TestListMessages(AutoDocumentationBDDTest):
@@ -25,21 +25,21 @@ class TestListMessages(AutoDocumentationBDDTest):
             body='This is message 4',
             mimetype='text/plain',
         )
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user',
             access_token='access token1',
             reference_id=2,
             messages=[message1, message2, message3]
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',
             reference_id=3
         )
         session.add(user2)
-        user3 = User(
+        user3 = Member(
             email='user3@example.com',
             title='user3',
             access_token='access token3',
