@@ -12,14 +12,12 @@ class TestSearchMember(AutoDocumentationBDDTest):
         user1 = Member(
             email='user1@example.com',
             title='user1',
-            username='user1',
             access_token='access token1',
             reference_id=2
         )
         user2 = Member(
             email='user2@gmail.com',
             title='user2',
-            username='user2',
             access_token='access token2',
             reference_id=3
         )
@@ -31,7 +29,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Search for a user',
-            '/apiv1/users',
+            '/apiv1/members',
             'SEARCH',
             form=dict(query='Use'),
         ):
@@ -66,7 +64,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Test sorting',
-            '/apiv1/users',
+            '/apiv1/members',
             'SEARCH',
             form=dict(query='user'),
             query=('sort=title'),
@@ -84,7 +82,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Test filtering',
-            '/apiv1/users',
+            '/apiv1/members',
             'SEARCH',
             form=dict(query='user'),
             query=('title=user2'),
@@ -103,7 +101,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Test pagination',
-            '/apiv1/users',
+            '/apiv1/members',
             'SEARCH',
             form=dict(query='user'),
             query=('take=1&skip=1')
@@ -120,7 +118,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Test request using query string',
-            '/apiv1/users',
+            '/apiv1/members',
             'SEARCH',
             query=dict(query='user')
         ):

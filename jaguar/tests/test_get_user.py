@@ -10,7 +10,6 @@ class TestGetMember(AutoDocumentationBDDTest):
         user1 = Member(
             email='user1@example.com',
             title='user1',
-            username='user1',
             access_token='access token1',
             reference_id=2
         )
@@ -18,7 +17,6 @@ class TestGetMember(AutoDocumentationBDDTest):
         user2 = Member(
             email='user2@example.com',
             title='user2',
-            username='user2',
             access_token='access token2',
             reference_id=3
         )
@@ -30,7 +28,7 @@ class TestGetMember(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Get a user by her or his id',
-            '/apiv1/users/id:1',
+            '/apiv1/members/id:1',
             'GET',
         ):
             assert status == 200
