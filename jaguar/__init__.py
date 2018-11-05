@@ -1,6 +1,9 @@
+import functools
 from os.path import join, dirname
 
 from restfulpy.application import Application
+from sqlalchemy_media import StoreManager, FileSystemStore
+from nanohttp import settings
 
 from .authentication import Authenticator
 from .controllers.root import Root
@@ -39,6 +42,10 @@ class Jaguar(Application):
       secret: oauth2-secret
       application_id: 1
       url: http://localhost:8080
+
+    storage:
+      file_system_dir: %(root_path)s/data/assets
+      base_url: http://localhost:8080/assets
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):
@@ -56,6 +63,19 @@ class Jaguar(Application):
 
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
+
+    @classmethod
+    def initialize_orm(cls, engine=None):
+        StoreManager.register(
+            'fs',
+            functools.partial(
+                FileSystemStore,
+                settings.storage.file_system_dir,
+                base_url=settings.storage.base_url,
+            ),
+            default=True
+        )
+        super().initialize_orm(cls, engine)
 
 
 jaguar = Jaguar()

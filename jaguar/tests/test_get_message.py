@@ -1,11 +1,10 @@
-
 from bddrest import when, status, response, Update
 
-from jaguar.models import User, Message, Room
+from jaguar.models import Member, Message, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-class TestGetUser(AutoDocumentationBDDTest):
+class TestGetMember(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -22,18 +21,16 @@ class TestGetUser(AutoDocumentationBDDTest):
             body='This is message 3',
             mimetype='text/plain'
         )
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
-            username='user1',
             access_token='access token1',
             reference_id=2,
             messages=[cls.message1]
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
-            username='user2',
             access_token='access token2',
             reference_id=3,
             messages=[cls.message3, cls.message2]

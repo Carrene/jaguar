@@ -2,57 +2,55 @@
 import pytest
 from nanohttp import HTTPStatus
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.models.target import Room
 
 
 # Test target model
-def test_user_model(db):
+def test_member_model(db):
     session = db()
-    user = User(
+    member = Member(
         title='example',
-        username='example',
         email='example@example.com',
         access_token='access token',
         reference_id=4
     )
-    session.add(user)
+    session.add(member)
     session.commit()
-    assert session.query(User).count() == 1
-    assert user.add_to_room == True
+    assert session.query(Member).count() == 1
+    assert member.add_to_room == True
 
-    # Testing rooms of a user
+    # Testing rooms of a member
     room = Room(title='example')
     session.add(room)
-    user.rooms.append(room)
+    member.rooms.append(room)
     session.commit()
 
     # Since the selectin loading is used to load relations,
     # the relation is already load.
-    assert user.rooms[0].title == 'example'
+    assert member.rooms[0].title == 'example'
 
     # Testing rooms of an administrator
-    user.administrator_of.append(room)
+    member.administrator_of.append(room)
     session.commit()
 
-    assert user.administrator_of[0].title == 'example'
-    assert user.administrator_of[0].id == 1
+    assert member.administrator_of[0].title == 'example'
+    assert member.administrator_of[0].id == 1
 
-    # Testing relationship between User and User ( As contactlist)
-    contact = User(
+    # Testing relationship between Member and Member ( As contactlist)
+    contact = Member(
         title='contact',
-        username='contact',
         email='contact@example.com',
         access_token='access token',
         reference_id=5
     )
     session.add(contact)
-    user.contacts.append(contact)
+    member.contacts.append(contact)
     session.commit()
-    assert len(user.contacts) == 1
+    assert len(member.contacts) == 1
 
     # Testing other side of relationship
     session.commit()
-    user.blocked_users.append(contact)
-    assert len(user.blocked_users) == 1
+    member.blocked_members.append(contact)
+    assert len(member.blocked_members) == 1
 

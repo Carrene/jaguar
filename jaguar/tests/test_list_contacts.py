@@ -1,7 +1,7 @@
 
 from bddrest.authoring import response, when, Update, status
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -10,19 +10,19 @@ class TestListContact(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
+        user = Member(
             email='user@example.com',
             title='user',
             access_token='access token',
             reference_id=1
         )
-        contact1 = User(
+        contact1 = Member(
             email='contact1@example.com',
             title='contact1',
             access_token='access token',
             reference_id=2
         )
-        contact2 = User(
+        contact2 = Member(
             email='contact2@example.com',
             title='contact2',
             access_token='access token',
@@ -30,7 +30,7 @@ class TestListContact(AutoDocumentationBDDTest):
         )
 
         # This contact is added to make sure the query works correctly
-        contact3 = User(
+        contact3 = Member(
             email='contact3@example.com',
             title='contact3',
             access_token='access token',

@@ -11,7 +11,7 @@ from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
 from jaguar.controllers.root import Root
-from jaguar.models import User
+from jaguar.models import Member
 
 
 HERE = path.abspath(path.dirname(__file__))
@@ -28,7 +28,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
 
     def login(self, email, url='/apiv1/tokens', verb='CREATE'):
         session = self.create_session()
-        member = session.query(User).filter(User.email == email).one()
+        member = session.query(Member).filter(Member.email == email).one()
         token = member.create_jwt_principal().dump()
         self._authentication_token = token.decode()
 

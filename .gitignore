@@ -105,6 +105,7 @@ ENV/
 
 # Project specefic data
 data
+jaguar/models/tests/temp/
 
 # pytest
 .pytest_cache

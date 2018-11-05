@@ -1,7 +1,7 @@
 from bddrest.authoring import given, when, status, response, Update, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import User, Room
+from jaguar.models import Member, Room
 
 
 class TestKickFromRoom(AutoDocumentationBDDTest):
@@ -9,19 +9,19 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        user1 = Member(
             title='user1',
             email='user1@example.com',
             access_token='access token1',
             reference_id=2,
         )
-        cls.user2 = User(
+        cls.user2 = Member(
             title='user2',
             email='user2@example.com',
             access_token='access token2',
             reference_id=3,
         )
-        cls.user3 = User(
+        cls.user3 = Member(
             title='user3',
             email='user3@example.com',
             access_token='access token3',
@@ -45,19 +45,19 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
             assert len(response.json['memberIds']) == 1
 
             when(
-                'User not a member of the room',
+                'Member not a member of the room',
                 form=Update(memberId=self.user3.id)
             )
             assert status == '617 Not A Member'
 
-            when('User not found', form=Update(memberId=5))
-            assert status == '611 User Not Found'
+            when('Member not found', form=Update(memberId=5))
+            assert status == '611 Member Not Found'
 
             when('Try to pass without memberId', form=Remove('memberId'))
-            assert status == '709 User Id Is Required'
+            assert status == '709 Member Id Is Required'
 
-            when('User id is invalid', form=Update(memberId='user1'))
-            assert status == '705 Invalid User Id'
+            when('Member id is invalid', form=Update(memberId='user1'))
+            assert status == '705 Invalid Member Id'
 
             when('Request with bad room id', url_parameters=Update(id='room'))
             assert status == 404

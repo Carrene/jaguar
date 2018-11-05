@@ -6,11 +6,11 @@ from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
 
-from ..models import User
+from ..models import Member
 
 
-class UserController(ModelRestController):
-    __model__ = User
+class MemberController(ModelRestController):
+    __model__ = Member
 
     @authorize
     @validate(
@@ -20,33 +20,33 @@ class UserController(ModelRestController):
         )
     )
     @json
-    @User.expose
+    @Member.expose
     def search(self):
         query = context.form.get('query') \
             if context.form.get('query') \
             else context.query.get('query')
 
         query = f'%{query}%'
-        query = DBSession.query(User) \
+        query = DBSession.query(Member) \
             .filter(or_(
-                User.title.ilike(query),
-                User.email.ilike(query)
+                Member.title.ilike(query),
+                Member.email.ilike(query)
             ))
         if not query.count():
-            raise HTTPStatus('611 User Not Found')
+            raise HTTPStatus('611 Member Not Found')
 
         return query
 
     @authorize
     @json
-    @User.expose
+    @Member.expose
     def get(self, id):
         try:
             id = int(id)
         except ValueError:
             raise HTTPNotFound()
 
-        user = DBSession.query(User).filter(User.id == id).one_or_none()
+        user = DBSession.query(Member).filter(Member.id == id).one_or_none()
         if user is None:
             raise HTTPNotFound()
 

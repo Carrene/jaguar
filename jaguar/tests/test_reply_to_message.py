@@ -1,11 +1,9 @@
 from bddrest.authoring import given, when, status, response, Update, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import User, Message, Room
-
+from jaguar.models import Member, Message, Room
 
 class TestReplyMessage(AutoDocumentationBDDTest):
-
     @classmethod
     def mockup(cls):
         session = cls.create_session(expire_on_commit=True)
@@ -17,14 +15,14 @@ class TestReplyMessage(AutoDocumentationBDDTest):
             body='This is message 2',
             mimetype='text/plain'
         )
-        user = User(
+        user = Member(
             title='user',
             email='user@example.com',
             access_token='access token',
             reference_id=1
         )
         session.add(user)
-        user1 = User(
+        user1 = Member(
             title='user1',
             email='user1@example.com',
             access_token='access token1',

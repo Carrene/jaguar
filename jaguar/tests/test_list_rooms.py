@@ -1,7 +1,7 @@
 
 from bddrest.authoring import response, when, Update, Remove, status
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.models.target import Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
@@ -11,13 +11,13 @@ class TestListRooms(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        cls.user1 = User(
+        cls.user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',
@@ -47,7 +47,7 @@ class TestListRooms(AutoDocumentationBDDTest):
          self.logout()
          self.login('user2@example.com')
          with cas_mockup_server(), self.given(
-             'User2 tries to list his rooms',
+             'Member2 tries to list his rooms',
              '/apiv1/rooms',
              'LIST',
          ):

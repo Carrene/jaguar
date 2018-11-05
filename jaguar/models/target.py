@@ -6,7 +6,7 @@ from restfulpy.taskqueue import RestfulpyTask
 from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
     UniqueConstraint
 
-from .membership import User
+from .membership import Member
 from .envelop import Envelop
 
 
@@ -14,14 +14,14 @@ class TargetMember(DeclarativeBase):
     __tablename__ = 'target_member'
 
     target_id = Field(Integer, ForeignKey('target.id'), primary_key=True)
-    member_id = Field(Integer, ForeignKey('user.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
 
 
 room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,
     Field('room_id', Integer, ForeignKey('target.id')),
-    Field('member_id', Integer, ForeignKey('user.id'))
+    Field('member_id', Integer, ForeignKey('member.id'))
 )
 
 
@@ -35,7 +35,7 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     members = relationship(
-        'User',
+        'Member',
         secondary='target_member',
         backref='rooms',
         lazy='selectin',
@@ -51,8 +51,8 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
 
 class Room(Target):
 
-    owner_id = Field(Integer, ForeignKey('user.id'), nullable=True)
-    owner = relationship('User', back_populates='room')
+    owner_id = Field(Integer, ForeignKey('member.id'), nullable=True)
+    owner = relationship('Member', back_populates='room')
     title = Field(
         Unicode(50),
         nullable=True,
@@ -62,7 +62,7 @@ class Room(Target):
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
     administrators = relationship(
-        'User',
+        'Member',
         secondary=room_administrator,
         backref='administrator_of',
         protected=True,
