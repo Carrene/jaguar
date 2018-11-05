@@ -1,3 +1,4 @@
+import asyncio
 from os import path
 
 import aiohttp
@@ -49,6 +50,20 @@ async def websocket_handler(request):
     return ws
 
 
+async def worker():
+    while True:
+        await asyncio.sleep(1)
+        print('Worker tick')
+
+
+async def start_background_tasks(app):
+    app['message_dispatcher'] = app.loop.create_task(worker())
+
+
+async def cleanup_background_tasks(app):
+    app['message_dispatcher'].cancel()
+    await app['message_dispatcher']
+
 HERE = path.abspath(path.dirname(__file__))
 ROOT = path.abspath(path.join(HERE, '../..'))
 async def configure(app, force=None):
@@ -60,7 +75,7 @@ async def configure(app, force=None):
 
     restfulpy_configure(context=_context, force=force)
     settings.merge(Jaguar.__configuration__)
-    # FIXME: Configuratio file?
+    # FIXME: Configuration file?
 
 app = web.Application()
 #app.on_startup.append(configure)
@@ -68,5 +83,7 @@ app.add_routes([web.get('/', websocket_handler)])
 
 
 if __name__ == '__main__':
+    app.on_startup.append(start_background_tasks)
+    app.on_cleanup.append(cleanup_background_tasks)
     web.run_app(app)
 
