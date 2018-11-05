@@ -9,7 +9,7 @@ from nanohttp import RegexRouteController
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication, \
     cas_mockup_server, cas_server_status
-from jaguar.models import User
+from jaguar.models import Member
 
 
 
@@ -30,7 +30,7 @@ class TestApplication(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        user1 = Member(
             email='user1@gmail.com',
             title='user1',
             reference_id=1,
@@ -91,7 +91,7 @@ class TestApplication(AutoDocumentationBDDTest):
                     referenceId=1
                 )).dump().decode()
                 when(
-                    'User exist in database',
+                    'Member exist in database',
                     authorization=member_token
                 )
                 assert status == 200

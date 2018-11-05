@@ -1,22 +1,22 @@
 from bddrest.authoring import given, when, status, Update, response, Remove
 
-from jaguar.models import User
+from jaguar.models import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-class TestSearchUser(AutoDocumentationBDDTest):
+class TestSearchMember(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
             username='user1',
             access_token='access token1',
             reference_id=2
         )
-        user2 = User(
+        user2 = Member(
             email='user2@gmail.com',
             title='user2',
             username='user2',
@@ -50,7 +50,7 @@ class TestSearchUser(AutoDocumentationBDDTest):
                 'Trying to pass search non existing user',
                 form=Update(query='sample')
             )
-            assert status == '611 User Not Found'
+            assert status == '611 Member Not Found'
 
             when(
                 'Search string must be less than 20 charecters',

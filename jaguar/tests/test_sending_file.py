@@ -8,7 +8,7 @@ from sqlalchemy_media.exceptions import ContentTypeValidationError
 from bddrest.authoring import given, when, Update, status, response, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import User, Room, Direct
+from jaguar.models import Member, Room, Direct
 
 
 this_dir = abspath(join(dirname(__file__)))
@@ -23,7 +23,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',

@@ -1,7 +1,7 @@
 
 from bddrest.authoring import response, when, Remove, Update, status
 
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -10,7 +10,7 @@ class TestLogout(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user = User(
+        user = Member(
             email='user@example.com',
             title='user',
             access_token='access token',

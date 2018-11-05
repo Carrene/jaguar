@@ -1,7 +1,7 @@
 from bddrest.authoring import given, when, Update, status, response, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import User, Room, Direct
+from jaguar.models import Member, Room, Direct
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -9,13 +9,13 @@ class TestSendMessage(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = User(
+        user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2
         )
-        user2 = User(
+        user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',

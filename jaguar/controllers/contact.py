@@ -31,16 +31,19 @@ class ContactController(ModelRestController):
         current_member = DBSession.query(Member) \
             .filter(Member.reference_id == context.identity.reference_id) \
             .one()
-        is_contact = DBSession.query(Contact) \
+        is_contact = DBSession.query(MemberContact) \
             .filter(
-                Contact.source == current_member.id,
-                Contact.destination == user_id
+                MemberContact.member_id == current_member.id,
+                MemberContact.contact_member_id == user_id
             ) \
             .count()
         if is_contact:
             raise HTTPStatus('603 Already Added To Contacts')
 
-        DBSession.add(Contact(source=current_member.id, destination=user_id))
+        DBSession.add(MemberContact(
+            member_id=current_member.id,
+            contact_member_id=user_id
+        ))
         return destination
 
     @authorize

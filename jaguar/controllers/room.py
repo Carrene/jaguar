@@ -78,11 +78,11 @@ class RoomController(ModelRestController):
             .filter(or_(
                 and_(
                     member_block.c.member_id == requested_user.id,
-                    member_block.c.bocked_member_id == current_user.id
+                    member_block.c.blocked_member_id == current_user.id
                 ),
                 and_(
                     member_block.c.member_id == current_user.id,
-                    member_block.c.bocked_member_id == requested_user.id
+                    member_block.c.blocked_member_id == requested_user.id
                 )
             )) \
             .count()
