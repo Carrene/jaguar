@@ -4,7 +4,7 @@ from restfulpy.authentication import StatefulAuthenticator
 from restfulpy.orm import DBSession
 from cas import CASPrincipal
 
-from .models import Member, User
+from .models import Member
 from .backends import CASClient
 
 
@@ -34,8 +34,8 @@ class Authenticator(StatefulAuthenticator):
 
     def verify_token(self, encoded_token):
         principal = CASPrincipal.load(encoded_token)
-        member = DBSession.query(User) \
-            .filter(User.reference_id == principal.reference_id) \
+        member = DBSession.query(Member) \
+            .filter(Member.reference_id == principal.reference_id) \
             .one_or_none()
         if not member and not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
             raise HTTPBadRequest()
@@ -48,7 +48,7 @@ class Authenticator(StatefulAuthenticator):
             raise HTTPBadRequest()
 
         if member is None:
-            DBSession.add(User(
+            DBSession.add(Member(
                     email=cas_member['email'],
                     title=cas_member['title'],
                     reference_id=cas_member['id'],

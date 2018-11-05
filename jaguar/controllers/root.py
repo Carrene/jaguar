@@ -5,7 +5,7 @@ from restfulpy.authorization import authorize
 
 import jaguar
 
-from .user import UserController
+from .member import MemberController
 from .email import EmailController
 from .token import TokenController
 from .room import RoomController
@@ -19,7 +19,7 @@ from .subscribetarget import SubscribeTargetController
 
 class ApiV1(Controller):
 
-    users = UserController()
+    members = MemberController()
     emails = EmailController()
     tokens = TokenController()
     rooms = RoomController()

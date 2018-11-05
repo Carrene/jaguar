@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from ..models import User, Contact
+from ..models import User, MemberContact
 
 
 class ContactController(ModelRestController):

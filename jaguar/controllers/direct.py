@@ -5,7 +5,7 @@ from restfulpy.orm import DBSession, commit
 from sqlalchemy import or_, and_, select, func, ARRAY, Integer
 from sqlalchemy.dialects.postgresql import aggregate_order_by
 
-from ..models import Direct, User, blocked, TargetMember
+from ..models import Direct, User, member_block, TargetMember
 
 
 class DirectController(ModelRestController):
@@ -26,15 +26,15 @@ class DirectController(ModelRestController):
         current_user = DBSession.query(User) \
             .filter(User.reference_id == context.identity.reference_id) \
             .one()
-        is_blocked = DBSession.query(blocked) \
+        is_blocked = DBSession.query(member_block) \
             .filter(or_(
                 and_(
-                    blocked.c.source == user_id,
-                    blocked.c.destination == current_user.id
+                    member_block.c.member_id == user_id,
+                    member_block.c.blocked_member_id == current_user.id
                 ),
                 and_(
-                    blocked.c.source == current_user.id,
-                    blocked.c.destination == user_id
+                    member_block.c.member_id == current_user.id,
+                    member_block.c.blocked_member_id == user_id
                 )
             )) \
             .count()

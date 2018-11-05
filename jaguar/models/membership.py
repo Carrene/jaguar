@@ -18,32 +18,32 @@ from cas import CASPrincipal
 from .messaging import ActivationEmail
 
 
-blocked = Table(
+member_block = Table(
     'blocked',
     DeclarativeBase.metadata,
     Field(
-        'source',
+        'member_id',
         Integer,
-        ForeignKey('user.id'),
+        ForeignKey('member.id'),
         primary_key=True,
     ),
     Field(
-        'destination',
+        'blocked_member_id',
         Integer,
-        ForeignKey('user.id'),
+        ForeignKey('member.id'),
         primary_key=True
     )
 )
 
 
-class Contact(DeclarativeBase):
-    __tablename__ = 'contact'
+class MemberContact(DeclarativeBase):
+    __tablename__ = 'member_contact'
 
-    source = Field(Integer, ForeignKey('user.id'), primary_key=True)
-    destination = Field(Integer, ForeignKey('user.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
+    contact_member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
 
 
-class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
+class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
              FilteringMixin, PaginationMixin, DeclarativeBase):
     __tablename__ = 'member'
 
@@ -55,45 +55,11 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin,OrderingMixin,
         index=True,
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
-    title = Field(Unicode(100))
     access_token = Field(Unicode(200), protected=True)
-    type = Field(Unicode(50))
 
-    __mapper_args__ = {
-        'polymorphic_identity': __tablename__,
-        'polymorphic_on': type,
-    }
-
-    @property
-    def roles(self):
-        return []
-
-    def create_jwt_principal(self):
-        return CASPrincipal(dict(
-            id=self.id,
-            roles=self.roles,
-            email=self.email,
-            name=self.title,
-            referenceId=self.reference_id
-        ))
-
-    def create_refresh_principal(self):
-        return JwtRefreshToken(dict(
-            id=self.id
-        ))
-
-    @classmethod
-    def current(cls):
-        return DBSession.query(cls) \
-            .filter(cls.email == context.identity.email).one()
-
-
-class User(Member):
-    __tablename__ = 'user'
-
-    id = Field(Integer, ForeignKey('member.id'), primary_key=True)
+    # FIXME: What is this?
     add_to_room = Field(Boolean, default=True)
-    username = Field(
+    title = Field(
         Unicode(50),
         unique=True,
         index=True,
@@ -112,32 +78,52 @@ class User(Member):
     show_phone = Field(Boolean, default=False)
     messages = relationship('Envelop')
     contacts = relationship(
-        'User',
-        secondary='contact',
-        primaryjoin=id == Contact.source,
-        secondaryjoin=id == Contact.destination,
+        'Member',
+        secondary='member_contact',
+        primaryjoin=id == MemberContact.member_id,
+        secondaryjoin=id == MemberContact.contact_member_id,
         lazy='selectin'
     )
     room = relationship('Room', back_populates='owner')
-    blocked_users = relationship(
-        'User',
-        secondary=blocked,
-        primaryjoin=id == blocked.c.source,
-        secondaryjoin=id == blocked.c.destination,
+    blocked_members = relationship(
+        'Member',
+        secondary=member_block,
+        primaryjoin=id == member_block.c.member_id,
+        secondaryjoin=id == member_block.c.blocked_member_id,
         lazy='selectin'
     )
+
+    def create_jwt_principal(self):
+        return CASPrincipal(dict(
+            id=self.id,
+            roles=self.roles,
+            email=self.email,
+            name=self.title,
+            referenceId=self.reference_id
+        ))
+
+    def create_refresh_principal(self):
+        return JwtRefreshToken(dict(
+            id=self.id
+        ))
+
+    @classmethod
+    def current(cls):
+        return DBSession.query(cls) \
+            .filter(cls.reference_id == context.identity.reference_id).one()
+
 
     def to_dict(self):
         return dict(
             id=self.id,
             title=self.title,
-            username=self.username,
+            tile=self.title,
             phone=self.phone if self.show_phone else None,
             email=self.email if self.show_email else None,
         )
 
     __mapper_args__ = {
-        'polymorphic_identity': __tablename__,
+        'polymorphic_identity': 'user',
     }
 
     @property

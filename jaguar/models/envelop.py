@@ -21,7 +21,7 @@ user_message = Table(
     'user_message',
     DeclarativeBase.metadata,
     Field('message_id', Integer, ForeignKey('envelop.id')),
-    Field('user_id', Integer, ForeignKey('user.id')),
+    Field('user_id', Integer, ForeignKey('member.id')),
 )
 
 
@@ -47,7 +47,7 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
     id = Field(Integer, primary_key=True)
     type = Field(Unicode(25))
     target_id = Field(Integer, ForeignKey('target.id'))
-    sender_id = Field(Integer, ForeignKey('user.id'))
+    sender_id = Field(Integer, ForeignKey('member.id'))
     body = Field(JSONB)
     __mapper_args__ = {
         'polymorphic_identity' :__tablename__,

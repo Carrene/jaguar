@@ -6,7 +6,7 @@ from restfulpy.authorization import authorize
 from restfulpy.orm import DBSession
 
 from ..backends import CASClient
-from ..models import User
+from ..models import Member
 
 
 class TokenController(RestController):
@@ -32,12 +32,12 @@ class TokenController(RestController):
             .get_access_token(context.form.get('authorizationCode'))
 
         member = cas_server.get_member(access_token)
-        user = DBSession.query(User) \
-            .filter(User.email == member['email']) \
+        user = DBSession.query(Member) \
+            .filter(Member.email == member['email']) \
             .one_or_none()
 
         if user is None:
-            user = User(
+            user = Member(
                 email=member['email'],
                 title=member['title'],
                 access_token=access_token,

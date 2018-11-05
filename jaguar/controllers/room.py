@@ -4,7 +4,7 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from ..models import Target, Room, blocked, User, TargetMember
+from ..models import Target, Room, member_block, Member, TargetMember
 
 
 class RoomController(ModelRestController):
@@ -23,8 +23,8 @@ class RoomController(ModelRestController):
     )
     def create(self):
         title = context.form.get('title')
-        current_user = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_user = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_exist = DBSession.query(Room) \
             .filter(
@@ -35,7 +35,7 @@ class RoomController(ModelRestController):
             raise HTTPStatus('615 Room Already Exists')
 
         room = Room(title=title)
-        member = User.current()
+        member = Member.current()
         room.administrators.append(member)
         room.members.append(member)
 
@@ -48,11 +48,11 @@ class RoomController(ModelRestController):
     @commit
     def add(self, id: int):
         user_id = context.form.get('userId')
-        requested_user = DBSession.query(User) \
-            .filter(User.reference_id == user_id) \
+        requested_user = DBSession.query(Member) \
+            .filter(Member.reference_id == user_id) \
             .one_or_none()
         if requested_user is None:
-            raise HTTPStatus('611 User Not Found')
+            raise HTTPStatus('611 Member Not Found')
 
         room = DBSession.query(Room).filter(Room.id == id).one_or_none()
         if room is None:
@@ -71,23 +71,23 @@ class RoomController(ModelRestController):
         if not requested_user.add_to_room:
             raise HTTPStatus('602 Not Allowed To Add This Person To Any Room')
 
-        current_user = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_user = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
-        is_blocked = DBSession.query(blocked) \
+        is_blocked = DBSession.query(member_block) \
             .filter(or_(
                 and_(
-                    blocked.c.source == requested_user.id,
-                    blocked.c.destination == current_user.id
+                    member_block.c.member_id == requested_user.id,
+                    member_block.c.bocked_member_id == current_user.id
                 ),
                 and_(
-                    blocked.c.source == current_user.id,
-                    blocked.c.destination == requested_user.id
+                    member_block.c.member_id == current_user.id,
+                    member_block.c.bocked_member_id == requested_user.id
                 )
             )) \
             .count()
         if is_blocked:
-            raise HTTPStatus('601 Not Allowed To Add User To Any Room')
+            raise HTTPStatus('601 Not Allowed To Add Member To Any Room')
 
         room.members.append(requested_user)
         return room
@@ -96,8 +96,8 @@ class RoomController(ModelRestController):
     @json
     @Target.expose
     def list(self):
-        current_user = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_user = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         query = DBSession.query(Room)
         if not context.identity.is_in_roles('admin'):
@@ -110,8 +110,8 @@ class RoomController(ModelRestController):
     @authorize
     @validate(
         memberId=dict(
-            type_=(int, '705 Invalid User Id'),
-            required='709 User Id Is Required',
+            type_=(int, '705 Invalid Member Id'),
+            required='709 Member Id Is Required',
         )
     )
     @json
@@ -128,11 +128,11 @@ class RoomController(ModelRestController):
             raise HTTPNotFound()
 
         member_id = context.form.get('memberId')
-        user = DBSession.query(User).filter(User.id == member_id).one_or_none()
+        user = DBSession.query(Member).filter(Member.id == member_id).one_or_none()
         if user is None:
-            raise HTTPStatus('611 User Not Found')
+            raise HTTPStatus('611 Member Not Found')
 
-        is_member = DBSession.query(User) \
+        is_member = DBSession.query(Member) \
             .filter(
                 TargetMember.target_id == id,
                 TargetMember.member_id == member_id
