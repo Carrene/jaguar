@@ -1,6 +1,6 @@
 
 from jaguar.models.target import Room
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 
 
 def test_target_model(db):
@@ -11,9 +11,8 @@ def test_target_model(db):
     assert session.query(Room).count() == 1
 
     # Test members of a room
-    member = User(
+    member = Member(
         title='example',
-        username='example',
         email='example@example.com',
         access_token='access token',
         reference_id=2
@@ -27,9 +26,8 @@ def test_target_model(db):
     assert room.members[0].title == 'example'
 
     # Test administrators of a room
-    administrator = User(
+    administrator = Member(
         title='administrator',
-        username='administrator',
         email='administrator@example.com',
         access_token='access token',
         reference_id=3

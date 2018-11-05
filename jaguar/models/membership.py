@@ -122,11 +122,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
             email=self.email if self.show_email else None,
         )
 
-    __mapper_args__ = {
-        'polymorphic_identity': 'user',
-    }
-
     @property
     def roles(self):
-        return ['user']
+        return ['member']
 

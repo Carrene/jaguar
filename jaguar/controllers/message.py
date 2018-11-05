@@ -4,7 +4,7 @@ from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
 
-from ..models import Envelop, Message, TargetMember, User, Target
+from ..models import Envelop, Message, TargetMember, Member, Target
 
 
 SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',]
@@ -31,8 +31,8 @@ class MessageController(ModelRestController):
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_member = DBSession.query(TargetMember) \
             .filter(
@@ -61,8 +61,8 @@ class MessageController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_member = DBSession.query(TargetMember) \
             .filter(
@@ -96,8 +96,8 @@ class MessageController(ModelRestController):
         if message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_member = DBSession.query(TargetMember) \
             .filter(
@@ -130,8 +130,8 @@ class MessageController(ModelRestController):
             raise HTTPStatus('707 Invalid MessageId')
 
         new_message_body = context.form.get('body')
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         message = DBSession.query(Message) \
             .filter(Message.id == id) \
@@ -164,8 +164,8 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
-        current_user = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_user = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_subscribe = DBSession.query(Target) \
             .filter(
@@ -211,8 +211,8 @@ class MessageController(ModelRestController):
         if requested_message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         message = Message(body=context.form.get('body'), mimetype=mimetype)
         message.target_id = requested_message.target_id

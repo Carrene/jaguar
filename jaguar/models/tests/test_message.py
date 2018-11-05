@@ -7,7 +7,7 @@ from sqlalchemy_media.exceptions import ContentTypeValidationError
 import pytest
 
 from jaguar.models.envelop import Message, FileAttachment
-from jaguar.models.membership import User
+from jaguar.models.membership import Member
 from jaguar.models.target import Room
 
 
@@ -45,10 +45,9 @@ def test_message_model(db):
             mimetype='message3',
             body='This is message 3',
         )
-        user = User(
-            title='user',
-            username='user',
-            email='user@example.com',
+        member = Member(
+            title='member',
+            email='member@example.com',
             access_token='access token',
             reference_id=1,
             messages=[message1, message2, message3]
@@ -57,7 +56,7 @@ def test_message_model(db):
             title='example',
             type='room',
             messages=[message1, message2, message3],
-            members=[user]
+            members=[member]
         )
         session.add(room)
         session.commit()
@@ -73,8 +72,8 @@ def test_message_model(db):
         assert len(room.messages) == 3
         assert room.messages[0].body == 'This is message 1'
 
-        # Test messages of a user
-        message1.seen_by.append(user)
+        # Test messages of a member
+        message1.seen_by.append(member)
         session.commit()
         assert len(message1.seen_by) == 1
 

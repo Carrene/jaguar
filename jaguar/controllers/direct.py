@@ -5,26 +5,26 @@ from restfulpy.orm import DBSession, commit
 from sqlalchemy import or_, and_, select, func, ARRAY, Integer
 from sqlalchemy.dialects.postgresql import aggregate_order_by
 
-from ..models import Direct, User, member_block, TargetMember
+from ..models import Direct, Member, member_block, TargetMember
 
 
 class DirectController(ModelRestController):
     __model__ = Direct
 
     @authorize
-    @validate(userId=dict(type_=(int, '705 Invalid User Id')))
+    @validate(userId=dict(type_=(int, '705 Invalid Member Id')))
     @json(prevent_empty_form='710 Empty Form')
     @Direct.expose
     @commit
     def create(self):
         user_id = context.form.get('userId')
-        destination = DBSession.query(User) \
-            .filter(User.id == user_id).one_or_none()
+        destination = DBSession.query(Member) \
+            .filter(Member.id == user_id).one_or_none()
         if destination is None:
-            raise HTTPStatus('611 User Not Found')
+            raise HTTPStatus('611 Member Not Found')
 
-        current_user = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_user = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_blocked = DBSession.query(member_block) \
             .filter(or_(
@@ -39,9 +39,9 @@ class DirectController(ModelRestController):
             )) \
             .count()
         if is_blocked:
-            raise HTTPStatus('613 Not Allowed To Create Direct With This User')
+            raise HTTPStatus('613 Not Allowed To Create Direct With This Member')
 
-        source = User.current()
+        source = Member.current()
 
         cte = select([
             TargetMember.target_id.label('direct_id'),

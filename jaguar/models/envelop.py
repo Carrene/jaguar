@@ -17,11 +17,11 @@ from sqlalchemy_media.exceptions import ContentTypeValidationError, \
 from .membership import Member
 
 
-user_message = Table(
-    'user_message',
+member_message = Table(
+    'member_message',
     DeclarativeBase.metadata,
     Field('message_id', Integer, ForeignKey('envelop.id')),
-    Field('user_id', Integer, ForeignKey('member.id')),
+    Field('member_id', Integer, ForeignKey('member.id')),
 )
 
 
@@ -105,9 +105,9 @@ class Message(Envelop):
     # Since collections would be fairly small,
     # selecin loding is chosen for this relationship.
     seen_by = relationship(
-        'User',
+        'Member',
         protected=False,
-        secondary=user_message,
+        secondary=member_message,
         lazy='selectin'
     )
 

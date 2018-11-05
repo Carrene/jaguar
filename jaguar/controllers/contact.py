@@ -4,32 +4,32 @@ from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
-from ..models import User, MemberContact
+from ..models import Member, MemberContact
 
 
 class ContactController(ModelRestController):
-    __model__ = User
+    __model__ = Member
 
     @authorize
     @validate(
         userId=dict(
-            type_=(int, '705 Invalid User Id'),
-            required='709 User Id Is Required',
+            type_=(int, '705 Invalid Member Id'),
+            required='709 Member Id Is Required',
         )
     )
     @json
-    @User.expose
+    @Member.expose
     @commit
     def add(self):
         user_id = context.form.get('userId')
-        destination = DBSession.query(User) \
-            .filter(User.id == user_id) \
+        destination = DBSession.query(Member) \
+            .filter(Member.id == user_id) \
             .one_or_none()
         if destination is None:
-            raise HTTPStatus('611 User Not Found')
+            raise HTTPStatus('611 Member Not Found')
 
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
         is_contact = DBSession.query(Contact) \
             .filter(
@@ -45,15 +45,15 @@ class ContactController(ModelRestController):
 
     @authorize
     @json
-    @User.expose
+    @Member.expose
     def list(self):
-        current_member = DBSession.query(User) \
-            .filter(User.reference_id == context.identity.reference_id) \
+        current_member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
             .one()
-        query = DBSession.query(User) \
+        query = DBSession.query(Member) \
             .filter(
-                Contact.source == current_member.id,
-                Contact.destination == User.id
+                MemberContact.member_id == current_member.id,
+                MemberContact.contact_member_id == Member.id
             )
         return query
 
