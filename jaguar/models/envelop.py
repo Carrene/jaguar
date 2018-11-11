@@ -69,7 +69,8 @@ class Message(Envelop):
     _attachment = Field(
         FileAttachment.as_mutable(JSON),
         nullable=True,
-        protected=True
+        protected=False,
+        json='attachment'
     )
 
     @property

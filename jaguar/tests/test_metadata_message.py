@@ -9,4 +9,5 @@ class TestMessageMetadata(AutoDocumentationBDDTest):
         with self.given('Test metadata verb', '/apiv1/messages', 'METADATA'):
             assert status == 200
             assert 'isMine' in response.json['fields']
+            assert 'attachment' in response.json['fields']
 
