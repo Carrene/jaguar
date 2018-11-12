@@ -74,8 +74,7 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
         lazy='selectin'
     )
     room = relationship('Room', back_populates='owner')
-    blocked_members = relationship(
-        'Member',
+    blocked_members = relationship( 'Member',
         secondary=member_block,
         primaryjoin=id == member_block.c.member_id,
         secondaryjoin=id == member_block.c.blocked_member_id,
@@ -101,15 +100,11 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
         return DBSession.query(cls) \
             .filter(cls.reference_id == context.identity.reference_id).one()
 
-
     def to_dict(self):
-        return dict(
-            id=self.id,
-            title=self.title,
-            tile=self.title,
-            phone=self.phone if self.show_phone else None,
-            email=self.email if self.show_email else None,
-        )
+        member_dict = super().to_dict()
+        member_dict['phone'] = self.phone if self.show_phone else None
+        member_dict['email'] = self.email if self.show_email else None
+        return member_dict
 
     @property
     def roles(self):
