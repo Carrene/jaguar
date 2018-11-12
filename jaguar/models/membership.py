@@ -32,8 +32,7 @@ class MemberContact(DeclarativeBase):
     contact_member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
 
 
-class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
-             FilteringMixin, PaginationMixin, DeclarativeBase):
+class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
     __tablename__ = 'member'
 
     id = Field(Integer, primary_key=True)
