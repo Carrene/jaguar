@@ -100,7 +100,6 @@ class Member(ActivationMixin, SoftDeleteMixin, ModifiedMixin, OrderingMixin,
         return DBSession.query(cls) \
             .filter(cls.reference_id == context.identity.reference_id).one()
 
-
     def to_dict(self):
         member_dict = super().to_dict()
         member_dict['phone'] = self.phone if self.show_phone else None
