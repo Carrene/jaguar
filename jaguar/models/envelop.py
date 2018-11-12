@@ -1,18 +1,14 @@
-
-from nanohttp import settings, HTTPStatus
+from nanohttp import HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
 from restfulpy.orm.metadata import FieldInfo
-from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
-    Boolean, JSON
+from sqlalchemy import Integer, ForeignKey, Unicode, Table, Boolean, JSON
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 from sqlalchemy_media.constants import KB
 from sqlalchemy_media.exceptions import ContentTypeValidationError, \
     MaximumLengthIsReachedError
-
 
 from .membership import Member
 
