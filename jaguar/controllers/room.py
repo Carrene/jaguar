@@ -1,10 +1,11 @@
 from sqlalchemy import and_, or_
-from nanohttp import json, context, validate, HTTPStatus, HTTPNotFound
+from nanohttp import json, context, HTTPStatus, HTTPNotFound
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
 from ..models import Target, Room, member_block, Member, TargetMember
+from ..validators import create_room_validator, kick_member_validator
 
 
 class RoomController(ModelRestController):
@@ -14,13 +15,7 @@ class RoomController(ModelRestController):
     @json
     @Room.expose
     @commit
-    @validate(
-        title=dict(
-            min_length=(4, '701 Must Be Greater Than 4 Charecters'),
-            max_length=(50, '702 Must Be Less Than 50 Charecters'),
-            required='703 Room Title Is Required',
-        )
-    )
+    @create_room_validator
     def create(self):
         title = context.form.get('title')
         current_user = DBSession.query(Member) \
@@ -107,12 +102,7 @@ class RoomController(ModelRestController):
         return query
 
     @authorize
-    @validate(
-        memberId=dict(
-            type_=(int, '705 Invalid Member Id'),
-            required='709 Member Id Is Required',
-        )
-    )
+    @kick_member_validator
     @json
     @Room.expose
     @commit
