@@ -23,9 +23,10 @@ services:
   - redis-server
 
 install: ./scripts/travis-install.sh
+before_script:
+      - "flake8 ."
 script: py.test --cov=jaguar jaguar/tests jaguar/models/tests
 after_success: 
-  - flake8
   - coveralls  
   - ./scripts/travis-upload-wiki.sh
 
