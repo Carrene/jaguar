@@ -43,7 +43,7 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         index=True,
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
-    access_token = Field(Unicode(200), protected=True)
+    access_token = Field(Unicode(512), protected=True)
 
     # FIXME: What is this?
     add_to_room = Field(Boolean, default=True)
