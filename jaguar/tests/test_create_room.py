@@ -37,12 +37,6 @@ class TestRoom(AutoDocumentationBDDTest):
             assert len(response.json['memberIds']) == 1
 
             when(
-                'The room title is less than minimum',
-                form=Update(title='min')
-            )
-            assert status == '701 Must Be Greater Than 4 Charecters'
-
-            when(
                 'The room title exceed maximum length',
                 form=Update(
                     title='a'*(50+1)

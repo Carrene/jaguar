@@ -6,14 +6,15 @@ from sqlalchemy import or_, and_, select, func, ARRAY, Integer
 from sqlalchemy.dialects.postgresql import aggregate_order_by
 
 from ..models import Direct, Member, member_block, TargetMember
+from ..validators import create_direct_validator
 
 
 class DirectController(ModelRestController):
     __model__ = Direct
 
     @authorize
-    @validate(userId=dict(type_=(int, '705 Invalid Member Id')))
     @json(prevent_empty_form='710 Empty Form')
+    @create_direct_validator
     @Direct.expose
     @commit
     def create(self):

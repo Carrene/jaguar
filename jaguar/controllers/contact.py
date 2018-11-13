@@ -5,18 +5,14 @@ from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
 from ..models import Member, MemberContact
+from ..validators import add_contact_validator
 
 
 class ContactController(ModelRestController):
     __model__ = Member
 
     @authorize
-    @validate(
-        userId=dict(
-            type_=(int, '705 Invalid Member Id'),
-            required='709 Member Id Is Required',
-        )
-    )
+    @add_contact_validator
     @json
     @Member.expose
     @commit
