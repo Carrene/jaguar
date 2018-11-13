@@ -1,5 +1,6 @@
 coverage
 coveralls
 pytest-cov
+flake8
 -r requirements-private.txt
 
