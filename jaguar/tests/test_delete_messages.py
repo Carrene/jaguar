@@ -66,6 +66,6 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             'Not allowed to delete the message',
             '/apiv1/messages/id:2/',
             'DELETE',
-         ):
-             assert status == 403
+        ):
+            assert status == 403
 

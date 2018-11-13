@@ -32,17 +32,17 @@ class TestListRooms(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_rooms_of_user(self):
-         self.login('user1@example.com')
+        self.login('user1@example.com')
 
-         with cas_mockup_server(), self.given(
-             'List all the rooms a user owns',
-             '/apiv1/rooms',
-             'LIST',
-         ):
-             assert status == 200
-             assert len(response.json) == 2
-             assert response.json[0]['title'] == 'room1'
-             assert response.json[0]['ownerId'] == self.user1.id
+        with cas_mockup_server(), self.given(
+            'List all the rooms a user owns',
+            '/apiv1/rooms',
+            'LIST',
+        ):
+            assert status == 200
+            assert len(response.json) == 2
+            assert response.json[0]['title'] == 'room1'
+            assert response.json[0]['ownerId'] == self.user1.id
 
          self.logout()
          self.login('user2@example.com')

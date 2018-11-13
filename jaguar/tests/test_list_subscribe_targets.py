@@ -38,15 +38,15 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_subscribe_target(self):
-         self.login('user@example.com')
+        self.login('user@example.com')
 
-         with cas_mockup_server(), self.given(
-             'List targets a user subscribe to',
-             '/apiv1/subscribetargets',
-             'LIST',
-         ):
-             assert status == 200
-             assert len(response.json) == 3
+        with cas_mockup_server(), self.given(
+            'List targets a user subscribe to',
+            '/apiv1/subscribetargets',
+            'LIST',
+        ):
+            assert status == 200
+            assert len(response.json) == 3
 
     def test_sorting(self):
         self.login('user@example.com')

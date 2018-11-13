@@ -88,10 +88,10 @@ class TestEditMessage(AutoDocumentationBDDTest):
             'Not allowed to edit the message',
             '/apiv1/messages/id:1/',
             'EDIT',
-            form=dict(body='Message 1 should not be edited')
-         ):
-             assert status == 403
+            form=dict(body='Message 1 should not be edited'),
+        ):
+            assert status == 403
 
-             when('Try to pass an unauthorized request', authorization=None)
-             assert status == 401
+            when('Try to pass an unauthorized request', authorization=None)
+            assert status == 401
 
