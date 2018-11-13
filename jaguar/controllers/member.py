@@ -7,18 +7,14 @@ from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
 
 from ..models import Member
+from ..validators import search_member_validator
 
 
 class MemberController(ModelRestController):
     __model__ = Member
 
     @authorize
-    @validate(
-        query=dict(
-            max_length=(20, '702 Must Be Less Than 20 Charecters'),
-            required='708 Search Query Is Required',
-        )
-    )
+    @search_member_validator
     @json
     @Member.expose
     def search(self):
