@@ -1,7 +1,7 @@
-from bddrest.authoring import given, when, Update, status, response, Remove
+from bddrest.authoring import when, Update, status, response, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import Member, Room, Direct
+from jaguar.models import Member, Room
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -26,7 +26,6 @@ class TestSendMessage(AutoDocumentationBDDTest):
             title='example',
             members=[user1]
         )
-        direct = Direct()
         session.add(room)
         session.commit()
 
@@ -70,9 +69,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             self.logout()
             self.login('user2@example.com')
 
-            when(
-                'Not member try to send a message',
-                 authorization=self._authentication_token
-            )
+            when('Not member try to send a message',
+                 authorization=self._authentication_token)
             assert status == 403
 

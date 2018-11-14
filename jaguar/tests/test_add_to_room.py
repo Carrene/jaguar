@@ -1,7 +1,5 @@
 
-from restfulpy.principal import JwtPrincipal, JwtRefreshToken
-from nanohttp import context
-from bddrest.authoring import response, when, Update, Remove, status
+from bddrest.authoring import response, when, Update, status
 
 from jaguar.models.membership import Member
 from jaguar.models.target import Room

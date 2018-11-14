@@ -56,11 +56,6 @@ class Jaguar(Application):
             version=__version__,
         )
 
-    # noinspection PyArgumentList
-    def insert_mockup(self, *args):
-        mockup.insert()
-        DBSession.commit()
-
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
 

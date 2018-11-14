@@ -3,7 +3,6 @@ from os.path import abspath, dirname, join
 
 from nanohttp import Controller, json, action, Static
 from restfulpy.controllers import RootController
-from restfulpy.authorization import authorize
 
 import jaguar
 

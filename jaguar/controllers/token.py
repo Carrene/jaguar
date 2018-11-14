@@ -1,7 +1,5 @@
-import json as json_library
 
-from nanohttp import RestController, json, context, HTTPBadRequest, validate, \
-    HTTPForbidden, settings
+from nanohttp import RestController, json, context, settings
 from restfulpy.authorization import authorize
 from restfulpy.orm import DBSession
 

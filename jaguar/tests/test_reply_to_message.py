@@ -1,7 +1,8 @@
-from bddrest.authoring import given, when, status, response, Update, Remove
+from bddrest.authoring import when, status, response, Update, Remove
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import Member, Message, Room
+
 
 class TestReplyMessage(AutoDocumentationBDDTest):
     @classmethod

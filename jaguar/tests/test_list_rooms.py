@@ -1,5 +1,5 @@
 
-from bddrest.authoring import response, when, Update, Remove, status
+from bddrest.authoring import response, status
 
 from jaguar.models.membership import Member
 from jaguar.models.target import Room
@@ -44,14 +44,14 @@ class TestListRooms(AutoDocumentationBDDTest):
             assert response.json[0]['title'] == 'room1'
             assert response.json[0]['ownerId'] == self.user1.id
 
-         self.logout()
-         self.login('user2@example.com')
-         with cas_mockup_server(), self.given(
-             'Member2 tries to list his rooms',
-             '/apiv1/rooms',
-             'LIST',
-         ):
-             assert status == 200
-             assert len(response.json) == 1
-             assert response.json[0]['title'] == 'room3'
+        self.logout()
+        self.login('user2@example.com')
+        with cas_mockup_server(), self.given(
+            'Member2 tries to list his rooms',
+            '/apiv1/rooms',
+            'LIST',
+        ):
+            assert status == 200
+            assert len(response.json) == 1
+            assert response.json[0]['title'] == 'room3'
 

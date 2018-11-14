@@ -1,13 +1,8 @@
 
-from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
-from restfulpy.taskqueue import RestfulpyTask
-from sqlalchemy import Integer, ForeignKey, Unicode, BigInteger, Table, \
+from sqlalchemy import Integer, ForeignKey, Unicode, Table, \
     UniqueConstraint
-
-from .membership import Member
-from .envelop import Envelop
 
 
 class TargetMember(DeclarativeBase):
@@ -74,8 +69,8 @@ class Room(Target):
         result = super().to_dict()
         result.update(
             memberIds=[member.id for member in self.members],
-            administratorIds= \
-                [administrator.id for administrator in self.administrators],
+            administratorIds=[
+                administrator.id for administrator in self.administrators],
         )
         return result
 

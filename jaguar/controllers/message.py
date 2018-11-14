@@ -9,7 +9,7 @@ from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 
 
-SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',]
+SUPPORTED_MIME_TYPES = ['text/plain', 'image/jpeg', 'image/png', 'image/jpg']
 
 
 class MessageController(ModelRestController):
@@ -25,7 +25,7 @@ class MessageController(ModelRestController):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
         attachment = context.form.get('attachment')
-        if not mimetype in SUPPORTED_MIME_TYPES:
+        if mimetype not in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         current_member = DBSession.query(Member) \
@@ -82,7 +82,7 @@ class MessageController(ModelRestController):
     def delete(self, id):
         try:
             id = int(id)
-        except:
+        except (TypeError, ValueError):
             raise HTTPStatus('707 Invalid MessageId')
 
         message = DBSession.query(Message) \
@@ -184,7 +184,7 @@ class MessageController(ModelRestController):
             raise HTTPStatus('707 Invalid MessageId')
 
         mimetype = context.form.get('mimetype')
-        if not mimetype in SUPPORTED_MIME_TYPES:
+        if mimetype not in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         requested_message = DBSession.query(Message) \

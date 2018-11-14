@@ -1,7 +1,7 @@
-from bddrest.authoring import status, given, when, Update, response
+from bddrest.authoring import status, when, Update, response
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import Member, member_block
+from jaguar.models import Member
 
 
 class TestDirect(AutoDocumentationBDDTest):
@@ -55,8 +55,12 @@ class TestDirect(AutoDocumentationBDDTest):
             when('Try to pass empty form', form=None)
             assert status == '710 Empty Form'
 
-            when('Blocked user tries to create a direct', form=Update(userId=1))
-            assert status == '613 Not Allowed To Create Direct With This Member'
+            when(
+                'Blocked user tries to create a direct',
+                form=Update(userId=1)
+            )
+            assert status == \
+                '613 Not Allowed To Create Direct With This Member'
 
             self.logout()
             self.login('blocker@example.com')
@@ -66,7 +70,8 @@ class TestDirect(AutoDocumentationBDDTest):
                 form=Update(userId=self.user1.id),
                 authorization=self._authentication_token
             )
-            assert status == '613 Not Allowed To Create Direct With This Member'
+            assert status == \
+                '613 Not Allowed To Create Direct With This Member'
 
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401

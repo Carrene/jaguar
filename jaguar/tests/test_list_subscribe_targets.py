@@ -1,5 +1,5 @@
 
-from bddrest.authoring import response, when, Update, Remove, status
+from bddrest.authoring import response, when, Update, status
 
 from jaguar.models.membership import Member
 from jaguar.models.target import Room, Direct
@@ -60,7 +60,10 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             assert len(response.json) == 3
             assert response.json[0]['type'] == 'direct'
 
-            when('Sorting the response descending', query=Update(sort='-title'))
+            when(
+                'Sorting the response descending',
+                query=Update(sort='-title')
+            )
             assert response.json[0]['type'] == 'direct'
             assert response.json[1]['type'] == 'room'
             assert response.json[1]['title'] == 'room1'

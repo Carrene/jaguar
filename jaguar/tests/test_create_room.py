@@ -1,6 +1,3 @@
-from restfulpy.orm import DBSession
-from restfulpy.principal import JwtPrincipal, JwtRefreshToken
-from nanohttp import context
 from bddrest.authoring import response, when, Update, Remove, status
 
 from jaguar.models.membership import Member
@@ -39,7 +36,7 @@ class TestRoom(AutoDocumentationBDDTest):
             when(
                 'The room title exceed maximum length',
                 form=Update(
-                    title='a'*(50+1)
+                    title='a' * (50 + 1)
                 )
             )
             assert status == '702 Must Be Less Than 50 Charecters'

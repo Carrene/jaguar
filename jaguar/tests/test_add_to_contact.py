@@ -36,7 +36,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         )
         user.contacts.append(contact2)
         contact1.contacts.append(user2)
-        session.add_all([user,contact1])
+        session.add_all([user, contact1])
         session.commit()
 
     def test_add_user_to_contact(self):

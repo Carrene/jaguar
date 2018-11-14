@@ -2,6 +2,8 @@ from bddrest import when, status, response, Update
 
 from jaguar.models import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+
+
 class TestGetMember(AutoDocumentationBDDTest):
 
     @classmethod

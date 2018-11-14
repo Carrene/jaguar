@@ -1,4 +1,4 @@
-from bddrest.authoring import given, when, status, Update, response, Remove
+from bddrest.authoring import when, status, Update, response, Remove
 
 from jaguar.models import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
@@ -52,10 +52,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
             when(
                 'Search string must be less than 20 charecters',
-                form=Update(
-                    query= \
-                        'The search string should be less than 20 charecters'
-                )
+                form=Update(query='a' * (20 + 1))
             )
             assert status == '702 Must Be Less Than 20 Charecters'
 

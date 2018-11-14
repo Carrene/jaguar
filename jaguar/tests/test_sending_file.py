@@ -1,14 +1,10 @@
 import io
-from os.path import join, dirname, abspath, exists
-import shutil
-import functools
+from os.path import join, dirname, abspath
 
-from sqlalchemy_media import StoreManager, FileSystemStore
-from sqlalchemy_media.exceptions import ContentTypeValidationError
-from bddrest.authoring import given, when, Update, status, response, Remove
+from bddrest.authoring import when, Update, status, response
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import Member, Room, Direct
+from jaguar.models import Member, Room
 
 
 this_dir = abspath(join(dirname(__file__)))
@@ -34,7 +30,6 @@ class TestFileSharing(AutoDocumentationBDDTest):
             type='room',
             members=[user1],
         )
-        direct = Direct()
         session.add(user1)
         session.add(room)
         session.commit()
@@ -42,7 +37,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
     def test_attach_file_to_message(self):
         self.login('user1@example.com')
 
-        with cas_mockup_server(), open(image_path, 'rb') as f ,self.given(
+        with cas_mockup_server(), open(image_path, 'rb') as f, self.given(
             'Send a message to a target',
             '/apiv1/targets/id:1/messages',
             'SEND',
@@ -59,7 +54,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
 
             when(
                 'does not match file content type',
-                multipart = Update(attachment=tex_path)
+                multipart=Update(attachment=tex_path)
             )
             assert status == '710 The Mimetype Does Not Match The File Type'
 

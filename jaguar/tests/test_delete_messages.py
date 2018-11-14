@@ -41,7 +41,9 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'This message is deleted'
             assert len(self.session.query(Message).all()) == 2
-            message1 = self.session.query(Message).filter(Message.id==1).one()
+            message1 = self.session.query(Message) \
+                .filter(Message.id == 1) \
+                .one()
             assert message1.body == 'This message is deleted'
             assert message1.is_deleted == True
 

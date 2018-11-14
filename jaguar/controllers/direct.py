@@ -40,7 +40,9 @@ class DirectController(ModelRestController):
             )) \
             .count()
         if is_blocked:
-            raise HTTPStatus('613 Not Allowed To Create Direct With This Member')
+            raise HTTPStatus(
+                '613 Not Allowed To Create Direct With This Member'
+            )
 
         source = Member.current()
 
@@ -50,8 +52,8 @@ class DirectController(ModelRestController):
                 aggregate_order_by(
                     TargetMember.member_id,
                     TargetMember.member_id
-                )
-                ,type_=ARRAY(Integer)
+                ),
+                type_=ARRAY(Integer)
             ).label('members')
         ]).group_by(TargetMember.target_id).cte()
 

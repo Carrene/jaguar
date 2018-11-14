@@ -1,6 +1,5 @@
 from restfulpy.authentication import StatefulAuthenticator
-from nanohttp import HTTPConflict, HTTPBadRequest, context, HTTPUnauthorized
-from restfulpy.authentication import StatefulAuthenticator
+from nanohttp import HTTPBadRequest, context
 from restfulpy.orm import DBSession
 from cas import CASPrincipal
 
@@ -37,7 +36,7 @@ class Authenticator(StatefulAuthenticator):
         member = DBSession.query(Member) \
             .filter(Member.reference_id == principal.reference_id) \
             .one_or_none()
-        if not member and not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
+        if not member and 'HTTP_X_OAUTH2_ACCESS_TOKEN' not in context.environ:
             raise HTTPBadRequest()
 
         access_token = member.access_token if member \
@@ -49,10 +48,10 @@ class Authenticator(StatefulAuthenticator):
 
         if member is None:
             DBSession.add(Member(
-                    email=cas_member['email'],
-                    title=cas_member['title'],
-                    reference_id=cas_member['id'],
-                    access_token=access_token
+                email=cas_member['email'],
+                title=cas_member['title'],
+                reference_id=cas_member['id'],
+                access_token=access_token
             ))
         elif member.title != cas_member['title']:
             member.title = cas_member['title']

@@ -1,7 +1,4 @@
 
-import pytest
-from nanohttp import HTTPStatus
-
 from jaguar.models.membership import Member
 from jaguar.models.target import Room
 

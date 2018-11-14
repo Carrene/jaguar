@@ -2,8 +2,7 @@ import uuid
 
 from cas import CASPrincipal
 from nanohttp import context
-from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
-    ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
+from restfulpy.orm import DeclarativeBase, Field, relationship, DBSession, \
     FilteringMixin, PaginationMixin, OrderingMixin
 from restfulpy.principal import JwtRefreshToken
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
@@ -31,7 +30,11 @@ class MemberContact(DeclarativeBase):
     __tablename__ = 'member_contact'
 
     member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
-    contact_member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
+    contact_member_id = Field(
+        Integer,
+        ForeignKey('member.id'),
+        primary_key=True
+    )
 
 
 class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
@@ -75,7 +78,8 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         lazy='selectin'
     )
     room = relationship('Room', back_populates='owner')
-    blocked_members = relationship( 'Member',
+    blocked_members = relationship(
+        'Member',
         secondary=member_block,
         primaryjoin=id == member_block.c.member_id,
         secondaryjoin=id == member_block.c.blocked_member_id,

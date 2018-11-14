@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from bddrest.authoring import status, when, Remove, Update, response
-from nanohttp import RestController, json, settings, context, HTTPForbidden, \
+from nanohttp import json, settings, context, HTTPForbidden, \
     HTTPStatus, RegexRouteController
 from restfulpy.mockup import mockup_http_server
 
@@ -38,7 +38,11 @@ def oauth_mockup_server():
                 raise HTTPStatus(_cas_server_status)
 
             if 'access token' in access_token:
-                return dict(id=1, title='manager1', email='manager1@example.com')
+                return dict(
+                    id=1,
+                    title='manager1',
+                    email='manager1@example.com'
+                )
 
             raise HTTPForbidden()
 

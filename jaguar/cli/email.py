@@ -25,12 +25,12 @@ class SendEmailLauncher(Launcher):  # pragma: no cover
         token = serializer.dumps(self.args.email)
 
         email = ActivationEmail(
-                to=self.args.email,
-                subject='Activate your Cucumber account',
-                body={
-                    'activation_token': token,
-                    'activation_url': settings.activation.url
-                }
+            to=self.args.email,
+            subject='Activate your Cucumber account',
+            body={
+                'activation_token': token,
+                'activation_url': settings.activation.url
+            }
         )
         email.to = self.args.email
         email.do_({})

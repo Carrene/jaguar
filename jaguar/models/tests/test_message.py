@@ -3,10 +3,8 @@ import shutil
 import functools
 
 from sqlalchemy_media import StoreManager, FileSystemStore
-from sqlalchemy_media.exceptions import ContentTypeValidationError
-import pytest
 
-from jaguar.models.envelop import Message, FileAttachment
+from jaguar.models.envelop import Message
 from jaguar.models.membership import Member
 from jaguar.models.target import Room
 

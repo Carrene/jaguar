@@ -26,7 +26,7 @@ class RoomController(ModelRestController):
                 Room.title == title, Room.owner_id == current_user.id
             ) \
             .count()
-        if  is_exist:
+        if is_exist:
             raise HTTPStatus('615 Room Already Exists')
 
         room = Room(title=title)
@@ -95,7 +95,7 @@ class RoomController(ModelRestController):
             .one()
         query = DBSession.query(Room)
         if not context.identity.is_in_roles('admin'):
-            query =  query.filter(
+            query = query.filter(
                 Room.owner_id == current_user.id
             )
 
@@ -117,7 +117,9 @@ class RoomController(ModelRestController):
             raise HTTPNotFound()
 
         member_id = context.form.get('memberId')
-        user = DBSession.query(Member).filter(Member.id == member_id).one_or_none()
+        user = DBSession.query(Member) \
+            .filter(Member.id == member_id) \
+            .one_or_none()
         if user is None:
             raise HTTPStatus('611 Member Not Found')
 

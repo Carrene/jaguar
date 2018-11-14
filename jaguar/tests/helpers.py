@@ -1,16 +1,13 @@
-from os import path, makedirs
+from os import path
 from contextlib import contextmanager
 
 from restfulpy.application import Application
-from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
-from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
-from jaguar.controllers.root import Root
 from jaguar.models import Member
 
 
@@ -94,7 +91,7 @@ def cas_server_status(status):
 class MockupApplication(Application):
 
     def __init__(self, application_name, root):
-        super().__init__(application_name,  root=root)
+        super().__init__(application_name, root=root)
         self.__authenticator__ = Authorization()
 
 

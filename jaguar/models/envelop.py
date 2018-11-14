@@ -1,5 +1,5 @@
 from nanohttp import HTTPStatus
-from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
+from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
 from restfulpy.orm.metadata import FieldInfo
@@ -46,8 +46,8 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
     sender_id = Field(Integer, ForeignKey('member.id'))
     body = Field(JSONB)
     __mapper_args__ = {
-        'polymorphic_identity' :__tablename__,
-        'polymorphic_on' : type,
+        'polymorphic_identity': __tablename__,
+        'polymorphic_on': type,
     }
 
 
@@ -90,7 +90,6 @@ class Message(Envelop):
         else:
             self._attachment = None
 
-
     # Since this relationship should be a many to one relationship,
     # The remote_side is declared
     reply_to = relationship(
@@ -128,6 +127,6 @@ class Message(Envelop):
         return metadata
 
     __mapper_args__ = {
-        'polymorphic_identity' : 'message',
+        'polymorphic_identity': 'message',
     }
 

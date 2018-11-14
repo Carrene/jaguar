@@ -1,5 +1,5 @@
 
-from bddrest.authoring import response, when, Update, status
+from bddrest.authoring import response, when, status
 
 from jaguar.models.membership import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server

@@ -1,10 +1,9 @@
-from nanohttp import json, context, HTTPUnauthorized, HTTPStatus
+from nanohttp import json, context
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 
-from ..models import Target, Room, TargetMember
-from .message import MessageController
+from ..models import Target, TargetMember
 
 
 class SubscribeTargetController(ModelRestController):

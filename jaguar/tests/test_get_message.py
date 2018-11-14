@@ -40,7 +40,9 @@ class TestGetMember(AutoDocumentationBDDTest):
             members=[user1, user2],
             messages=[cls.message1, cls.message3]
         )
+        session.add(room1)
         room2 = Room(title='room2', members=[user2], messages=[cls.message2])
+        session.add(room2)
         session.add(user1)
         session.commit()
 
