@@ -55,6 +55,7 @@ class MessageController(ModelRestController):
         return message
 
     @authorize
+    @store_manager(DBSession)
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
