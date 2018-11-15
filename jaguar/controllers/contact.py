@@ -1,5 +1,5 @@
 
-from nanohttp import json, context, validate, HTTPStatus
+from nanohttp import json, context, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit

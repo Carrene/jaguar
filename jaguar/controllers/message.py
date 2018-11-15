@@ -1,10 +1,10 @@
-from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden
+from nanohttp import json, context, HTTPStatus, HTTPForbidden
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
 
-from ..models import Envelop, Message, TargetMember, Member, Target
+from ..models import Message, TargetMember, Member, Target
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 

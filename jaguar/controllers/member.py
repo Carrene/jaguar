@@ -1,6 +1,6 @@
 
 from sqlalchemy import or_
-from nanohttp import json, context, HTTPStatus, validate, HTTPNotFound
+from nanohttp import json, context, HTTPStatus, HTTPNotFound
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
 from restfulpy.authorization import authorize
