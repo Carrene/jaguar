@@ -1,6 +1,6 @@
 from os.path import abspath, join, dirname
 
-from bddrest.authoring import given, when, Update, status, response
+from bddrest.authoring import when, Update, status, response
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import Room, Member, Message
