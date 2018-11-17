@@ -18,6 +18,7 @@ from .message import MessageController
 from .oauth2 import OAUTHController
 from .subscribetarget import SubscribeTargetController
 
+
 here = abspath(dirname(__file__))
 attachment_storage = abspath(join(here, '../..', 'data/assets'))
 
@@ -45,3 +46,4 @@ class ApiV1(Controller):
 class Root(RootController):
     apiv1 = ApiV1()
     assets = Static(attachment_storage)
+
