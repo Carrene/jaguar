@@ -1,5 +1,7 @@
 
-from nanohttp import Controller, json, action
+from os.path import abspath, dirname, join
+
+from nanohttp import Controller, json, action, Static
 from restfulpy.controllers import RootController
 from restfulpy.authorization import authorize
 
@@ -15,6 +17,10 @@ from .direct import DirectController
 from .message import MessageController
 from .oauth2 import OAUTHController
 from .subscribetarget import SubscribeTargetController
+
+
+here = abspath(dirname(__file__))
+attachment_storage = abspath(join(here, '../..', 'data/assets'))
 
 
 class ApiV1(Controller):
@@ -39,4 +45,5 @@ class ApiV1(Controller):
 
 class Root(RootController):
     apiv1 = ApiV1()
+    assets = Static(attachment_storage)
 
