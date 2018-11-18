@@ -54,6 +54,8 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         unique=True,
         index=True,
         nullable=True,
+        max_length=20,
+        min_length=3,
     )
     phone = Field(
         Unicode(50),
