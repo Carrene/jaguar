@@ -15,7 +15,7 @@ def test_member_model(db):
     session.add(member)
     session.commit()
     assert session.query(Member).count() == 1
-    assert member.add_to_room == True
+    assert member.add_to_room is True
 
     # Testing rooms of a member
     room = Room(title='example')

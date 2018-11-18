@@ -45,7 +45,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
                 .filter(Message.id == 1) \
                 .one()
             assert message1.body == 'This message is deleted'
-            assert message1.is_deleted == True
+            assert message1.is_deleted is True
 
             when('Delete the same message')
             assert status == '616 Message Already Deleted'

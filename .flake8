@@ -1,3 +1,10 @@
 [flake8]
-ignore = W391, E123, E712, E131
+ignore = 
+	# Ignore the warning for blank line at the end of files
+	W391,
+	# Ignore flake8 error for closing bracket does not match indentation of 
+	# opening bracket's line
+	E123,
+	# Ignore flake8 error for continuation line unaligned for hanging indent 
+	E131
 

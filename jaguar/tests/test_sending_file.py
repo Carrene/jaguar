@@ -49,7 +49,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert response.json['body'] == 'hello world!'
-            assert response.json['isMine'] == True
+            assert response.json['isMine'] is True
             assert 'attachment' in response.json
 
             when(

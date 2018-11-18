@@ -81,10 +81,10 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 4
             assert response.json[0]['body'] == 'This is message 1'
-            assert response.json[0]['isMine'] == True
+            assert response.json[0]['isMine'] is True
 
             assert response.json[2]['body'] == 'This is message 4'
-            assert response.json[2]['isMine'] == False
+            assert response.json[2]['isMine'] is False
 
             when(
                 'Try to send form in the request',
