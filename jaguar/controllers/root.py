@@ -1,7 +1,7 @@
 
 from os.path import abspath, dirname, join
 
-from nanohttp import Controller, json, action, Static
+from nanohttp import Controller, json, Static
 from restfulpy.controllers import RootController
 
 import jaguar
