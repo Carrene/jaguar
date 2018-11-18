@@ -34,17 +34,16 @@ db:
   test_url: postgresql://postgres:postgres@localhost/jaguar_test
   administrative_url: postgresql://postgres:postgres@localhost/postgres
 
-messaging:
-  default_messenger: restfulpy.messaging.SmtpProvider
+oauth:
+  secret: A1dFVpz4w/qyym+HeXKWYmm6Ocj4X5ZNv1JQ7kgHBEk=\n
+  application_id: 1
+  url: http://localhost:8080
 
-smtp:
-  host: mail.carrene.com
-  port: 587
-  username: nc@carrene.com
-  password: <smtp-password>
-  local_hostname: carrene.com
-   
-```
+storage:
+  file_system_dir: %(root_path)s/data/assets
+  base_url: http://localhost:8080/assets
+  
+ ```
 
 #### Remove old abd create a new database **TAKE CARE ABOUT USING THAT**
 
