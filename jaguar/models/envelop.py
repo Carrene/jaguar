@@ -36,8 +36,8 @@ class FileAttachment(File):
     __min_length__ = 1 * KB
 
 
-class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
-              ModifiedMixin, SoftDeleteMixin, DeclarativeBase):
+class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
+              SoftDeleteMixin, DeclarativeBase):
     __tablename__ = 'envelop'
 
     id = Field(Integer, primary_key=True)
@@ -46,8 +46,8 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
     sender_id = Field(Integer, ForeignKey('member.id'))
     body = Field(JSONB)
     __mapper_args__ = {
-        'polymorphic_identity' :__tablename__,
-        'polymorphic_on' : type,
+        'polymorphic_identity':__tablename__,
+        'polymorphic_on': type,
     }
 
 
