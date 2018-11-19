@@ -94,10 +94,10 @@ class TestListMessages(AutoDocumentationBDDTest):
 
             when('Try to sort the response', query=dict(sort='id'))
             assert len(response.json) == 4
-            assert response.json[0]['body'] == 'This is message 1'
+            assert response.json[0]['id'] == 1
 
             when('Sorting the response descending', query=dict(sort='-id'))
-            assert response.json[0]['body'] == 'This is message 5'
+            assert response.json[0]['id'] == 4
 
             when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
@@ -108,7 +108,7 @@ class TestListMessages(AutoDocumentationBDDTest):
                 query=dict(sort='-id', take=2, skip=1)
             )
             assert len(response.json) == 2
-            assert response.json[0]['body'] == 'This is message 4'
+            assert response.json[0]['id'] == 3
 
             when('Filtering the response', query=dict(id=1))
             assert len(response.json) == 1

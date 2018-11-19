@@ -43,6 +43,10 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         Unicode(100),
         unique=True,
         index=True,
+        not_none=False,
+        required=True,
+        min_length=7,
+        max_length=100,
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
     )
     access_token = Field(Unicode(512), protected=True)
@@ -56,11 +60,16 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         nullable=True,
         max_length=20,
         min_length=3,
+        required=True,
+        not_none=True,
     )
     phone = Field(
         Unicode(50),
         nullable=True,
-        min_length=10,
+        min_length=8,
+        max_length=16,
+        not_none=False,
+        required=False,
         watermark='Phone',
         example='734 555 1212',
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'

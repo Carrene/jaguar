@@ -37,7 +37,7 @@ class FileAttachment(File):
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
-              SoftDeleteMixin, DeclarativeBase):
+              SoftDeleteMixin, ActivationMixin, DeclarativeBase):
     __tablename__ = 'envelop'
 
     id = Field(Integer, primary_key=True)

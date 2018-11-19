@@ -30,7 +30,13 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
-    type = Field(Unicode(25))
+    type = Field(
+        Unicode(25),
+        python_type=str,
+        min_length=4,
+        not_none=False,
+        required=False
+    )
 
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
