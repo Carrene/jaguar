@@ -39,14 +39,14 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
             f'Kick a member from a room',
             f'/apiv1/rooms/id:{self.room.id}',
             f'KICK',
-            form=dict(memberId=self.user2.id)
+            form=dict(memberId=self.user2.reference_id)
         ):
             assert status == 200
             assert len(response.json['memberIds']) == 1
 
             when(
                 'Member not a member of the room',
-                form=Update(memberId=self.user3.id)
+                form=Update(memberId=self.user3.reference_id)
             )
             assert status == '617 Not A Member'
 
