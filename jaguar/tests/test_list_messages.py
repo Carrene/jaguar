@@ -92,30 +92,14 @@ class TestListMessages(AutoDocumentationBDDTest):
             )
             assert status == '711 Form Not Allowed'
 
-    def test_sorting(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Sorting the response',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(sort='id')
-        ):
+            when('Try to sort the response', query=dict(sort='id'))
             assert len(response.json) == 4
             assert response.json[0]['body'] == 'This is message 1'
 
-            when('Sorting the response descending', query=Update(sort='-id'))
+            when('Sorting the response descending', query=dict(sort='-id'))
             assert response.json[0]['body'] == 'This is message 5'
 
-    def test_pagination(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Testing pagination',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(take=1, skip=1)
-        ):
+            when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
             assert response.json[0]['body'] == 'This is message 3'
 
@@ -126,15 +110,7 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert len(response.json) == 2
             assert response.json[0]['body'] == 'This is message 4'
 
-    def test_filtering(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Filtering the response',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(id=1)
-        ):
+            when('Filtering the response', query=dict(id=1))
             assert len(response.json) == 1
 
             when('Try to pass an Unauthorized request', authorization=None)

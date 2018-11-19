@@ -38,44 +38,28 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
         session.commit()
 
     def test_list_subscribe_target(self):
-         self.login('user@example.com')
-
-         with cas_mockup_server(), self.given(
-             'List targets a user subscribe to',
-             '/apiv1/subscribetargets',
-             'LIST',
-         ):
-             assert status == 200
-             assert len(response.json) == 3
-
-    def test_sorting(self):
         self.login('user@example.com')
 
         with cas_mockup_server(), self.given(
-            'Sorting the response',
+            'List targets a user subscribe to',
             '/apiv1/subscribetargets',
             'LIST',
-            query=dict(sort='title')
         ):
+            assert status == 200
+            assert len(response.json) == 3
+
+            when('Try to sort the response', query=dict(sort='title'))
             assert len(response.json) == 3
             assert response.json[0]['type'] == 'direct'
 
-            when('Sorting the response descending', query=Update(sort='-title'))
+            when('Sorting the response descending', query=dict(sort='-title'))
             assert response.json[0]['type'] == 'direct'
             assert response.json[1]['type'] == 'room'
             assert response.json[1]['title'] == 'room1'
             assert response.json[2]['type'] == 'room'
             assert response.json[2]['title'] == 'room3'
 
-    def test_pagination(self):
-        self.login('user@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Testing pagination',
-            '/apiv1/subscribetargets',
-            'LIST',
-            query=dict(sort='id', take=1, skip=1)
-        ):
+            when('testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'room1'
 
@@ -86,17 +70,8 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'room1'
 
-    def test_filtering(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Filtering the response',
-            '/apiv1/subscribetargets',
-            'LIST',
-            query=dict(id=1)
-        ):
+            when('Filtering the answer', query=dict(id=1))
             assert len(response.json) == 1
 
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
-
