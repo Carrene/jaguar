@@ -117,14 +117,15 @@ class RoomController(ModelRestController):
             raise HTTPNotFound()
 
         member_id = context.form.get('memberId')
-        user = DBSession.query(Member).filter(Member.id == member_id).one_or_none()
-        if user is None:
+        member = DBSession.query(Member) \
+            .filter(Member.reference_id == member_id).one_or_none()
+        if member is None:
             raise HTTPStatus('611 Member Not Found')
 
         is_member = DBSession.query(Member) \
             .filter(
                 TargetMember.target_id == id,
-                TargetMember.member_id == member_id
+                TargetMember.member_id == member.id
             ) \
             .count()
         if not is_member:
@@ -133,7 +134,7 @@ class RoomController(ModelRestController):
         DBSession.query(TargetMember) \
             .filter(
                 TargetMember.target_id == id,
-                TargetMember.member_id == member_id
+                TargetMember.member_id == member.id
             ) \
             .delete()
         return room
