@@ -41,7 +41,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert response.json['body'] == 'hello world!'
-            assert response.json['isMine'] == True
+            assert response.json['isMine'] is True
 
             when('Invalid target id', url_parameters=Update(id='Invalid'))
             assert status == '706 Invalid Target Id'
