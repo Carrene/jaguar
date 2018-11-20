@@ -50,6 +50,7 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
         not_none=True,
         min_length=1,
         protected=False,
+        python_type=str
     )
     __mapper_args__ = {
         'polymorphic_identity':__tablename__,

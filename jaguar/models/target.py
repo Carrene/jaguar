@@ -62,7 +62,10 @@ class Room(Target):
     title = Field(
         Unicode(50),
         nullable=True,
-        json='title'
+        json='title',
+        required=True,
+        not_none=False,
+        python_type=str
     )
 
     # since the number of collections are small, the selectin strategy is

@@ -7,11 +7,12 @@ from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
+from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
 from jaguar.controllers.root import Root
-from jaguar.models import Member
+from jaguar.models import Member, Room, Message
 
 
 HERE = path.abspath(path.dirname(__file__))
@@ -21,10 +22,32 @@ DATA_DIRECTORY = path.abspath(path.join(HERE, '../../data'))
 _cas_server_status = 'idle'
 
 
+query=FieldInfo(type_=str, required=True, not_none=True).to_json()
+user_id=FieldInfo(type_=str, required=True, not_none=True).to_json()
+member_id=FieldInfo(type_=str, required=True, not_none=True).to_json()
+authorization_code=FieldInfo(type_=str, required=True, not_none=True).to_json()
+
+
+room_fields = Room.json_metadata()['fields']
+member_fields = dict(query=query)
+contact_fields = dict(userId=user_id)
+target_fields = dict(userId=user_id, memberId=member_id)
+target_fields.update(room_fields)
+authorization_fields= dict(authorizationCode=authorization_code)
+
+
 class AutoDocumentationBDDTest(ApplicableTestCase):
     __application_factory__ = Jaguar
     __story_directory__ = path.join(DATA_DIRECTORY, 'stories')
     __api_documentation_directory__ = path.join(DATA_DIRECTORY, 'markdown')
+    __metadata__ = {
+        r'^/apiv1/members.*': member_fields,
+        r'^/apiv1/contacts.*': contact_fields,
+        r'^/apiv1/rooms.*': target_fields,
+        r'^/apiv1/directs.*': target_fields,
+        r'^/apiv1/messages.*': Message.json_metadata()['fields'],
+        r'^/apiv1/oauth2/tokens.*': authorization_fields,
+    }
 
     def login(self, email, url='/apiv1/tokens', verb='CREATE'):
         session = self.create_session()
