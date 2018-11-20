@@ -22,17 +22,6 @@ class Jaguar(Application):
       test_url: postgresql://postgres:postgres@localhost/jaguar_test
       administrative_url: postgresql://postgres:postgres@localhost/postgres
 
-    messaging:
-      default_messenger: restfulpy.messaging.ConsoleMessenger
-      template_dirs:
-        - %(root_path)s/jaguar/email_templates
-
-    smtp:
-      host: smtp.gmail.com
-      username: user@example.com
-      password: <smtp-password>
-      localhost: gmail.com
-
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
@@ -56,7 +45,6 @@ class Jaguar(Application):
             version=__version__,
         )
 
-    # noinspection PyArgumentList
     def insert_mockup(self, *args):
         mockup.insert()
         DBSession.commit()
