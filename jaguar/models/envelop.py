@@ -44,7 +44,13 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
     type = Field(Unicode(25))
     target_id = Field(Integer, ForeignKey('target.id'))
     sender_id = Field(Integer, ForeignKey('member.id'))
-    body = Field(JSONB)
+    body = Field(
+        JSONB,
+        required=True,
+        not_none=True,
+        min_length=1,
+        protected=False,
+    )
     __mapper_args__ = {
         'polymorphic_identity':__tablename__,
         'polymorphic_on': type,
@@ -56,7 +62,14 @@ is_mine_fieldinfo = FieldInfo(Boolean, not_none=True, readonly=True)
 
 class Message(Envelop):
 
-    mimetype = Field(Unicode(25))
+    mimetype = Field(
+        Unicode(25),
+        required=False,
+        python_type=str,
+        nullable=True,
+        protected=False,
+        not_none=False
+    )
 
     # A message can be a reply to another message, so The id of
     # the source message is set in reply_root

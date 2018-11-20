@@ -95,25 +95,21 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             when('Room not exist', url_parameters=Update(id='2'))
             assert status == 612
 
-        self.logout()
-        self.login('blocked1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Blocked by the target user',
-            '/apiv1/rooms/1',
-            'ADD',
-            form=dict(userId=self.blocker.reference_id)
-        ):
+            self.logout()
+            self.login('blocked1@example.com')
+            when(
+                'Blocked by the target user',
+                form=Update(userId=self.blocker.reference_id),
+                authorization=self._authentication_token
+            )
             assert status == '601 Not Allowed To Add Member To Any Room'
 
-        self.logout()
-        self.login('blocker@example.com')
-
-        with cas_mockup_server(), self.given(
-            'The blocker can not add the user he blocked',
-            '/apiv1/rooms/1',
-            'ADD',
-            form=dict(userId=4),
-        ):
+            self.logout()
+            self.login('blocker@example.com')
+            when(
+                'The blocker can not add the user he blocked',
+                form=Update(userId=4),
+                authorization=self._authentication_token
+            )
             assert status == '601 Not Allowed To Add Member To Any Room'
 

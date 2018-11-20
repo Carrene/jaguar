@@ -59,7 +59,7 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             assert response.json[2]['type'] == 'room'
             assert response.json[2]['title'] == 'room3'
 
-            when('testing pagination', query=dict(take=1, skip=1))
+            when('testing pagination', query=dict(sort='id', take=1, skip=1))
             assert len(response.json) == 1
             assert response.json[0]['id'] == 2
 

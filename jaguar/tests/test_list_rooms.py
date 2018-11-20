@@ -44,14 +44,12 @@ class TestListRooms(AutoDocumentationBDDTest):
              assert response.json[0]['title'] == 'room1'
              assert response.json[0]['ownerId'] == self.user1.id
 
-         self.logout()
-         self.login('user2@example.com')
-         with cas_mockup_server(), self.given(
-             'Member2 tries to list his rooms',
-             '/apiv1/rooms',
-             'LIST',
-         ):
+             self.logout()
+             self.login('user2@example.com')
+             when(
+                 'Unauthorized user try to list the rooms',
+                 authorization=self._authentication_token
+             )
              assert status == 200
              assert len(response.json) == 1
              assert response.json[0]['title'] == 'room3'
-
