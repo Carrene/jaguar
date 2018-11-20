@@ -10,7 +10,7 @@ from .controllers.root import Root
 from .cli.email import EmailLauncher
 
 
-__version__ = '0.1.0-dev'
+__version__ = '0.2.0'
 
 
 class Jaguar(Application):
@@ -21,17 +21,6 @@ class Jaguar(Application):
       url: postgresql://postgres:postgres@localhost/jaguar_dev
       test_url: postgresql://postgres:postgres@localhost/jaguar_test
       administrative_url: postgresql://postgres:postgres@localhost/postgres
-
-    messaging:
-      default_messenger: restfulpy.messaging.ConsoleMessenger
-      template_dirs:
-        - %(root_path)s/jaguar/email_templates
-
-    smtp:
-      host: smtp.gmail.com
-      username: user@example.com
-      password: <smtp-password>
-      localhost: gmail.com
 
     activation:
       secret: activation-secret
@@ -44,7 +33,7 @@ class Jaguar(Application):
       url: http://localhost:8080
 
     storage:
-      file_system_dir: %(root_path)s/data/assets
+      local_directory: %(root_path)s/data/assets
       base_url: http://localhost:8080/assets
     '''
 
@@ -56,7 +45,6 @@ class Jaguar(Application):
             version=__version__,
         )
 
-    # noinspection PyArgumentList
     def insert_mockup(self, *args):
         mockup.insert()
         DBSession.commit()
@@ -70,7 +58,7 @@ class Jaguar(Application):
             'fs',
             functools.partial(
                 FileSystemStore,
-                settings.storage.file_system_dir,
+                settings.storage.local_directory,
                 base_url=settings.storage.base_url,
             ),
             default=True
