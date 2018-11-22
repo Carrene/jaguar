@@ -1,4 +1,3 @@
-
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
@@ -37,6 +36,8 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
         not_none=False,
         required=False,
         watermark='Loerm Ipsum',
+        message='Loerm Ipsum',
+        example='direct',
     )
 
     # since the number of collections are small, the selectin strategy is

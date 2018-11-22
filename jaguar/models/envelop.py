@@ -52,6 +52,8 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
         protected=False,
         python_type=str,
         watermark='Loerm Ipsum',
+        example='Loerm Ipsum',
+        message='Loerm Ipsum',
         label='Text or caption',
     )
     __mapper_args__ = {
@@ -73,6 +75,8 @@ class Message(Envelop):
         protected=False,
         not_none=False,
         watermark='Loerm Ipsum',
+        example='plain/text',
+        message='Loerm Ipsum',
         label='File type',
     )
 

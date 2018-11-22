@@ -19,6 +19,8 @@ class TestMessageMetadata(AutoDocumentationBDDTest):
             assert fields['body']['required'] is not None
             assert fields['body']['protected'] is not None
             assert fields['body']['watermark'] is not None
+            assert fields['body']['example'] is not None
+            assert fields['body']['message'] is not None
 
             assert fields['mimetype']['maxLength'] is not None
             assert fields['mimetype']['name'] is not None
@@ -26,4 +28,5 @@ class TestMessageMetadata(AutoDocumentationBDDTest):
             assert fields['mimetype']['required'] is not None
             assert fields['mimetype']['protected'] is not None
             assert fields['mimetype']['watermark'] is not None
+            assert fields['mimetype']['message'] is not None
 

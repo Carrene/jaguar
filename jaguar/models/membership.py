@@ -47,7 +47,9 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         required=True,
         min_length=7,
         max_length=100,
+        message='Loerm Ipsum',
         label='Email address',
+        example='user@example.com',
         watermark='user@example.com',
         pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',
         pattern_description='Valid email format, example: user@example.com',
@@ -65,8 +67,10 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         min_length=3,
         label='Username',
         required=True,
+        message='Loerm Ipsum',
         not_none=True,
         watermark='John_Doe',
+        example='John_Doe',
     )
     phone = Field(
         Unicode(50),
@@ -75,6 +79,7 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         max_length=16,
         not_none=False,
         required=False,
+        message='Loerm Ipsum',
         label='Phone',
         watermark='Enter your phone number',
         example='734 555 1212',

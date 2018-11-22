@@ -17,4 +17,6 @@ class TestTargetMetadata(AutoDocumentationBDDTest):
             assert fields['type']['not_none'] is not None
             assert fields['type']['required'] is not None
             assert fields['type']['watermark'] is not None
+            assert fields['type']['example'] is not None
+            assert fields['type']['message'] is not None
 
