@@ -43,7 +43,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             assert len(self.session.query(Message).all()) == 2
             message1 = self.session.query(Message).filter(Message.id==1).one()
             assert message1.body == 'This message is deleted'
-            assert message1.is_deleted == True
+            assert message1.is_deleted is True
 
             when('Delete the same message')
             assert status == '616 Message Already Deleted'
@@ -57,15 +57,13 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             )
             assert status == '707 Invalid MessageId'
 
-    # TODO: More test scenarios should be checked when other
-    # Authorizations would be implemented
-    def test_forbidden_request(self):
-        self.login('user2@example.com')
+            self.logout()
+            self.login('user2@example.com')
 
-        with cas_mockup_server(), self.given(
-            'Not allowed to delete the message',
-            '/apiv1/messages/id:2/',
-            'DELETE',
-         ):
-             assert status == 403
+            when(
+                'Not allowed to delete the message',
+                url_parameters=Update(id=2),
+                authorization=self._authentication_token
+            )
+            assert status == 403
 

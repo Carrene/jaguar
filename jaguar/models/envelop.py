@@ -36,18 +36,29 @@ class FileAttachment(File):
     __min_length__ = 1 * KB
 
 
-class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ActivationMixin,
-              ModifiedMixin, SoftDeleteMixin, DeclarativeBase):
+class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
+              SoftDeleteMixin, ActivationMixin, DeclarativeBase):
     __tablename__ = 'envelop'
 
     id = Field(Integer, primary_key=True)
     type = Field(Unicode(25))
     target_id = Field(Integer, ForeignKey('target.id'))
     sender_id = Field(Integer, ForeignKey('member.id'))
-    body = Field(JSONB)
+    body = Field(
+        JSONB,
+        required=True,
+        not_none=True,
+        min_length=1,
+        protected=False,
+        python_type=str,
+        watermark='Loerm Ipsum',
+        example='Loerm Ipsum',
+        message='Loerm Ipsum',
+        label='Text or caption',
+    )
     __mapper_args__ = {
-        'polymorphic_identity' :__tablename__,
-        'polymorphic_on' : type,
+        'polymorphic_identity': __tablename__,
+        'polymorphic_on': type,
     }
 
 
@@ -56,7 +67,18 @@ is_mine_fieldinfo = FieldInfo(Boolean, not_none=True, readonly=True)
 
 class Message(Envelop):
 
-    mimetype = Field(Unicode(25))
+    mimetype = Field(
+        Unicode(25),
+        required=False,
+        python_type=str,
+        nullable=True,
+        protected=False,
+        not_none=False,
+        watermark='Loerm Ipsum',
+        example='plain/text',
+        message='Loerm Ipsum',
+        label='File type',
+    )
 
     # A message can be a reply to another message, so The id of
     # the source message is set in reply_root
