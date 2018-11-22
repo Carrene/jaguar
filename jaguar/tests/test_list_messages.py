@@ -17,7 +17,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def mockup(cls):
         session = cls.create_session()
         with StoreManager(session):
-            message1 = Message(
+            cls.message1 = Message(
                 body='This is message 1',
                 mimetype='text/plain',
             )
@@ -43,7 +43,7 @@ class TestListMessages(AutoDocumentationBDDTest):
                 title='user',
                 access_token='access token1',
                 reference_id=2,
-                messages=[message1, message2, message3, message5]
+                messages=[cls.message1, message2, message3, message5]
             )
             user2 = Member(
                 email='user2@example.com',
@@ -63,7 +63,7 @@ class TestListMessages(AutoDocumentationBDDTest):
                 title='room1',
                 type='room',
                 members=[user1, user3],
-                messages=[message1, message3, message4, message5]
+                messages=[cls.message1, message3, message4, message5]
             )
             session.add(room1)
             room2 = Room(title='room2', type='room', messages=[message2])
@@ -110,8 +110,9 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert len(response.json) == 2
             assert response.json[0]['id'] == 3
 
-            when('Filtering the response', query=dict(id=1))
+            when('Filtering the response', query=dict(id=self.message1.id))
             assert len(response.json) == 1
+            assert response.json[0]['body'] == 'This is message 1'
 
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401

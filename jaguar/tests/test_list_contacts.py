@@ -54,6 +54,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert len(response.json) == 2
 
             when('Try to sort the response', query=dict(sort='title'))
+            assert len(response.json) == 2
             assert response.json[0]['title'] == 'contact1'
 
             when(
@@ -77,6 +78,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert response.json[0]['title'] != 'contact2'
 
             when('Testing pagination', query=dict(take=1, skip=1))
+            assert len(response.json) == 1
             assert response.json[0]['title'] == 'contact2'
 
             when(
