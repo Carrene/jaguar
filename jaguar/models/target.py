@@ -35,7 +35,8 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
         python_type=str,
         min_length=4,
         not_none=False,
-        required=False
+        required=False,
+        watermark='Loerm Ipsum',
     )
 
     # since the number of collections are small, the selectin strategy is

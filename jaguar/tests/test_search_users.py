@@ -59,12 +59,13 @@ class TestSearchMember(AutoDocumentationBDDTest):
             )
             assert status == '702 Must Be Less Than 20 Charecters'
 
-            when('Try to sort the respone', query=dict(sort='title'))
+            when('Try to sort the respone', query=dict(sort='id'))
+            assert len(response.json) == 2
             assert response.json[0]['id'] == 1
 
             when(
                 'Trying ro sort the response in descend ordering',
-                 query=dict(sort='-title')
+                 query=dict(sort='-id')
             )
             assert response.json[0]['id'] == 2
 
@@ -76,6 +77,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
                 'Trying to filter the response ignoring the title',
                  query=dict(title='!user2')
             )
+            assert len(response.json) == 1
             assert response.json[0]['title'] != 'user2'
 
             when('Testing pagination', query=dict(take=1, skip=1))

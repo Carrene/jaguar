@@ -31,10 +31,13 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
         )
         session.add(user2)
         direct = Direct(members=[user, user1])
-        room1 = Room(title='room1', members=[user])
+        session.add(direct)
+        cls.room1 = Room(title='room1', members=[user])
+        session.add(cls.room1)
         room2 = Room(title='room2', members=[user1])
+        session.add(room2)
         room3 = Room(title='room3', members=[user, user1])
-        session.add_all([direct, room1, room2, room3])
+        session.add(room3)
         session.commit()
 
     def test_list_subscribe_target(self):
@@ -48,16 +51,13 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 3
 
-            when('Try to sort the response', query=dict(sort='title'))
+            when('Try to sort the response', query=dict(sort='id'))
             assert len(response.json) == 3
-            assert response.json[0]['type'] == 'direct'
+            assert response.json[0]['id'] == 1
 
-            when('Sorting the response descending', query=dict(sort='-title'))
-            assert response.json[0]['type'] == 'direct'
-            assert response.json[1]['type'] == 'room'
-            assert response.json[1]['title'] == 'room1'
-            assert response.json[2]['type'] == 'room'
-            assert response.json[2]['title'] == 'room3'
+            when('Sorting the response descending', query=dict(sort='-id'))
+            assert len(response.json) == 3
+            assert response.json[0]['id'] == 4
 
             when('testing pagination', query=dict(sort='id', take=1, skip=1))
             assert len(response.json) == 1
@@ -70,8 +70,10 @@ class TestListSubscribeTarget(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['id'] == 2
 
-            when('Filtering the answer', query=dict(id=1))
+            when('Filtering the answer', query=dict(id=self.room1.id))
             assert len(response.json) == 1
+            assert response.json[0]['title'] == 'room1'
 
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
+

@@ -116,13 +116,12 @@ class TestListMessages(AutoDocumentationBDDTest):
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
 
-    def test_forbidden_request(self):
-        self.login('user2@example.com')
+            self.logout()
+            self.login('user2@example.com')
 
-        with cas_mockup_server(), self.given(
-            'Not member tries to list messages of a target',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-        ):
+            when(
+                'Not member try to list messages of a target',
+                authorization=self._authentication_token
+            )
             assert status == 403
 

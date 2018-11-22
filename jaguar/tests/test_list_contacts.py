@@ -53,7 +53,7 @@ class TestListContact(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 2
 
-            when( 'Try to sort the response', query=dict(sort='title'))
+            when('Try to sort the response', query=dict(sort='title'))
             assert response.json[0]['title'] == 'contact1'
 
             when(
@@ -87,3 +87,4 @@ class TestListContact(AutoDocumentationBDDTest):
 
             when('An unauthorized request', authorization=None)
             assert status == 401
+

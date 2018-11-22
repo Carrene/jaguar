@@ -50,7 +50,9 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
         not_none=True,
         min_length=1,
         protected=False,
-        python_type=str
+        python_type=str,
+        watermark='Loerm Ipsum',
+        label='Text or caption',
     )
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
@@ -69,7 +71,9 @@ class Message(Envelop):
         python_type=str,
         nullable=True,
         protected=False,
-        not_none=False
+        not_none=False,
+        watermark='Loerm Ipsum',
+        label='File type',
     )
 
     # A message can be a reply to another message, so The id of

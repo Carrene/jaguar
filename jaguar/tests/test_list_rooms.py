@@ -17,7 +17,7 @@ class TestListRooms(AutoDocumentationBDDTest):
             access_token='access token1',
             reference_id=2
         )
-        user2 = Member(
+        cls.user2 = Member(
             email='user2@example.com',
             title='user2',
             access_token='access token2',
@@ -27,7 +27,7 @@ class TestListRooms(AutoDocumentationBDDTest):
         session.add(room1)
         room2 = Room(title='room2', owner=cls.user1)
         session.add(room2)
-        room3 = Room(title='room3', owner=user2)
+        room3 = Room(title='room3', owner=cls.user2)
         session.add(room3)
         session.commit()
 
@@ -47,9 +47,11 @@ class TestListRooms(AutoDocumentationBDDTest):
              self.logout()
              self.login('user2@example.com')
              when(
-                 'Unauthorized user try to list the rooms',
+                 'List the rooms for another user',
                  authorization=self._authentication_token
              )
              assert status == 200
              assert len(response.json) == 1
              assert response.json[0]['title'] == 'room3'
+             assert response.json[0]['ownerId'] == self.user2.id
+

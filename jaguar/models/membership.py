@@ -47,7 +47,10 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         required=True,
         min_length=7,
         max_length=100,
-        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+        label='Email address',
+        watermark='user@example.com',
+        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',
+        pattern_description='Valid email format, example: user@example.com',
     )
     access_token = Field(Unicode(512), protected=True)
 
@@ -60,8 +63,10 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         nullable=True,
         max_length=20,
         min_length=3,
+        label='Username',
         required=True,
         not_none=True,
+        watermark='John_Doe',
     )
     phone = Field(
         Unicode(50),
@@ -70,7 +75,8 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         max_length=16,
         not_none=False,
         required=False,
-        watermark='Phone',
+        label='Phone',
+        watermark='Enter your phone number',
         example='734 555 1212',
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
             r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',
