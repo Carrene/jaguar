@@ -17,7 +17,7 @@ class TestListMessages(AutoDocumentationBDDTest):
     def mockup(cls):
         session = cls.create_session()
         with StoreManager(session):
-            message1 = Message(
+            cls.message1 = Message(
                 body='This is message 1',
                 mimetype='text/plain',
             )
@@ -43,7 +43,7 @@ class TestListMessages(AutoDocumentationBDDTest):
                 title='user',
                 access_token='access token1',
                 reference_id=2,
-                messages=[message1, message2, message3, message5]
+                messages=[cls.message1, message2, message3, message5]
             )
             user2 = Member(
                 email='user2@example.com',
@@ -63,7 +63,7 @@ class TestListMessages(AutoDocumentationBDDTest):
                 title='room1',
                 type='room',
                 members=[user1, user3],
-                messages=[message1, message3, message4, message5]
+                messages=[cls.message1, message3, message4, message5]
             )
             session.add(room1)
             room2 = Room(title='room2', type='room', messages=[message2])
@@ -81,10 +81,10 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 4
             assert response.json[0]['body'] == 'This is message 1'
-            assert response.json[0]['isMine'] == True
+            assert response.json[0]['isMine'] is True
 
             assert response.json[2]['body'] == 'This is message 4'
-            assert response.json[2]['isMine'] == False
+            assert response.json[2]['isMine'] is False
 
             when(
                 'Try to send form in the request',
@@ -92,30 +92,14 @@ class TestListMessages(AutoDocumentationBDDTest):
             )
             assert status == '711 Form Not Allowed'
 
-    def test_sorting(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Sorting the response',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(sort='id')
-        ):
+            when('Try to sort the response', query=dict(sort='id'))
             assert len(response.json) == 4
-            assert response.json[0]['body'] == 'This is message 1'
+            assert response.json[0]['id'] == 1
 
-            when('Sorting the response descending', query=Update(sort='-id'))
-            assert response.json[0]['body'] == 'This is message 5'
+            when('Sorting the response descending', query=dict(sort='-id'))
+            assert response.json[0]['id'] == 4
 
-    def test_pagination(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Testing pagination',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(take=1, skip=1)
-        ):
+            when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
             assert response.json[0]['body'] == 'This is message 3'
 
@@ -124,29 +108,21 @@ class TestListMessages(AutoDocumentationBDDTest):
                 query=dict(sort='-id', take=2, skip=1)
             )
             assert len(response.json) == 2
-            assert response.json[0]['body'] == 'This is message 4'
+            assert response.json[0]['id'] == 3
 
-    def test_filtering(self):
-        self.login('user1@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Filtering the response',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-            query=dict(id=1)
-        ):
+            when('Filtering the response', query=dict(id=self.message1.id))
             assert len(response.json) == 1
+            assert response.json[0]['body'] == 'This is message 1'
 
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
 
-    def test_forbidden_request(self):
-        self.login('user2@example.com')
+            self.logout()
+            self.login('user2@example.com')
 
-        with cas_mockup_server(), self.given(
-            'Not member tries to list messages of a target',
-            '/apiv1/targets/id:1/messages',
-            'LIST',
-        ):
+            when(
+                'Not member try to list messages of a target',
+                authorization=self._authentication_token
+            )
             assert status == 403
 

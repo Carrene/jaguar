@@ -43,7 +43,16 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         Unicode(100),
         unique=True,
         index=True,
-        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+        not_none=False,
+        required=True,
+        min_length=7,
+        max_length=100,
+        message='Loerm Ipsum',
+        label='Email address',
+        example='user@example.com',
+        watermark='user@example.com',
+        pattern=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',
+        pattern_description='Valid email format, example: user@example.com',
     )
     access_token = Field(Unicode(512), protected=True)
 
@@ -54,12 +63,25 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         unique=True,
         index=True,
         nullable=True,
+        max_length=20,
+        min_length=3,
+        label='Username',
+        required=True,
+        message='Loerm Ipsum',
+        not_none=True,
+        watermark='John_Doe',
+        example='John_Doe',
     )
     phone = Field(
         Unicode(50),
         nullable=True,
-        min_length=10,
-        watermark='Phone',
+        min_length=8,
+        max_length=16,
+        not_none=False,
+        required=False,
+        message='Loerm Ipsum',
+        label='Phone',
+        watermark='Enter your phone number',
         example='734 555 1212',
         pattern=r'\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}'
             r'[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4}',

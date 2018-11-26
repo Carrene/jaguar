@@ -1,4 +1,3 @@
-
 from nanohttp import settings
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin, \
     relationship, OrderingMixin, FilteringMixin, PaginationMixin
@@ -30,7 +29,16 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     __tablename__ = 'target'
 
     id = Field(Integer, primary_key=True)
-    type = Field(Unicode(25))
+    type = Field(
+        Unicode(25),
+        python_type=str,
+        min_length=4,
+        not_none=False,
+        required=False,
+        watermark='Loerm Ipsum',
+        message='Loerm Ipsum',
+        example='direct',
+    )
 
     # since the number of collections are small, the selectin strategy is
     # more efficient for loading
@@ -56,7 +64,10 @@ class Room(Target):
     title = Field(
         Unicode(50),
         nullable=True,
-        json='title'
+        json='title',
+        required=True,
+        not_none=False,
+        python_type=str
     )
 
     # since the number of collections are small, the selectin strategy is

@@ -53,15 +53,8 @@ class TestListContact(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 2
 
-    def test_sorting(self):
-        self.login('user@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Try to sort the response',
-            '/apiv1/contacts',
-            'LIST',
-            query=dict(sort='title')
-        ):
+            when('Try to sort the response', query=dict(sort='title'))
+            assert len(response.json) == 2
             assert response.json[0]['title'] == 'contact1'
 
             when(
@@ -70,15 +63,10 @@ class TestListContact(AutoDocumentationBDDTest):
             )
             assert response.json[0]['title'] == 'contact2'
 
-    def test_filtering(self):
-        self.login('user@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Filtering the response using title',
-            '/apiv1/contacts',
-            'LIST',
-            query=dict(title='contact2')
-        ):
+            when(
+                'Try to filter the response using title',
+                query=dict(title='contact2')
+            )
             assert len(response.json) == 1
             assert response.json[0]['title'] == 'contact2'
 
@@ -89,15 +77,8 @@ class TestListContact(AutoDocumentationBDDTest):
             assert len(response.json) == 1
             assert response.json[0]['title'] != 'contact2'
 
-    def test_pagination(self):
-        self.login('user@example.com')
-
-        with cas_mockup_server(), self.given(
-            'Testing pagination',
-            '/apiv1/contacts',
-            'LIST',
-            query=dict(take=1, skip=1)
-        ):
+            when('Testing pagination', query=dict(take=1, skip=1))
+            assert len(response.json) == 1
             assert response.json[0]['title'] == 'contact2'
 
             when(

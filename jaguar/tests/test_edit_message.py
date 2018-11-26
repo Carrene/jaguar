@@ -79,19 +79,15 @@ class TestEditMessage(AutoDocumentationBDDTest):
             )
             assert status == 616
 
-    # TODO: More test scenarios should be checked when other
-    # Authorizations would be implemented
-    def test_forbidden_request(self):
-        self.login('user2@example.com')
+            self.logout()
+            self.login('user2@example.com')
 
-        with cas_mockup_server(), self.given(
-            'Not allowed to edit the message',
-            '/apiv1/messages/id:1/',
-            'EDIT',
-            form=dict(body='Message 1 should not be edited')
-         ):
-             assert status == 403
+            when(
+                'Not allowed to edit the message',
+                authorization=self._authentication_token,
+            )
+            assert status == 403
 
-             when('Try to pass an unauthorized request', authorization=None)
-             assert status == 401
+            when('Try to pass an unauthorized request', authorization=None)
+            assert status == 401
 
