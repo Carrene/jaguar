@@ -14,7 +14,7 @@ class TestContactMetadata(AutoDocumentationBDDTest):
             assert fields['title']['maxLength'] is not None
             assert fields['title']['minLength'] is not None
             assert fields['title']['name'] is not None
-            assert fields['title']['not_none'] is not None
+            assert fields['title']['notNone'] is not None
             assert fields['title']['required'] is not None
             assert fields['title']['watermark'] is not None
             assert fields['title']['example'] is not None
@@ -24,7 +24,7 @@ class TestContactMetadata(AutoDocumentationBDDTest):
             assert fields['phone']['maxLength'] is not None
             assert fields['phone']['minLength'] is not None
             assert fields['phone']['name'] is not None
-            assert fields['phone']['not_none'] is not None
+            assert fields['phone']['notNone'] is not None
             assert fields['phone']['required'] is not None
             assert fields['phone']['watermark'] is not None
             assert fields['phone']['label'] is not None
@@ -34,7 +34,7 @@ class TestContactMetadata(AutoDocumentationBDDTest):
             assert fields['email']['maxLength'] is not None
             assert fields['email']['minLength'] is not None
             assert fields['email']['name'] is not None
-            assert fields['email']['not_none'] is not None
+            assert fields['email']['notNone'] is not None
             assert fields['email']['required'] is not None
             assert fields['email']['watermark'] is not None
             assert fields['email']['label'] is not None
