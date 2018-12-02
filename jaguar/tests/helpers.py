@@ -40,6 +40,14 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
     __application_factory__ = Jaguar
     __story_directory__ = path.join(DATA_DIRECTORY, 'stories')
     __api_documentation_directory__ = path.join(DATA_DIRECTORY, 'markdown')
+    __configuration__ = ('''
+        authentication:
+          redis:
+            host: localhost
+            port: 6379
+            password: ~
+            db: 0
+    ''')
     __metadata__ = {
         r'^/apiv1/members.*': member_fields,
         r'^/apiv1/contacts.*': contact_fields,

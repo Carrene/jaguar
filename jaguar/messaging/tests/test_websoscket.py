@@ -1,9 +1,10 @@
+import asyncio
+
 import pytest
 import aiohttp
-
 from bddrest.authoring import when, Update, Remove, status
 
-from jaguar.models import User
+from jaguar.models import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -11,25 +12,11 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
-        session = cls.create_session()
-        user = User(
-            email='user@example.com',
-            title='user',
-            access_token='access token',
-            reference_id=1
-        )
-        contact1 = User(
-            email='contact1@example.com',
-            title='contact1',
-            access_token='access token',
-            reference_id=2
-        )
-        user.contacts.append(contact1)
-        session.add(user)
-        session.commit()
+        cls.loop = asyncio.get_event_loop()
 
     async def test_websocket(self, websocket_session):
-        self.login('user@example.com')
+        redis_ =
+
 
         with pytest.raises(aiohttp.WSServerHandshakeError):
             async with websocket_session() as ws:
