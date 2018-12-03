@@ -12,11 +12,25 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
-        cls.loop = asyncio.get_event_loop()
+        session = cls.create_session()
+        member = Member(
+            email='member@example.com',
+            title='member',
+            access_token='access token',
+            reference_id=1
+        )
+        contact1 = Member(
+            email='contact1@example.com',
+            title='contact1',
+            access_token='access token',
+            reference_id=2
+        )
+        member.contacts.append(contact1)
+        session.add(member)
+        session.commit()
 
     async def test_websocket(self, websocket_session):
-        redis_ =
-
+        self.login('member@example.com')
 
         with pytest.raises(aiohttp.WSServerHandshakeError):
             async with websocket_session() as ws:

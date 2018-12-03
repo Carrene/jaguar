@@ -17,23 +17,17 @@ class SessionManager:
     def __init__(self, cache_manager):
         self.cache_manager = cache_manager
 
-    @staticmethod
-    def register_session(app, member_id, session_id, socket):
-        if member_id not in app['members']:
-            app['members'][member_id] = []
+    async def register_session(self, member, session, queue):
+        pass
 
-        member_sessions = app['members'][member_id]
-        if session_id not in member_sessions:
-            member_sessions.append(session_id)
-        app['sessions'][session_id] = (member_id, socket)
+    async def get_sessions(self, member):
+        pass
 
-    @staticmethod
-    def unregister_session(app, session_id):
-        sessions = app['sessions']
-        if session_id in sessions:
-            member, socket = app['sessions'][session_id]
-            del app['sessions'][session_id]
-            app['members'][member_id].remove(session_id)
+    async def cleanup_session(self, session):
+        pass
+
+    async def cleanup_member(self, member):
+        pass
 
 
 async def authenticate(request):
