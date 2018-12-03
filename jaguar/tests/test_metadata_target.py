@@ -14,7 +14,7 @@ class TestTargetMetadata(AutoDocumentationBDDTest):
             assert fields['type']['maxLength'] is not None
             assert fields['type']['minLength'] is not None
             assert fields['type']['name'] is not None
-            assert fields['type']['not_none'] is not None
+            assert fields['type']['notNone'] is not None
             assert fields['type']['required'] is not None
             assert fields['type']['watermark'] is not None
             assert fields['type']['example'] is not None
