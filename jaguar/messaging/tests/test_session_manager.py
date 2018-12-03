@@ -55,10 +55,10 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
             active_sessions = await session_manager.get_session(member=token.id)
             assert active_sessions[0] == (token.id, token.session_id)
 
-            await redis.flushdb() == None
+            await redis.flushdb()
 
             active_sessions = await session_manager.get_session(member=token.id)
-            assert active_sessions[0] == (token.id, token.session_id)
+            assert active_sessions[0] == None
 
             assert 1 == 1
 

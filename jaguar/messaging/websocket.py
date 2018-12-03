@@ -52,10 +52,6 @@ async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    member_id = context.identity.id
-    session_id = context.identity.session_id
-
-    SessionManager.register_session(request.app, member_id, session_id, ws)
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
@@ -68,8 +64,6 @@ async def websocket_handler(request):
                   ws.exception())
 
     print('websocket connection closed')
-    SessionManager.unregister_session(request.app, session_id)
-
     return ws
 
 
