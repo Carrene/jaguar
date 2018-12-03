@@ -13,7 +13,7 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'restfulpy >= 2.5',
+    'restfulpy >= 2.6.2',
     'sqlalchemy_media >= 0.17.1',
 
     # AIO messaging
