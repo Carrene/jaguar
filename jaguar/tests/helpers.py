@@ -46,7 +46,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             host: localhost
             port: 6379
             password: ~
-            db: 0
+            db: 15
     ''')
     __metadata__ = {
         r'^/apiv1/members.*': member_fields,

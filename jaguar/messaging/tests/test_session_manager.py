@@ -17,7 +17,7 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
             host=settings.authentication.redis.host,
             port=settings.authentication.redis.port,
             password=settings.authentication.redis.password,
-            db=15
+            db=settings.authentication.redis.db
         )
         session = cls.create_session()
         member = Member(
