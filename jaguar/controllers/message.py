@@ -76,6 +76,7 @@ class MessageController(ModelRestController):
         return query
 
     @authorize
+    @store_manager(DBSession)
     @json
     @Message.expose
     @commit
@@ -103,7 +104,7 @@ class MessageController(ModelRestController):
                 TargetMember.member_id == current_member.id
             ) \
             .count()
-        if not is_member:
+        if not is_member or message.sender_id != current_member.id:
             raise HTTPForbidden()
 
         message.body = 'This message is deleted'
