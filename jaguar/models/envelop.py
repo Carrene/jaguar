@@ -136,10 +136,12 @@ class Message(Envelop):
 
     def to_dict(self):
         message_dictionary = super().to_dict()
-        message_dictionary.update(isMine=self.is_mine)
-        message_dictionary.update(activated_at=self.activated_at)
         message_dictionary.update(
-            attachment=self.attachment.locate() if self.attachment else None
+            isMine=self.is_mine,
+            activatedAt=self.activated_at,
+            attachment=self.attachment.locate() \
+                if self.attachment and not self.is_deleted \
+                else None
         )
         return message_dictionary
 
