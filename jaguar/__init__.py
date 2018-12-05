@@ -35,6 +35,10 @@ class Jaguar(Application):
     storage:
       local_directory: %(root_path)s/data/assets
       base_url: http://localhost:8080/assets
+
+    worker:
+        queue:
+            url: amqp://guest:guest@127.0.0.1/
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):

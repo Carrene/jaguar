@@ -1,6 +1,8 @@
 import asyncio
 from os import path
 
+import aio_pika
+import aioredis
 import aiohttp
 import itsdangerous
 from aiohttp import web
@@ -13,21 +15,43 @@ from jaguar import Jaguar
 
 
 class SessionManager:
+    _redis = None
 
-    def __init__(self, cache_manager):
-        self.cache_manager = cache_manager
+    @classmethod
+    async def redis(cls):
+       if cls._redis is None:
+           cls._redis = await aioredis.create_redis(
+               f'redis://{settings.authentication.redis.host}:' \
+               f'{settings.authentication.redis.port}',
+               db=settings.authentication.redis.db,
+            )
+       return cls._redis
 
-    async def register_session(self, member, session, queue):
-        pass
+    async def register_session(self, member_id, session_id, queue):
+        self._redis.hset(
+            f'member:{member_id}',
+            member_id,
+            queue
+        )
 
-    async def get_sessions(self, member):
-        pass
+    async def get_sessions(self, member_id):
+        active_sessions = []
+        for session in self._redis.hgetall(f'member:{member_id}'):
+            active_sessions.append((
+                session,
+                self._redis.hget('name1', value)
+            ))
 
-    async def cleanup_session(self, session):
-        pass
+        return active_sessions
 
-    async def cleanup_member(self, member):
-        pass
+    async def cleanup_session(self, member_id, session_id):
+        self._redis.hdel(member_id, session_id)
+
+    async def cleanup_member(self, member_id):
+        self._redis.delete(member_id)
+
+
+session_manager = SessionManager()
 
 
 async def authenticate(request):
@@ -50,9 +74,20 @@ async def websocket_handler(request):
     identity = await authenticate(request)
 
     ws = web.WebSocketResponse()
+
+    session_manager.redis()
+    # Register session
+    await session_manager.register_session(
+        identity.id,
+        identity.session_id,
+        app['queue']
+    )
+
     await ws.prepare(request)
 
     async for msg in ws:
+        # TODO: These lines below are completely useless and must be removed before
+        # the first version
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
                 await ws.send_str('closing')
@@ -63,12 +98,15 @@ async def websocket_handler(request):
             print('ws connection closed with exception %s' %
                   ws.exception())
 
+    await session_manager.cleanup_session(token.id, token.session_id)
+
     print('websocket connection closed')
     return ws
 
 
 async def worker():
     while True:
+        # TODO: pull one by one from the app[queue]
         await asyncio.sleep(1)
         print('Worker tick')
 
@@ -86,20 +124,24 @@ HERE = path.abspath(path.dirname(__file__))
 ROOT = path.abspath(path.join(HERE, '../..'))
 
 
-async def configure(app, force=None):
+async def configure(app):
     _context = {
         'process_name': 'Jaguar Websocket Server',
         'root_path': ROOT,
         'data_dir': path.join(ROOT, 'data'),
     }
 
-    restfulpy_configure(context=_context, force=force)
+    restfulpy_configure(context=_context, force=True)
     settings.merge(Jaguar.__configuration__)
     # FIXME: Configuration file?
 
+    app['queue'] = settings.worker.queue.url
+    queue_connection = await aio_pika.connect_robust(app['queue'])
+    queue_channel = await queue_connection.channel()
+
 
 app = web.Application()
-#app.on_startup.append(configure)
+app.on_startup.append(configure)
 app.add_routes([web.get('/', websocket_handler)])
 
 

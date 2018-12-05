@@ -1,14 +1,27 @@
-import asyncio
-
-import pytest
+import redis
+import aioredis
 import aiohttp
-from bddrest.authoring import when, Update, Remove, status
+import pytest
+from nanohttp import settings
 
 from jaguar.models import Member
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+from jaguar.messaging.websocket import SessionManager
+from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
 class TestWebsocketConnection(AutoDocumentationBDDTest):
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.redis = aioredis.create_redis(
+            f'redis://{settings.authentication.redis.host}:' \
+            f'{settings.authentication.redis.port}',
+            db=settings.authentication.redis.db,
+        )
+
+    async def setup(self):
+        await self.redis.flushdb()
 
     @classmethod
     def mockup(cls):
@@ -31,6 +44,9 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
     async def test_websocket(self, websocket_session):
         self.login('member@example.com')
+        self.setup()
+
+        session_manager = SessionManager()
 
         with pytest.raises(aiohttp.WSServerHandshakeError):
             async with websocket_session() as ws:
@@ -43,4 +59,6 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
                     print('Server: ', msg.data)
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     break
+
+            assert self.redis.hget(token.id, token.session_id) is not None
 
