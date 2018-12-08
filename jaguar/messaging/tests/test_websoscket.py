@@ -1,8 +1,11 @@
+import time
+
 import redis
 import aioredis
 import aiohttp
 import pytest
 from nanohttp import settings
+from restfulpy.principal import JwtPrincipal
 
 from jaguar.models import Member
 from jaguar.messaging.websocket import SessionManager
@@ -11,16 +14,12 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 class TestWebsocketConnection(AutoDocumentationBDDTest):
 
-    @classmethod
-    def setup_class(cls):
-        super().setup_class()
-        cls.redis = aioredis.create_redis(
+    async def setup(self):
+        self.redis = await aioredis.create_redis(
             f'redis://{settings.authentication.redis.host}:' \
             f'{settings.authentication.redis.port}',
             db=settings.authentication.redis.db,
         )
-
-    async def setup(self):
         await self.redis.flushdb()
 
     @classmethod
@@ -44,21 +43,75 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
     async def test_websocket(self, websocket_session):
         self.login('member@example.com')
-        self.setup()
+        await self.setup()
 
         session_manager = SessionManager()
 
-        with pytest.raises(aiohttp.WSServerHandshakeError):
-            async with websocket_session() as ws:
-               pass
+#        with pytest.raises(aiohttp.WSServerHandshakeError):
+#            async with websocket_session() as ws:
+#               pass
 
         async with websocket_session(token=self._authentication_token) as ws:
-            await ws.send_str('close')
-            async for msg in ws:
-                if msg.type == aiohttp.WSMsgType.TEXT:
-                    print('Server: ', msg.data)
-                elif msg.type == aiohttp.WSMsgType.ERROR:
-                    break
+            token = JwtPrincipal.load(self._authentication_token)
 
-            assert self.redis.hget(token.id, token.session_id) is not None
+             # TODO: Ask from Mr.Mardani what do these lines do?
+#            await ws.send_str('close')
+#            async for msg in ws:
+#                if msg.type == aiohttp.WSMsgType.TEXT:
+#                    print('Server: ', msg.data)
+#                elif msg.type == aiohttp.WSMsgType.ERROR:
+#                    break
+
+            registered_sessions = await self.redis.hget(
+                f'member:{token.id}',
+                token.session_id
+            )
+
+            assert registered_sessions == str.encode(settings.worker.queue.url)
+
+            active_sessions = await session_manager.get_sessions(token.id)
+            assert active_sessions[0] == (
+                str.encode(token.session_id),
+                str.encode(settings.worker.queue.url)
+            )
+
+            time.sleep(1)
+            await ws.send_str('close')
+            time.sleep(1)
+            active_sessions = await session_manager.get_sessions(token.id)
+            assert active_sessions == None
+
+            await self.redis.flushdb()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -2,14 +2,13 @@ import asyncio
 from os import path
 
 import aio_pika
-import aioredis
 import aiohttp
+import aioredis
 import itsdangerous
 from aiohttp import web
-from restfulpy.principal import JwtPrincipal
-from restfulpy.configuration import configure as restfulpy_configure
 from nanohttp import settings
-
+from restfulpy.configuration import configure as restfulpy_configure
+from restfulpy.principal import JwtPrincipal
 
 from jaguar import Jaguar
 
@@ -30,22 +29,20 @@ class SessionManager:
     async def register_session(self, member_id, session_id, queue):
         self._redis.hset(
             f'member:{member_id}',
-            member_id,
+            session_id,
             queue
         )
 
     async def get_sessions(self, member_id):
-        active_sessions = []
-        for session in self._redis.hgetall(f'member:{member_id}'):
-            active_sessions.append((
-                session,
-                self._redis.hget('name1', value)
-            ))
+        session_queue = await self._redis.hgetall(f'member:{member_id}')
+        active_sessions = [
+            (session, queue) for session, queue in session_queue.items()
+        ]
 
         return active_sessions
 
     async def cleanup_session(self, member_id, session_id):
-        self._redis.hdel(member_id, session_id)
+        self._redis.hdel(f'member:{member_id}', session_id)
 
     async def cleanup_member(self, member_id):
         self._redis.delete(member_id)
@@ -75,7 +72,7 @@ async def websocket_handler(request):
 
     ws = web.WebSocketResponse()
 
-    session_manager.redis()
+    await session_manager.redis()
     # Register session
     await session_manager.register_session(
         identity.id,
@@ -98,7 +95,7 @@ async def websocket_handler(request):
             print('ws connection closed with exception %s' %
                   ws.exception())
 
-    await session_manager.cleanup_session(token.id, token.session_id)
+    await session_manager.cleanup_session(identity.id, identity.session_id)
 
     print('websocket connection closed')
     return ws
