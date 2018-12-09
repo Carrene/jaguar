@@ -39,7 +39,7 @@ class SessionManager:
             (session, queue) for session, queue in session_queue.items()
         ]
 
-        return active_sessions
+        return active_sessions if active_sessions else None
 
     async def cleanup_session(self, member_id, session_id):
         self._redis.hdel(f'member:{member_id}', session_id)

@@ -66,7 +66,7 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
         await ws.send_str('close')
 
         active_sessions = await session_manager.get_sessions(token.id)
-        assert active_sessions == []
+        assert active_sessions == None
 
         await self.redis.flushdb()
 
