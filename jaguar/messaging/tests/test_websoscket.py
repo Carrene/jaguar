@@ -75,43 +75,10 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
                 str.encode(settings.worker.queue.url)
             )
 
-            time.sleep(1)
             await ws.send_str('close')
-            time.sleep(1)
+
             active_sessions = await session_manager.get_sessions(token.id)
             assert active_sessions == None
 
             await self.redis.flushdb()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
