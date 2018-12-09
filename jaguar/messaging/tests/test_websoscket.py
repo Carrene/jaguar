@@ -47,20 +47,8 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
         session_manager = SessionManager()
 
-#        with pytest.raises(aiohttp.WSServerHandshakeError):
-#            async with websocket_session() as ws:
-#               pass
-
         async with websocket_session(token=self._authentication_token) as ws:
             token = JwtPrincipal.load(self._authentication_token)
-
-             # TODO: Ask from Mr.Mardani what do these lines do?
-#            await ws.send_str('close')
-#            async for msg in ws:
-#                if msg.type == aiohttp.WSMsgType.TEXT:
-#                    print('Server: ', msg.data)
-#                elif msg.type == aiohttp.WSMsgType.ERROR:
-#                    break
 
             registered_sessions = await self.redis.hget(
                 f'member:{token.id}',
@@ -75,10 +63,10 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
                 str.encode(settings.worker.queue.url)
             )
 
-            await ws.send_str('close')
+        await ws.send_str('close')
 
-            active_sessions = await session_manager.get_sessions(token.id)
-            assert active_sessions == None
+        active_sessions = await session_manager.get_sessions(token.id)
+        assert active_sessions == []
 
-            await self.redis.flushdb()
+        await self.redis.flushdb()
 
