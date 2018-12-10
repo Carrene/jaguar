@@ -55,12 +55,12 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
                 token.session_id
             )
 
-            assert registered_sessions == str.encode(settings.worker.queue.url)
+            assert registered_sessions == str.encode(settings.rabbitmq.url)
 
             active_sessions = await session_manager.get_sessions(token.id)
             assert active_sessions[0] == (
                 str.encode(token.session_id),
-                str.encode(settings.worker.queue.url)
+                str.encode(settings.rabbitmq.url)
             )
 
         await ws.send_str('close')

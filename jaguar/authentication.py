@@ -1,11 +1,10 @@
-from restfulpy.authentication import StatefulAuthenticator
-from nanohttp import HTTPConflict, HTTPBadRequest, context, HTTPUnauthorized
+from cas import CASPrincipal
+from nanohttp import HTTPBadRequest, context
 from restfulpy.authentication import StatefulAuthenticator
 from restfulpy.orm import DBSession
-from cas import CASPrincipal
 
-from .models import Member
 from .backends import CASClient
+from .models import Member
 
 
 class Authenticator(StatefulAuthenticator):

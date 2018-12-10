@@ -1,51 +1,15 @@
-import asyncio
 from os import path
 
 import aio_pika
 import aiohttp
-import aioredis
 import itsdangerous
 from aiohttp import web
 from nanohttp import settings
 from restfulpy.configuration import configure as restfulpy_configure
 from restfulpy.principal import JwtPrincipal
 
+from .session_manager import SessionManager
 from jaguar import Jaguar
-
-
-class SessionManager:
-    _redis = None
-
-    @classmethod
-    async def redis(cls):
-       if cls._redis is None:
-           cls._redis = await aioredis.create_redis(
-               f'redis://{settings.authentication.redis.host}:' \
-               f'{settings.authentication.redis.port}',
-               db=settings.authentication.redis.db,
-            )
-       return cls._redis
-
-    async def register_session(self, member_id, session_id, queue):
-        self._redis.hset(
-            f'member:{member_id}',
-            session_id,
-            queue
-        )
-
-    async def get_sessions(self, member_id):
-        session_queue = await self._redis.hgetall(f'member:{member_id}')
-        active_sessions = [
-            (session, queue) for session, queue in session_queue.items()
-        ]
-
-        return active_sessions if active_sessions else None
-
-    async def cleanup_session(self, member_id, session_id):
-        self._redis.hdel(f'member:{member_id}', session_id)
-
-    async def cleanup_member(self, member_id):
-        self._redis.delete(member_id)
 
 
 session_manager = SessionManager()
@@ -101,11 +65,21 @@ async def websocket_handler(request):
     return ws
 
 
-async def worker():
-    while True:
-        # TODO: pull one by one from the app[queue]
-        await asyncio.sleep(1)
-        print('Worker tick')
+async def worker(title):
+    queue_name = f'worker_{title}'
+
+    async with queue_connection:
+        message_router = MessageRouter()
+        channel = await connection.channel()
+
+        queue_manager.create(queue_name)
+
+        async for message in queue:
+            with message.process():
+
+                # FIXME: where should i get tid from?
+                # members = message_router.get_members_by_target(tid)
+                print(f'{message.body}: {message.body.decode()}')
 
 
 async def start_background_tasks(app):
@@ -132,9 +106,8 @@ async def configure(app):
     settings.merge(Jaguar.__configuration__)
     # FIXME: Configuration file?
 
-    app['queue'] = settings.worker.queue.url
+    app['queue'] = settings.rabbitmq.url
     queue_connection = await aio_pika.connect_robust(app['queue'])
-    queue_channel = await queue_connection.channel()
 
 
 app = web.Application()

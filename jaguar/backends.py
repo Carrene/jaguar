@@ -1,7 +1,7 @@
 import json
 
 import requests
-from nanohttp import settings, HTTPFound, HTTPForbidden
+from nanohttp import settings, HTTPForbidden
 
 from .exceptions import CASServerNotAvailable, CASServerNotFound, \
     CASInternallError
