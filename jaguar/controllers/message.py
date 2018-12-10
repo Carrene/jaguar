@@ -31,14 +31,14 @@ class MessageController(ModelRestController):
         current_member = DBSession.query(Member) \
             .filter(Member.reference_id == context.identity.reference_id) \
             .one()
-        is_member = DBSession.query(TargetMember) \
-            .filter(
-                TargetMember.target_id == target_id,
-                TargetMember.member_id == current_member.id
-            ) \
-            .count()
-        if not is_member:
-            raise HTTPForbidden()
+#        is_member = DBSession.query(TargetMember) \
+#            .filter(
+#                TargetMember.target_id == target_id,
+#                TargetMember.member_id == current_member.id
+#            ) \
+#            .count()
+#        if not is_member:
+#            raise HTTPForbidden()
 
         message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
