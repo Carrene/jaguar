@@ -1,14 +1,9 @@
-import time
-
-import redis
 import aioredis
-import aiohttp
-import pytest
 from nanohttp import settings
 from restfulpy.principal import JwtPrincipal
 
-from jaguar.models import Member
 from jaguar.messaging.websocket import SessionManager
+from jaguar.models import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 

@@ -6,7 +6,7 @@ from nanohttp import settings
 
 
 class QueueManager:
-    _channel = None
+    _channel__ = None
     queues = None
 
     def __init__(self):
@@ -14,19 +14,19 @@ class QueueManager:
 
     @property
     async def rabbitmq(self) -> RabbitChannel:
-        if self._channel is None:
+        if self._channel__ is None:
             connection = await aio_pika.connect(settings.rabbitmq.url)
-            self._channel = connection.channel()
+            self._channel__ = connection.channel()
 
-        return self._channel
+        return self._channel__
 
     async def create_queue(self, name: str):
-        queue = await channel.declare_queue(name)
+        queue = await self._channel__.declare_queue(name)
         self.queues[name] = queue
         return queue
 
     async def enqueue(self, queue_name: str, envelop: str):
-        await self._channel.default_exchange.publish(
+        await self._channel__.default_exchange.publish(
             aio_pika.Message(
                 body=envelop
             ),

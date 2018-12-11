@@ -74,7 +74,7 @@ async def worker(title):
 
         queue_manager.create(queue_name)
 
-        async for message in queue:
+        async for message in app['queue']:
             with message.process():
 
                 # FIXME: where should i get tid from?
