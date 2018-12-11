@@ -67,12 +67,3 @@ class TestSendMessage(AutoDocumentationBDDTest):
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
 
-#            self.logout()
-#            self.login('user2@example.com')
-#
-#            when(
-#                'Not member try to send a message',
-#                 authorization=self._authentication_token
-#            )
-#            assert status == 403
-

@@ -117,12 +117,3 @@ class TestListMessages(AutoDocumentationBDDTest):
             when('Try to pass an Unauthorized request', authorization=None)
             assert status == 401
 
-#            self.logout()
-#            self.login('user2@example.com')
-#
-#            when(
-#                'Not member try to list messages of a target',
-#                authorization=self._authentication_token
-#            )
-#            assert status == 403
-
