@@ -1,7 +1,9 @@
 import aio_pika
+from nanohttp import settings
 from restfulpy.orm import DBSession
 
 from ..models import TargetMember, Member
+from .websocket import session_manager, queue_manager
 
 
 class MessageRouter:
@@ -13,10 +15,10 @@ class MessageRouter:
             .all()
         return members
 
-    async def route(self, envelop, member_id):
-        for session, queue in session_manager.get_session(member_id):
-            await channel.default_exchange.publish(
-                aio_pika.Message(envelop),
-                routing_key=queue
-            )
+    async def route(self, envelop):
+        members = self.get_members_by_target(envelop['target_id'])
+        for member in members:
+            active_sessions = await session_manager.get_sessions(member.id)
+            for session, queue in active_sessions:
+                await queue_manager.enqueue(settings.rabbitmq.url, envelop)
 

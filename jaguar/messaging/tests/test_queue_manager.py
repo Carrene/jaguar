@@ -1,15 +1,48 @@
+import json
+
+import aio_pika
+
 from jaguar.messaging.queue_manager import QueueManager
 from jaguar.tests.helpers import AutoDocumentationBDDTest
-from jaguar.messaging.message_router import MessageRouter
 
 
 class TestQueueManager(AutoDocumentationBDDTest):
 
-    def setup(self):
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.number_of_callbacks = 0
+        cls.last_message = None
+
+    @classmethod
+    async def callback(cls, message: aio_pika.IncomingMessage):
+        with message.process():
+            cls.number_of_callbacks += 1
+            cls.last_message = message.body
+
+    async def process_message(message: aio_pika.IncomingMessage):
+        with message.process():
+            print(message.body)
+            await asyncio.sleep(1)
+
+    async def setup(self):
+        self.queue_name = 'test_queue'
+        self.envelop = {'target_id': 1, 'message': 'sample message'}
         self.queue_manager = QueueManager()
 
-    async def test_rabbitmq(self):
-        await self.queue_manager.rabbitmq
+        self.connection = await self.queue_manager.rabbitmq
+        self.queue = await self.queue_manager.create_queue(self.queue_name)
 
-        await self.queue_manager.create_queue('test_queue')
+    async def test_enqueue(self):
+        await self.setup()
+        await self.queue_manager.enqueue(self.queue_name, self.envelop)
+
+        async for message in self.queue:
+            with message.process():
+                assert message.body == bytes(json.dumps(self.envelop), 'utf-8')
+                break
+
+    async def test_dequeue(self):
+        await self.setup()
+        await self.queue_manager.dequeue(self.queue_name, self.process_message)
 

@@ -8,11 +8,13 @@ from nanohttp import settings
 from restfulpy.configuration import configure as restfulpy_configure
 from restfulpy.principal import JwtPrincipal
 
+from .queue_manager import QueueManager
 from .session_manager import SessionManager
 from jaguar import Jaguar
 
 
 session_manager = SessionManager()
+queue_manager = QueueManager()
 
 
 async def authenticate(request):
@@ -47,8 +49,8 @@ async def websocket_handler(request):
     await ws.prepare(request)
 
     async for msg in ws:
-        # TODO: These lines below are completely useless and must be removed before
-        # the first version
+        # TODO: These lines below are completely useless and must be removed
+        # before the first version
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
                 await ws.send_str('closing')

@@ -1,38 +1,43 @@
+import json
 from typing import Callable
 
 import aio_pika
-from aio_pika.channel import Channel as RabbitChannel
+from aio_pika.connection import Connection as RabbitConnection
 from nanohttp import settings
 
 
 class QueueManager:
-    _channel__ = None
+    _channel = None
+    _connection = None
     queues = None
 
     def __init__(self):
         self.queues = {}
 
     @property
-    async def rabbitmq(self) -> RabbitChannel:
-        if self._channel__ is None:
-            connection = await aio_pika.connect(settings.rabbitmq.url)
-            self._channel__ = connection.channel()
+    async def rabbitmq(self) -> RabbitConnection:
+        if self._connection is None:
+            self._connection = await aio_pika.connect(settings.rabbitmq.url)
 
-        return self._channel__
+        return self._connection
 
     async def create_queue(self, name: str):
-        queue = await self._channel__.declare_queue(name)
+        if self._channel is None:
+            self._channel = await self._connection.channel()
+
+        queue = await self._channel.declare_queue(name)
         self.queues[name] = queue
         return queue
 
     async def enqueue(self, queue_name: str, envelop: str):
-        await self._channel__.default_exchange.publish(
-            aio_pika.Message(
-                body=envelop
-            ),
-            routing_key=queue_name
-        )
+        encoded_envelop = bytes(json.dumps(envelop), 'utf-8')
+
+        async with self._connection.channel() as channel:
+            await channel.default_exchange.publish(
+                aio_pika.Message(body=encoded_envelop),
+                routing_key=queue_name
+            )
 
     async def dequeue(self, queue_name: str, callback: Callable):
-        self.queues[queue_name].consume(callback)
+        await self.queues[queue_name].consume(callback)
 
