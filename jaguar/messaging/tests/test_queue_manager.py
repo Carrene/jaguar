@@ -20,11 +20,6 @@ class TestQueueManager(AutoDocumentationBDDTest):
             cls.number_of_callbacks += 1
             cls.last_message = message.body
 
-    async def process_message(message: aio_pika.IncomingMessage):
-        with message.process():
-            print(message.body)
-            await asyncio.sleep(1)
-
     async def setup(self):
         self.queue_name = 'test_queue'
         self.envelop = {'target_id': 1, 'message': 'sample message'}
@@ -44,5 +39,5 @@ class TestQueueManager(AutoDocumentationBDDTest):
 
     async def test_dequeue(self):
         await self.setup()
-        await self.queue_manager.dequeue(self.queue_name, self.process_message)
+        await self.queue_manager.dequeue(self.queue_name, self.callback)
 
