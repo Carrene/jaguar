@@ -78,10 +78,8 @@ async def worker(title):
 
         async for message in app['queue']:
             with message.process():
-
-                # FIXME: where should i get tid from?
-                # members = message_router.get_members_by_target(tid)
-                print(f'{message.body}: {message.body.decode()}')
+                # FIXME: edit message_router target id parameter
+                message_router.route(message.body.decode['target_id'])
 
 
 async def start_background_tasks(app):
