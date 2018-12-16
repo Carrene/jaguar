@@ -47,14 +47,7 @@ class Authenticator(StatefulAuthenticator):
         if cas_member['email'] != principal.email:
             raise HTTPBadRequest()
 
-        if member is None:
-            DBSession.add(Member(
-                    email=cas_member['email'],
-                    title=cas_member['title'],
-                    reference_id=cas_member['id'],
-                    access_token=access_token
-            ))
-        elif member.title != cas_member['title']:
+        if member and member.title != cas_member['title']:
             member.title = cas_member['title']
 
         DBSession.commit()
