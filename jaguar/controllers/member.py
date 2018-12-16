@@ -53,9 +53,8 @@ class MemberController(ModelRestController):
     @json
     @Member.expose
     @commit
-    def create(self):
+    def ensure(self):
         title = context.form.get('title')
-        from pudb import set_trace; set_trace()
         if not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
             raise HTTPBadRequest()
 

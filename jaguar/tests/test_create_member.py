@@ -17,7 +17,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         with cas_mockup_server(), self.given(
             'Create a member',
             '/apiv1/members',
-            'CREATE',
+            'ENSURE',
             headers=dict(
                 authorization=token,
                 x_oauth2_access_token='access token1'
