@@ -1,13 +1,13 @@
 
 from sqlalchemy import or_
 from nanohttp import json, context, HTTPStatus, settings, validate, \
-    HTTPNotFound
+    HTTPNotFound, HTTPBadRequest
 from restfulpy.controllers import ModelRestController
-from restfulpy.orm import DBSession
+from restfulpy.orm import DBSession, commit
 from restfulpy.authorization import authorize
 
 from ..models import Member
-from ..validators import search_member_validator
+from ..validators import search_member_validator, create_member_validator
 
 
 class MemberController(ModelRestController):
@@ -47,4 +47,31 @@ class MemberController(ModelRestController):
             raise HTTPNotFound()
 
         return user
+
+    @authorize
+    @create_member_validator
+    @json
+    @Member.expose
+    @commit
+    def create(self):
+        title = context.form.get('title')
+        from pudb import set_trace; set_trace()
+        if not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
+            raise HTTPBadRequest()
+
+        access_token = context.environ['HTTP_X_OAUTH2_ACCESS_TOKEN']
+
+        member = DBSession.query(Member) \
+            .filter(Member.reference_id == context.identity.reference_id) \
+            .one_or_none()
+
+        if not member:
+            member = Member(
+                email=context.identity.email,
+                title=title,
+                reference_id=context.identity.reference_id,
+                access_token=access_token
+            )
+            DBSession.add(member)
+        return member
 

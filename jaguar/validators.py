@@ -15,6 +15,15 @@ create_room_validator = validate(
 )
 
 
+create_member_validator = validate(
+    title=dict(
+        min_length=(1, '701 Must Be Greater Than 1 Charecters'),
+        max_length=(50, '702 Must Be Less Than 50 Charecters'),
+        required='703 member Title Is Required',
+    )
+)
+
+
 kick_member_validator = validate(
     memberId=dict(
         type_=(int, '705 Invalid Member Id'),
