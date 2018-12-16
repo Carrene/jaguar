@@ -25,23 +25,11 @@ class TestAddToContact(AutoDocumentationBDDTest):
             form=dict(title='example')
         ):
             assert status == 200
-            assert response.json['title'] == 'example'
+            assert response.json['title'] == 'user1'
 
             when(
                 'Access token is not in headers',
                 headers=Remove('x_oauth2_access_token')
             )
             assert status == 400
-
-            when(
-                'Title not in the form',
-                form=Remove('title')
-            )
-            assert status == 703
-
-            when(
-                'Title exceeded maximum length',
-                form=Update(title=(50 + 1) * 'a')
-            )
-            assert status == 702
 

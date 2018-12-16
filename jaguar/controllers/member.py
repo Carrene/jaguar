@@ -54,7 +54,6 @@ class MemberController(ModelRestController):
     @Member.expose
     @commit
     def ensure(self):
-        title = context.form.get('title')
         if not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
             raise HTTPBadRequest()
 
@@ -67,7 +66,7 @@ class MemberController(ModelRestController):
         if not member:
             member = Member(
                 email=context.identity.email,
-                title=title,
+                title=context.identity.payload['title'],
                 reference_id=context.identity.reference_id,
                 access_token=access_token
             )
