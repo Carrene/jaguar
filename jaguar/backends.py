@@ -1,7 +1,7 @@
 import json
 
 import requests
-from nanohttp import settings, HTTPFound, HTTPForbidden
+from nanohttp import settings, HTTPFound, HTTPForbidden, HTTPUnauthorized
 
 from .exceptions import CASServerNotAvailable, CASServerNotFound, \
     CASInternallError
@@ -22,9 +22,6 @@ class CASClient:
                 applicationId=settings.oauth['application_id']
             )
         )
-        if response.status_code == 403:
-            raise HTTPForbidden()
-
         if response.status_code == 404:
             raise CASServerNotFound()
 
@@ -35,6 +32,9 @@ class CASClient:
 
         if response.status_code == 500:
             raise CASInternallError()
+
+        if response.status_code != 200:
+            raise HTTPUnauthorized()
 
         result = json.loads(response.text)
         return result['accessToken'], result['memberId']
@@ -45,8 +45,6 @@ class CASClient:
             f'{settings.oauth.url}/apiv1/members/me',
             headers={'authorization': f'oauth2-accesstoken {access_token}'}
         )
-        if response.status_code == 403:
-            raise HTTPForbidden()
 
         if response.status_code == 404:
             raise CASServerNotFound()
@@ -58,6 +56,9 @@ class CASClient:
 
         if response.status_code == 500:
             raise CASInternallError()
+
+        if response.status_code != 200:
+            raise HTTPUnauthorized()
 
         member = json.loads(response.text)
         return member
