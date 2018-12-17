@@ -70,5 +70,8 @@ class MemberController(ModelRestController):
                 access_token=access_token
             )
             DBSession.add(member)
+        else:
+            member.access_token = access_token
+
         return member
 
