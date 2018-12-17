@@ -73,6 +73,6 @@ class MemberController(ModelRestController):
         else:
             member.access_token = access_token
 
-        DBSessin.add(member)
+        DBSession.add(member)
         return member
 
