@@ -92,7 +92,8 @@ class TestApplication(AutoDocumentationBDDTest):
                 )).dump().decode()
                 when(
                     'Member exist in database',
-                    authorization=member_token
+                    authorization=member_token,
+                    headers=Remove('X-Oauth2-Access-Token')
                 )
                 assert status == 200
 

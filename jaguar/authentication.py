@@ -40,8 +40,9 @@ class Authenticator(StatefulAuthenticator):
         if not member and not 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ:
             raise HTTPBadRequest()
 
-        access_token = member.access_token if member \
-            else context.environ['HTTP_X_OAUTH2_ACCESS_TOKEN']
+        access_token = context.environ['HTTP_X_OAUTH2_ACCESS_TOKEN'] \
+            if 'HTTP_X_OAUTH2_ACCESS_TOKEN' in context.environ \
+            else member.access_token
 
         cas_member = CASClient().get_member(access_token)
         if cas_member['email'] != principal.email:
