@@ -49,7 +49,6 @@ class MemberController(ModelRestController):
         return user
 
     @authorize
-    @create_member_validator
     @json
     @Member.expose
     @commit
