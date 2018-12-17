@@ -105,7 +105,7 @@ class TestCASClient(AutoDocumentationBDDTest):
                     'Trying to pass with damage authorization code',
                     form=Update(authorizationCode='token is damage')
                 )
-                assert status == 403
+                assert status == 401
 
                 with cas_server_status('503 Service Not Available'):
                     when('CAS server is not available')
