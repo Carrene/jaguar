@@ -28,8 +28,8 @@ class MessageController(ModelRestController):
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
-        if not Member.is_member(target_id):
-            raise HTTPForbidden()
+#        if not Member.current().is_member(target_id):
+#            raise HTTPForbidden()
 
         message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
@@ -50,7 +50,7 @@ class MessageController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
-        if not Member.is_member(target_id):
+        if not Member.current().is_member(target_id):
             raise HTTPForbidden
 
         query = DBSession.query(Message) \
