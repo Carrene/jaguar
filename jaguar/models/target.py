@@ -9,13 +9,6 @@ from .membership import Member
 from .envelop import Envelop
 
 
-class TargetMember(DeclarativeBase):
-    __tablename__ = 'target_member'
-
-    target_id = Field(Integer, ForeignKey('target.id'), primary_key=True)
-    member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
-
-
 room_administrator = Table(
     'room_administrator',
     DeclarativeBase.metadata,

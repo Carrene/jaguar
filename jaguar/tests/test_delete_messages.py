@@ -70,10 +70,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert response.json['body'] == 'This message is deleted'
-            assert len(self.session.query(Message).all()) == 3
-            message1 = self.session.query(Message).filter(Message.id==1).one()
-            assert message1.body == 'This message is deleted'
-            assert message1.is_deleted is True
+            assert response.json['removedAt'] is not None
 
             when(
                 'Delete a message with attachment',
@@ -91,7 +88,7 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             )
             assert status == 403
 
-            when('The message not exists', url_parameters=Update(id=4))
+            when('The message not exists', url_parameters=Update(id=0))
             assert status == '614 Message Not Found'
 
             when(
