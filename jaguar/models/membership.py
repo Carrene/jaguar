@@ -134,12 +134,11 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         return DBSession.query(cls) \
             .filter(cls.reference_id == context.identity.reference_id).one()
 
-    @classmethod
-    def is_member(cls, target_id):
-        return DBSession.query(cls).join(TargetMember) \
+    def is_member(self, target_id):
+        return DBSession.query(Member).join(TargetMember) \
             .filter(
                 TargetMember.target_id == target_id,
-                TargetMember.member_id == cls.current().id
+                TargetMember.member_id == self.id
             ) \
             .count()
 
