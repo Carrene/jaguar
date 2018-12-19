@@ -47,7 +47,6 @@ class MessageController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
-
         query = DBSession.query(Message) \
             .filter(Message.target_id == target_id)
         return query
