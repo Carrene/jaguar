@@ -43,8 +43,14 @@ class TestQueueManager(AutoDocumentationBDDTest):
                 break
 
     async def test_dequeue_async(self):
-        await self.setup()
-        await self.queue_manager.dequeue_async(self.queue_name, self.callback)
+        queue_name = 'test_queue'
+        envelop = {'target_id': 1, 'message': 'sample message'}
+        queue_manager = QueueManager()
+
+        connection = await queue_manager.rabbitmq_async
+        queue = await queue_manager.create_queue_async(queue_name)
+
+        await queue_manager.dequeue_async(queue_name, self.callback)
 
     def _enqueue_threadsafe(self):
         queue_manager.enqueue(self.queue_name, self.envelop)
