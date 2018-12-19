@@ -34,6 +34,13 @@ class MemberContact(DeclarativeBase):
     contact_member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
 
 
+class TargetMember(DeclarativeBase):
+    __tablename__ = 'target_member'
+
+    target_id = Field(Integer, ForeignKey('target.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
+
+
 class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
     __tablename__ = 'member'
 
@@ -126,6 +133,15 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
     def current(cls):
         return DBSession.query(cls) \
             .filter(cls.reference_id == context.identity.reference_id).one()
+
+    @classmethod
+    def is_member(cls, target_id):
+        return DBSession.query(cls).join(TargetMember) \
+            .filter(
+                TargetMember.target_id == target_id,
+                TargetMember.member_id == cls.current().id
+            ) \
+            .count()
 
     def to_dict(self):
         member_dict = super().to_dict()

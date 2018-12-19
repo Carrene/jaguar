@@ -28,21 +28,12 @@ class MessageController(ModelRestController):
         if not mimetype in SUPPORTED_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
-        current_member = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
-        is_member = DBSession.query(TargetMember) \
-            .filter(
-                TargetMember.target_id == target_id,
-                TargetMember.member_id == current_member.id
-            ) \
-            .count()
-        if not is_member:
+        if not Member.is_member(target_id):
             raise HTTPForbidden()
 
         message = Message(body=body, mimetype=mimetype)
         message.target_id = target_id
-        message.sender_id = current_member.id
+        message.sender_id = Member.current().id
         if 'attachment' in context.form:
             message.attachment = attachment
 
@@ -59,16 +50,7 @@ class MessageController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Message.expose
     def list(self, target_id):
-        current_member = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
-        is_member = DBSession.query(TargetMember) \
-            .filter(
-                TargetMember.target_id == target_id,
-                TargetMember.member_id == current_member.id
-            ) \
-            .count()
-        if not is_member:
+        if not Member.is_member(target_id):
             raise HTTPForbidden
 
         query = DBSession.query(Message) \
@@ -95,16 +77,7 @@ class MessageController(ModelRestController):
         if message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        current_member = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
-        is_member = DBSession.query(TargetMember) \
-            .filter(
-                TargetMember.target_id == message.target_id,
-                TargetMember.member_id == current_member.id
-            ) \
-            .count()
-        if not is_member or message.sender_id != current_member.id:
+        if not message.sender_id == Member.current().id:
             raise HTTPForbidden()
 
         message.body = 'This message is deleted'
@@ -124,9 +97,6 @@ class MessageController(ModelRestController):
             raise HTTPStatus('707 Invalid MessageId')
 
         new_message_body = context.form.get('body')
-        current_member = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
         message = DBSession.query(Message) \
             .filter(Message.id == id) \
             .one_or_none()
@@ -136,7 +106,7 @@ class MessageController(ModelRestController):
         if message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        if message.sender_id != current_member.id:
+        if message.sender_id != Member.current().id:
             raise HTTPForbidden()
 
         message.body = new_message_body
@@ -158,14 +128,11 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPStatus('614 Message Not Found')
 
-        current_user = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
         is_subscribe = DBSession.query(Target) \
             .filter(
                 Target.id == message.target_id,
                 TargetMember.target_id == message.target_id,
-                TargetMember.member_id == current_user.id
+                TargetMember.member_id == Member.current().id
             ) \
             .count()
         if not is_subscribe:
@@ -197,12 +164,9 @@ class MessageController(ModelRestController):
         if requested_message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        current_member = DBSession.query(Member) \
-            .filter(Member.reference_id == context.identity.reference_id) \
-            .one()
         message = Message(body=context.form.get('body'), mimetype=mimetype)
         message.target_id = requested_message.target_id
-        message.sender_id = current_member.id
+        message.sender_id = Member.current().id
         message.reply_to = requested_message
         DBSession.add(message)
         return message
