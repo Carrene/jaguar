@@ -1,8 +1,8 @@
 from nanohttp import settings
+import aio_pika
 
-from jaguar.messaging.session_manager import SessionManager
 from jaguar.messaging.message_router import MessageRouter
-from jaguar.messaging.queue_manager import QueueManager
+from jaguar.messaging.websocket import queue_manager, session_manager
 from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
@@ -35,26 +35,41 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         cls.envelop = {'target_id': cls.room.id}
 
     async def setup(self):
-        self.session_manager = SessionManager()
-        await self.session_manager.redis()
-        await self.session_manager.register_session(
+        await session_manager.redis()
+        await session_manager.register_session(
             f'member:{self.member1.id}',
             1,
-            settings.rabbitmq.url
+            'test_queue'
         )
         self.queue_name = 'test_queue'
         self.envelop = {'target_id': 1, 'message': 'sample message'}
-        self.queue_manager = QueueManager()
-        self.connection = await self.queue_manager.rabbitmq_async
-        self.queue = await self.queue_manager.create_queue_async(self.queue_name)
+        self.connection_async = await queue_manager.rabbitmq_async
+        self.queue_async = await queue_manager.create_queue_async(self.queue_name)
 
-#    def test_get_member_by_taget(self):
-#        members = self.message_router.get_members_by_target(self.room.id)
-#        assert len(members) == 2
-#        assert members[0].title == self.member1.title
-#        assert members[1].title == self.member2.title
+    def test_get_member_by_taget(self):
+        members = self.message_router.get_members_by_target(self.room.id)
+        assert len(members) == 2
+        assert members[0].title == self.member1.title
+        assert members[1].title == self.member2.title
 
     async def test_route(self):
+        number_of_messages = 0
+        last_message = None
         await self.setup()
+        await queue_manager._channel_async.default_exchange.publish(
+            aio_pika.Message(b'Sample message'),
+            routing_key='test_queue',
+        )
+
         await self.message_router.route(self.envelop)
+
+        async with self.connection_async:
+            async for message in self.queue_async:
+                with message.process():
+                    number_of_messages += 1
+
+                    if number_of_messages == 1:
+                        break
+
+        assert number_of_messages == 1
 
