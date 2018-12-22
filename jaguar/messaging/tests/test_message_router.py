@@ -1,9 +1,10 @@
 from nanohttp import settings
 
+from jaguar.messaging.session_manager import SessionManager
 from jaguar.messaging.message_router import MessageRouter
+from jaguar.messaging.queue_manager import QueueManager
 from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
-from jaguar.messaging.websocket import session_manager, queue_manager
 
 
 class TestMessageRouter(AutoDocumentationBDDTest):
@@ -34,19 +35,24 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         cls.envelop = {'target_id': cls.room.id}
 
     async def setup(self):
-        await session_manager.redis()
-        await session_manager.register_session(
+        self.session_manager = SessionManager()
+        await self.session_manager.redis()
+        await self.session_manager.register_session(
             f'member:{self.member1.id}',
             1,
             settings.rabbitmq.url
         )
-        self.channel = await queue_manager.rabbitmq
+        self.queue_name = 'test_queue'
+        self.envelop = {'target_id': 1, 'message': 'sample message'}
+        self.queue_manager = QueueManager()
+        self.connection = await self.queue_manager.rabbitmq_async
+        self.queue = await self.queue_manager.create_queue_async(self.queue_name)
 
-    def test_get_member_by_taget(self):
-        members = self.message_router.get_members_by_target(self.room.id)
-        assert len(members) == 2
-        assert members[0].title == self.member1.title
-        assert members[1].title == self.member2.title
+#    def test_get_member_by_taget(self):
+#        members = self.message_router.get_members_by_target(self.room.id)
+#        assert len(members) == 2
+#        assert members[0].title == self.member1.title
+#        assert members[1].title == self.member2.title
 
     async def test_route(self):
         await self.setup()

@@ -1,3 +1,4 @@
+import asyncio
 from os import path
 
 import aio_pika
@@ -8,9 +9,9 @@ from nanohttp import settings
 from restfulpy.configuration import configure as restfulpy_configure
 from restfulpy.principal import JwtPrincipal
 
+from jaguar import Jaguar
 from .queue_manager import QueueManager
 from .session_manager import SessionManager
-from jaguar import Jaguar
 
 
 session_manager = SessionManager()
@@ -67,19 +68,10 @@ async def websocket_handler(request):
     return ws
 
 
-async def worker(title):
-    queue_name = f'worker_{title}'
-
-    async with queue_connection:
-        message_router = MessageRouter()
-        channel = await connection.channel()
-
-        queue_manager.create(queue_name)
-
-        async for message in app['queue']:
-            with message.process():
-                # FIXME: edit message_router target id parameter
-                message_router.route(message.body.decode['target_id'])
+async def worker():
+    while True:
+        await asyncio.sleep(1)
+        print('Worker tick')
 
 
 async def start_background_tasks(app):

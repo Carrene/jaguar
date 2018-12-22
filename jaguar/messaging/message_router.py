@@ -20,5 +20,5 @@ class MessageRouter:
         for member in members:
             active_sessions = await session_manager.get_sessions(member.id)
             for session, queue in active_sessions:
-                await queue_manager.enqueue(settings.rabbitmq.url, envelop)
+                await queue_manager.enqueue_async(queue, envelop)
 
