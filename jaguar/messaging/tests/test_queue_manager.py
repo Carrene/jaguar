@@ -17,10 +17,10 @@ class TestQueueManager(AutoDocumentationBDDTest):
         cls.last_message = None
 
     @classmethod
-    async def callback(cls, message: aio_pika.IncomingMessage):
+    async def callback(self, message: aio_pika.IncomingMessage):
         with message.process():
-            cls.number_of_callbacks += 1
-            cls.last_message = message.body
+            self.number_of_callbacks += 1
+            self.last_message = message.body
 
     async def setup(self):
         self.queue_name = 'test_queue'
@@ -41,26 +41,28 @@ class TestQueueManager(AutoDocumentationBDDTest):
             with message.process():
                 assert message.body == bytes(json.dumps(self.envelop), 'utf-8')
                 break
+        await self.connection.close()
 
     async def test_dequeue_async(self):
-        queue_name = 'test_queue'
-        envelop = {'target_id': 1, 'message': 'sample message'}
-        queue_manager = QueueManager()
-
-        connection = await queue_manager.rabbitmq_async
-        queue = await queue_manager.create_queue_async(queue_name)
-
-        await queue_manager.dequeue_async(queue_name, self.callback)
-
-    def _enqueue_threadsafe(self):
-        queue_manager.enqueue(self.queue_name, self.envelop)
-
-    async def test_enqueue(self):
         await self.setup()
-        connection = queue_manager.rabbitmq
-        queue = queue_manager.create_queue(self.queue_name)
-        async for message in self.queue:
-            with message.process():
-                assert message.body.encode() == json.dumps(self.envelop)
-                break
+
+        await self.queue_manager._channel_async.default_exchange.publish(
+            aio_pika.Message(b'Sample message'),
+            routing_key='test_queue',
+        )
+
+        await self.queue.consume(self.callback)
+        await self.connection.close()
+
+        assert self.number_of_callbacks == 1
+        assert self.last_message == b'Sample message'
+
+#    async def test_enqueue(self):
+#        await self.setup()
+#        connection = queue_manager.rabbitmq
+#        queue = queue_manager.create_queue(self.queue_name)
+#        async for message in self.queue:
+#            with message.process():
+#                assert message.body.encode() == json.dumps(self.envelop)
+#                break
 
