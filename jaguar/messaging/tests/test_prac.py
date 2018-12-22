@@ -24,20 +24,38 @@ class TestQueueManager(AutoDocumentationBDDTest):
         self.envelop = {'target_id': 1, 'message': 'sample message'}
         self.queue_manager = QueueManager()
 
-        self.connection = await self.queue_manager.rabbitmq_async
-        self.queue = await self.queue_manager.create_queue_async(self.queue_name)
+#        self.connection_async = await self.queue_manager.rabbitmq_async
+#        self.queue_async = await self.queue_manager.create_queue_async(
+#            self.queue_name
+#        )
 
-    async def test_dequeue_async(self):
+#    async def test_dequeue_async(self):
+#        await self.setup()
+#
+#        await self.queue_manager._channel_async.default_exchange.publish(
+#            aio_pika.Message(b'Sample message'),
+#            routing_key='test_queue',
+#        )
+#
+#        await self.queue.consume(self.callback)
+#        await self.connection.close()
+#
+#        assert self.number_of_callbacks == 1
+#        assert self.last_message == b'Sample message'
+
+    async def test_enqueue(self):
         await self.setup()
+        connection = self.queue_manager.rabbitmq
+        queue = self.queue_manager.create_queue(self.queue_name)
+        self.queue_manager.enqueue('test_queue', self.envelop)
+        connection.close()
 
-        await self.queue_manager._channel_async.default_exchange.publish(
-            aio_pika.Message(b'Sample message'),
-            routing_key='test_queue',
+        connection_async = await self.queue_manager.rabbitmq_async
+        queue_async = await self.queue_manager.create_queue_async(
+            self.queue_name
         )
-
-        await self.queue.consume(self.callback)
-        await self.connection.close()
-
-        assert self.number_of_callbacks == 1
-        assert self.last_message == b'Sample message'
+        async for message in queue_async:
+            with message.process():
+                assert message.body.encode() == json.dumps(self.envelop)
+                break
 
