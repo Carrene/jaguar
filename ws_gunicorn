@@ -1,0 +1,7 @@
+#! /bin/bash
+
+gunicorn \
+	--chdir jaguar/messaging \
+	--bind localhost:8090 \
+	--worker-class aiohttp.worker.GunicornWebWorker \
+	websocket:app
