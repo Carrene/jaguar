@@ -16,12 +16,16 @@ Setting up development Environment on Linux
 
 ### Install Project (edit mode)
 
+##### NOTE: You need to have RabbitMQ installed on your machine. you can install it from [RabbitMQ guide](https://www.rabbitmq.com/install-debian.html).
+
 #### Working copy
-    
-    $ cd /path/to/workspace
-    $ git clone git@github.com:Carrene/jaguar.git
-    $ cd jaguar
-    $ pip install -e .
+
+```bash
+cd /path/to/workspace
+git clone git@github.com:Carrene/jaguar.git
+cd jaguar
+pip install -e .
+```
  
 ### Setup Database
 
@@ -47,21 +51,31 @@ storage:
 
 #### Remove old abd create a new database **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar db create --drop --mockup
+```bash
+jaguar db create --drop --mockup
+```
 
 And or
 
-    $ jaguar db create --drop --basedata 
+```bash
+jaguar db create --drop --basedata 
+```
 
 #### Drop old database: **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar [-c path/to/config.yml] db --drop
+```bash
+jaguar [-c path/to/config.yml] db --drop
+```
 
 #### Create database
 
-    $ jaguar [-c path/to/config.yml] db --create
+```bash
+jaguar [-c path/to/config.yml] db --create
+```
 
 Or, you can add `--drop` to drop the previously created database: **TAKE CARE ABOUT USING THAT**
 
-    $ jaguar [-c path/to/config.yml] db create --drop
+```bash
+jaguar [-c path/to/config.yml] db create --drop
+```
 
