@@ -10,8 +10,8 @@ from restfulpy.configuration import configure as restfulpy_configure
 from restfulpy.principal import JwtPrincipal
 
 from jaguar import Jaguar
-from queue_manager import QueueManager
-from session_manager import SessionManager
+from .queue_manager import QueueManager
+from .session_manager import SessionManager
 
 
 session_manager = SessionManager()
@@ -68,7 +68,7 @@ async def websocket_handler(request):
     return ws
 
 
-# TODO: Getting messages will be done in worker
+# TODO: Getting member from worker queue
 #async def worker():
 #    while True:
 #        await asyncio.sleep(2)
@@ -76,8 +76,7 @@ async def websocket_handler(request):
 
 
 async def start_background_tasks(app):
-    pass
-#    app['message_dispatcher'] = app.loop.create_task(worker())
+    app['message_dispatcher'] = app.loop.create_task(worker())
 
 
 async def cleanup_background_tasks(app):
@@ -108,6 +107,7 @@ app = web.Application()
 
 app.on_startup.append(configure)
 app.add_routes([web.get('/', websocket_handler)])
+app.on_startup.append(create_envelop_worker_queue)
 app.on_startup.append(start_background_tasks)
 app.on_cleanup.append(cleanup_background_tasks)
 

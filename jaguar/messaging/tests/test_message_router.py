@@ -42,7 +42,7 @@ class TestMessageRouter(AutoDocumentationBDDTest):
             'test_queue'
         )
         self.queue_name = 'test_queue'
-        self.envelop = {'target_id': 1, 'message': 'sample message'}
+        self.envelop = {'target_id': self.room.id, 'message': 'sample message'}
         self.connection_async = await queue_manager.rabbitmq_async
         self.queue_async = await queue_manager.create_queue_async(self.queue_name)
 
@@ -55,6 +55,7 @@ class TestMessageRouter(AutoDocumentationBDDTest):
     async def test_route(self):
         number_of_messages = 0
         last_message = None
+
         await self.setup()
         await queue_manager._channel_async.default_exchange.publish(
             aio_pika.Message(b'Sample message'),
@@ -68,8 +69,8 @@ class TestMessageRouter(AutoDocumentationBDDTest):
                 with message.process():
                     number_of_messages += 1
 
-                    if number_of_messages == 1:
-                        break
+                if number_of_messages == 1:
+                    break
 
         assert number_of_messages == 1
 
