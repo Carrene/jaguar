@@ -47,6 +47,8 @@ async def websocket_handler(request):
         app['queue']
     )
 
+    app[str(identity.session_id)] = ws
+
     await ws.prepare(request)
 
     async for msg in ws:
@@ -68,11 +70,17 @@ async def websocket_handler(request):
     return ws
 
 
-# TODO: Getting member from worker queue
-#async def worker():
-#    while True:
-#        await asyncio.sleep(2)
-#        print('Worker tick')
+async def worker():
+    async with queue_manager._connection_async:
+        async for message in queue_manager.queues['envelops_queue']:
+            with message.process():
+                envelop = json.loads(message.body)
+                session_manager.route(envelop)
+
+
+async def create_envelop_worker_queue(app):
+    await queue_manager.rabbitmq_async
+    app['envelops_queue'] = await queue_manager.create('envelops_queue')
 
 
 async def start_background_tasks(app):
@@ -99,16 +107,15 @@ async def configure(app):
     settings.merge(Jaguar.__configuration__)
     # FIXME: Configuration file?
 
-    app['queue'] = settings.rabbitmq.url
-    queue_connection = await aio_pika.connect_robust(app['queue'])
-
 
 app = web.Application()
 
-app.on_startup.append(configure)
 app.add_routes([web.get('/', websocket_handler)])
+
+app.on_startup.append(configure)
 app.on_startup.append(create_envelop_worker_queue)
 app.on_startup.append(start_background_tasks)
+
 app.on_cleanup.append(cleanup_background_tasks)
 
 
