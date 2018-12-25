@@ -73,16 +73,19 @@ async def websocket_handler(request):
 
 
 async def worker():
-    async with queue_manager._connection_async:
-        async for message in queue_manager.queues['envelops_queue']:
-            with message.process():
-                envelop = json.loads(message.body)
-                session_manager.route(envelop)
+    while True:
+        await asyncio.sleep(2)
+        print('worker tick')
+#    async with queue_manager._connection_async:
+#        async for message in queue_manager.queues['envelops_queue']:
+#            with message.process():
+#                envelop = json.loads(message.body)
+#                session_manager.route(envelop)
 
 
 async def create_envelop_worker_queue(app):
     await queue_manager.rabbitmq_async
-    app['envelops_queue'] = await queue_manager.create('envelops_queue')
+    app['envelops_queue'] = await queue_manager.create_queue_async('envelops_queue')
 
 
 async def start_background_tasks(app):
