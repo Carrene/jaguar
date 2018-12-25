@@ -2,6 +2,6 @@
 
 gunicorn \
 	--chdir jaguar/messaging \
-	--bind localhost:8090 \
+	--bind localhost:8085 \
 	--worker-class aiohttp.worker.GunicornWebWorker \
 	websocket:app
