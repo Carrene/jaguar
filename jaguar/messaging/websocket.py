@@ -10,8 +10,8 @@ from restfulpy.configuration import configure as restfulpy_configure
 from restfulpy.principal import JwtPrincipal
 
 from jaguar import Jaguar
-from .queue_manager import QueueManager
-from .session_manager import SessionManager
+from queue_manager import QueueManager
+from session_manager import SessionManager
 
 
 session_manager = SessionManager()
