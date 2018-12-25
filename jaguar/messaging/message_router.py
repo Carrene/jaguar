@@ -1,9 +1,7 @@
-import aio_pika
-from nanohttp import settings
 from restfulpy.orm import DBSession
 
-from ..models import TargetMember, Member
-from .websocket import session_manager, queue_manager
+from jaguar.models import TargetMember, Member
+from jaguar.messaging.websocket import session_manager, queue_manager
 
 
 class MessageRouter:

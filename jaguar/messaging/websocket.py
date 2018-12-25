@@ -1,7 +1,6 @@
-import asyncio
 from os import path
+import json
 
-import aio_pika
 import aiohttp
 import itsdangerous
 from aiohttp import web
@@ -12,6 +11,7 @@ from restfulpy.principal import JwtPrincipal
 from jaguar import Jaguar
 from queue_manager import QueueManager
 from session_manager import SessionManager
+from jaguar.messaging.message_router import MessageRouter
 
 
 session_manager = SessionManager()
@@ -36,21 +36,23 @@ async def authenticate(request):
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
 
-    # TODO: Uncomment the authentication lines before first version
-    # identity = await authenticate(request)
+    identity = await authenticate(request)
 
     ws = web.WebSocketResponse()
 
-    #await session_manager.redis()
-    ## Register session
-    #await session_manager.register_session(
-    #    identity.id,
-    #    identity.session_id,
-    #    app['queue']
-    #)
+    # Register session
+    await session_manager.register_session(
+        identity.id,
+        identity.session_id,
+        f'queue:{identity.session_id}'
+    )
 
-    #app[str(identity.session_id)] = ws
+    # Create the queue related to established session
+    await queue_manager.create_queue_async(f'queue:{identity.session_id}')
 
+    app[str(identity.session_id)] = ws
+
+    print(f'Member connected with session id: {identity.session_id}')
     await ws.prepare(request)
 
     async for msg in ws:
@@ -66,26 +68,31 @@ async def websocket_handler(request):
             print('ws connection closed with exception %s' %
                   ws.exception())
 
-    #await session_manager.cleanup_session(identity.id, identity.session_id)
+    await session_manager.cleanup_session(identity.id, identity.session_id)
 
     print('websocket connection closed')
     return ws
 
 
 async def worker():
-    while True:
-        await asyncio.sleep(2)
-        print('worker tick')
-#    async with queue_manager._connection_async:
-#        async for message in queue_manager.queues['envelops_queue']:
-#            with message.process():
-#                envelop = json.loads(message.body)
-#                session_manager.route(envelop)
+    print('Worker stared')
+    async with queue_manager._connection_async:
+        print('New message')
+        async for message in queue_manager.queues['envelops_queue']:
+            with message.process():
+                print(message.body)
+                envelop = json.loads(message.body)
+                await MessageRouter().route(envelop)
+                print(f'Message dequeued: {envelop}')
 
 
 async def create_envelop_worker_queue(app):
     await queue_manager.rabbitmq_async
     app['envelops_queue'] = await queue_manager.create_queue_async('envelops_queue')
+
+
+async def establish_cache_manager_connection(app):
+    app['cache_manager'] = await session_manager.redis()
 
 
 async def start_background_tasks(app):
@@ -118,6 +125,7 @@ app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 
 app.on_startup.append(configure)
+app.on_startup.append(establish_cache_manager_connection)
 app.on_startup.append(create_envelop_worker_queue)
 app.on_startup.append(start_background_tasks)
 
