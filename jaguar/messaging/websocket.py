@@ -35,19 +35,21 @@ async def authenticate(request):
 
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
-    identity = await authenticate(request)
+
+    # TODO: Uncomment the authentication lines before first version
+    # identity = await authenticate(request)
 
     ws = web.WebSocketResponse()
 
-    await session_manager.redis()
-    # Register session
-    await session_manager.register_session(
-        identity.id,
-        identity.session_id,
-        app['queue']
-    )
+    #await session_manager.redis()
+    ## Register session
+    #await session_manager.register_session(
+    #    identity.id,
+    #    identity.session_id,
+    #    app['queue']
+    #)
 
-    app[str(identity.session_id)] = ws
+    #app[str(identity.session_id)] = ws
 
     await ws.prepare(request)
 
@@ -64,7 +66,7 @@ async def websocket_handler(request):
             print('ws connection closed with exception %s' %
                   ws.exception())
 
-    await session_manager.cleanup_session(identity.id, identity.session_id)
+    #await session_manager.cleanup_session(identity.id, identity.session_id)
 
     print('websocket connection closed')
     return ws
