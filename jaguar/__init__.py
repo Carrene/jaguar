@@ -5,6 +5,7 @@ from restfulpy.application import Application
 from sqlalchemy_media import StoreManager, FileSystemStore
 from nanohttp import settings
 
+from . import mockup
 from .authentication import Authenticator
 from .controllers.root import Root
 from .cli.email import EmailLauncher
@@ -50,7 +51,6 @@ class Jaguar(Application):
 
     def insert_mockup(self, *args):
         mockup.insert()
-        DBSession.commit()
 
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)

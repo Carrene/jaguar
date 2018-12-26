@@ -33,3 +33,6 @@ class SessionManager:
     async def cleanup_session(self, member_id: str, session_id: str):
         self._redis.hdel(f'member:{member_id}', session_id)
 
+
+session_manager = SessionManager()
+

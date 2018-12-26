@@ -69,3 +69,6 @@ class QueueManager:
             body=encoded_envelop
         )
 
+
+queue_manager = QueueManager()
+

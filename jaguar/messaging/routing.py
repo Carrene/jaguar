@@ -1,7 +1,8 @@
 from restfulpy.orm import DBSession
 
+from jaguar.messaging.queues import queue_manager
+from jaguar.messaging.sessions import session_manager
 from jaguar.models import TargetMember, Member
-from jaguar.messaging.websocket import session_manager, queue_manager
 
 
 class MessageRouter:
@@ -19,4 +20,7 @@ class MessageRouter:
             active_sessions = await session_manager.get_sessions(member.id)
             for session, queue in active_sessions:
                 await queue_manager.enqueue_async(queue, envelop)
+
+
+message_router = MessageRouter()
 
