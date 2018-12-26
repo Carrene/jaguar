@@ -1,8 +1,8 @@
-from nanohttp import settings
 import aio_pika
 
-from jaguar.messaging.message_router import MessageRouter
-from jaguar.messaging.websocket import queue_manager, session_manager
+from jaguar.messaging.queues import queue_manager
+from jaguar.messaging.routing import MessageRouter
+from jaguar.messaging.sessions import session_manager
 from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 

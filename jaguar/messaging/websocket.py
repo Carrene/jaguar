@@ -1,5 +1,7 @@
-from os import path
 import json
+from os import path
+from urllib.parse import parse_qsl
+import asyncio
 
 import aiohttp
 import itsdangerous
@@ -15,10 +17,12 @@ from routing import message_router
 
 
 async def authenticate(request):
-    if 'Authorization' not in request.headers:
+    query_string_dict = dict(parse_qsl(request.query_string))
+
+    if 'Authorization' not in query_string_dict:
         raise web.HTTPUnauthorized()
 
-    encoded_token = request.headers['Authorization']
+    encoded_token = query_string_dict['Authorization']
     if encoded_token is None or not encoded_token.strip():
         raise web.HTTPUnauthorized()
 
@@ -51,7 +55,14 @@ async def websocket_handler(request):
     print(f'Member connected with session id: {identity.session_id}')
     await ws.prepare(request)
 
+    await ws.send_str('hi')
+
     async for msg in ws:
+        async for message in queue_manager.queues[f'queue:{identity.session_id}']:
+            with message.process():
+                print(message.body)
+                await ws.send_str('hi')
+
         # TODO: These lines below are completely useless and must be removed
         # before the first version
         if msg.type == aiohttp.WSMsgType.TEXT:
