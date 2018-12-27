@@ -58,10 +58,6 @@ async def websocket_handler(request):
     await ws.send_str('hi')
 
     async for msg in ws:
-        async for message in queue_manager.queues[f'queue:{identity.session_id}']:
-            with message.process():
-                print(message.body)
-                await ws.send_str('hi')
 
         # TODO: These lines below are completely useless and must be removed
         # before the first version
