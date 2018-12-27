@@ -3,6 +3,7 @@ from os import path
 from urllib.parse import parse_qsl
 import asyncio
 
+import aio_pika
 import aiohttp
 import itsdangerous
 from aiohttp import web
@@ -16,13 +17,19 @@ from sessions import session_manager
 from routing import message_router
 
 
+async def dequeue_callback(self, message: aio_pika.IncomingMessage):
+    with message.process():
+        print(message.body)
+        await ws.send_str(message.body.decode())
+
+
 async def authenticate(request):
     query_string_dict = dict(parse_qsl(request.query_string))
 
-    if 'Authorization' not in query_string_dict:
+    if 'authorization' not in query_string_dict:
         raise web.HTTPUnauthorized()
 
-    encoded_token = query_string_dict['Authorization']
+    encoded_token = query_string_dict['authorization']
     if encoded_token is None or not encoded_token.strip():
         raise web.HTTPUnauthorized()
 
@@ -56,6 +63,11 @@ async def websocket_handler(request):
     await ws.prepare(request)
 
     await ws.send_str('hi')
+
+    async for message in queue_manager.queues[f'queue:{identity.session_id}']:
+        with message.process():
+            print(message.body)
+            await ws.send_str(message.body.decode())
 
     async for msg in ws:
 
