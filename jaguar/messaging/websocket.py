@@ -1,7 +1,6 @@
 import json
 from os import path
 from urllib.parse import parse_qsl
-import asyncio
 
 import aio_pika
 import aiohttp
@@ -13,8 +12,8 @@ from restfulpy.principal import JwtPrincipal
 
 from jaguar import Jaguar
 from queues import queue_manager
-from sessions import session_manager
 from routing import message_router
+from sessions import session_manager
 
 
 async def dequeue_callback(self, message: aio_pika.IncomingMessage):
@@ -67,7 +66,7 @@ async def websocket_handler(request):
     async for message in queue_manager.queues[f'queue:{identity.session_id}']:
         with message.process():
             print(message.body)
-            await ws.send_str(message.body.decode())
+            await ws.send_json(json.loads(message.body.decode()))
 
     async for msg in ws:
 
