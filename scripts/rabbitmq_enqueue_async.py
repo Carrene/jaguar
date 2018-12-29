@@ -1,8 +1,8 @@
-#! which(python3.6)
-
-import json
+#! /usr/bin/env python3.6
 
 import asyncio
+import json
+
 import aio_pika
 
 

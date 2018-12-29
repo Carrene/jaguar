@@ -8,11 +8,10 @@ from jaguar.models import TargetMember, Member
 class MessageRouter:
 
     def get_members_by_target(self, target_id):
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         members = DBSession.query(Member).get(1)
-#            .join(TargetMember, TargetMember.member_id == Member.id) \
-#            .filter(TargetMember.target_id == target_id) \
-#            .all()
+            .join(TargetMember, TargetMember.member_id == Member.id) \
+            .filter(TargetMember.target_id == target_id) \
+            .all()
         return members
 
     async def route(self, envelop):
