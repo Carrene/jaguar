@@ -4,6 +4,9 @@ from restfulpy.cli import Launcher, RequireSubCommand
 from .websocket import app
 
 
+DEFAULT_ADDRESS = '8085'
+
+
 class WebsocketStartLauncher(Launcher):  # pragma: no cover
     @classmethod
     def create_parser(cls, subparsers):
@@ -11,10 +14,26 @@ class WebsocketStartLauncher(Launcher):  # pragma: no cover
             'start',
             help='Starts the websocket server.'
         )
+        parser.add_argument(
+            '-b',
+            '--bind',
+            default=DEFAULT_ADDRESS,
+            metavar='{HOST:}PORT',
+            help='Bind Address. default: %s' % DEFAULT_ADDRESS
+        )
         return parser
 
     def launch(self):
-        web.run_app(app)
+        host, port = self.args.bind.split(':')\
+            if ':' in self.args.bind else ('', self.args.bind)
+        kw = {}
+        if port:
+            kw['port'] = port
+
+        if host:
+            kw['host'] = host
+
+        web.run_app(app, **kw)
 
 
 class WebsocketLauncher(Launcher, RequireSubCommand):  # pragma: no cover
