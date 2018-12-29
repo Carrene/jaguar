@@ -30,7 +30,7 @@ async def authenticate(request):
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
     identity = await authenticate(request)
-    print('New session: %d has been connected' % identity.session_id)
+    print('New session: %s has been connected' % identity.session_id)
 
     ws = web.WebSocketResponse()
     await ws.prepare(request)
