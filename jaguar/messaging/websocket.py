@@ -10,6 +10,8 @@ from restfulpy.principal import JwtPrincipal
 from restfulpy.configuration import configure as restfulpy_configure
 
 from .queues import queue_manager
+from .routing import message_router
+from .sessions import session_manager
 
 
 async def authenticate(request):
@@ -32,6 +34,13 @@ async def websocket_handler(request):
     identity = await authenticate(request)
     print('New session: %s has been connected' % identity.session_id)
 
+    # Register session
+    await session_manager.register_session(
+        identity.id,
+        identity.session_id,
+        f'queue:{identity.session_id}'
+    )
+
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
@@ -49,11 +58,14 @@ async def websocket_handler(request):
                   ws.exception())
 
     print('websocket connection closed')
+    await session_manager.cleanup_session(identity.id, identity.session_id)
 
     return ws
 
 
 async def worker(name):
+    # FIXME: Establishing rabbitmq connection must be moved to startup
+    # configuration
     await queue_manager.rabbitmq_async
 
     await queue_manager.create_queue_async(name)
@@ -64,6 +76,17 @@ async def callback(message: aio_pika.IncomingMessage):
     with message.process():
         decoded_message = json.loads(message.body.decode())
         await app[decoded_message['sessionId']].send_json(decoded_message)
+
+
+async def route_message(name):
+    await queue_manager.create_queue_async(name)
+    await queue_manager.queues[name].consume(callback_routing)
+
+
+async def callback_routing(message: aio_pika.IncomingMessage):
+    with message.process():
+        envelop = json.loads(message.body)
+        await message_router.route(envelop)
 
 
 HERE = path.abspath(path.dirname(__file__))

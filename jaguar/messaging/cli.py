@@ -1,13 +1,41 @@
 from aiohttp import web
 from restfulpy.cli import Launcher, RequireSubCommand
 
-from .websocket import app
+from .websocket import app, route_message
 
 
 DEFAULT_ADDRESS = '8085'
 
 
-class WebsocketStartLauncher(Launcher):  # pragma: no cover
+class RouterStartLauncher(Launcher): # pragma: no cover
+    @classmethod
+    def create_parser(cls, subparsers):
+        parser = subparsers.add_parser(
+            'start',
+            help='Starts the message router.'
+        )
+        return parser
+
+    def launch(self):
+        # TODO: The name of the websocket worker queue must be derived from
+        # settings
+        # FIXME: put `await` before calling the route_message()
+        route_message('envelops_queue')
+
+
+class MessageRouterLauncher(Launcher, RequireSubCommand):
+    @classmethod
+    def create_parser(cls, subparsers):
+        parser = subparsers.add_parser('router', help='Message router.')
+        router_subparsers = parser.add_subparsers(
+            title='Message router',
+            dest='router_command'
+        )
+        RouterStartLauncher.register(router_subparsers)
+        return parser
+
+
+class WebsocketStartLauncher(Launcher): # pragma: no cover
     @classmethod
     def create_parser(cls, subparsers):
         parser = subparsers.add_parser(
