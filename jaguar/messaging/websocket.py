@@ -3,19 +3,20 @@ from os import path
 import aiohttp
 import itsdangerous
 from aiohttp import web
+from nanohttp import settings
 from restfulpy.principal import JwtPrincipal
 from restfulpy.configuration import configure as restfulpy_configure
-from nanohttp import settings
-
 
 from jaguar import Jaguar
 
 
 async def authenticate(request):
-    if 'Authorization' not in request.headers:
+    parsed_query_string = dict(parse_qsl(request.query_string))
+
+    if 'authorization' not in parsed_query_string:
         raise web.HTTPUnauthorized()
 
-    encoded_token = request.headers['Authorization']
+    encoded_token = parsed_query_string['authorization']
     if encoded_token is None or not encoded_token.strip():
         raise web.HTTPUnauthorized()
 
@@ -32,6 +33,8 @@ async def websocket_handler(request):
 
     ws = web.WebSocketResponse()
     await ws.prepare(request)
+
+    app['session_id'] = ws
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
