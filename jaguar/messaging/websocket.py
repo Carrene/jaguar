@@ -1,22 +1,22 @@
+import json
 from os import path
 
 import aiohttp
+import aio_pika
 import itsdangerous
 from aiohttp import web
 from nanohttp import settings
 from restfulpy.principal import JwtPrincipal
 from restfulpy.configuration import configure as restfulpy_configure
 
-from jaguar import Jaguar
+from .queues import queue_manager
 
 
 async def authenticate(request):
-    parsed_query_string = dict(parse_qsl(request.query_string))
-
-    if 'authorization' not in parsed_query_string:
+    encoded_token = request.query.get('token');
+    if encoded_token is None:
         raise web.HTTPUnauthorized()
 
-    encoded_token = parsed_query_string['authorization']
     if encoded_token is None or not encoded_token.strip():
         raise web.HTTPUnauthorized()
 
@@ -30,11 +30,12 @@ async def authenticate(request):
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
     identity = await authenticate(request)
+    print('New session: %d has been connected' % identity.session_id)
 
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    app['session_id'] = ws
+    app[str(identity.session_id)] = ws
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -52,9 +53,23 @@ async def websocket_handler(request):
     return ws
 
 
+async def worker(name):
+    await queue_manager.rabbitmq_async
+
+    await queue_manager.create_queue_async(name)
+    await queue_manager.queues[name].consume(callback)
+
+
+async def callback(message: aio_pika.IncomingMessage):
+    with message.process():
+        decoded_message = json.loads(message.body.decode())
+        await app[decoded_message['sessionId']].send_json(decoded_message)
+
+
 HERE = path.abspath(path.dirname(__file__))
 ROOT = path.abspath(path.join(HERE, '../..'))
-async def configure(app, force=None):
+async def configure(app, force=True):
+    from jaguar import Jaguar
     _context = {
         'process_name': 'Jaguar Websocket Server',
         'root_path': ROOT,
@@ -63,13 +78,24 @@ async def configure(app, force=None):
 
     restfulpy_configure(context=_context, force=force)
     settings.merge(Jaguar.__configuration__)
-    # FIXME: Configuratio file?
+    # FIXME: Configuration file?
+
+
+async def start_background_tasks(app):
+    # TODO: The name of the websocket worker queue must be derived from settings
+    app['message_dispatcher'] = app.loop.create_task(worker('websocket_worker1'))
+
+
+async def cleanup_background_tasks(app):
+    app['message_dispatcher'].cancel()
+    await app['message_dispatcher']
+
 
 app = web.Application()
-#app.on_startup.append(configure)
 app.add_routes([web.get('/', websocket_handler)])
 
+app.on_startup.append(configure)
+app.on_startup.append(start_background_tasks)
 
-if __name__ == '__main__':
-    web.run_app(app)
+app.on_cleanup.append(cleanup_background_tasks)
 
