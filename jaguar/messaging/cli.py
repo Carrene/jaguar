@@ -16,13 +16,21 @@ class RouterStartLauncher(Launcher): # pragma: no cover
             'start',
             help='Starts the message router.'
         )
+        parser.add_argument(
+            '-q',
+            '--queue',
+            default='workers',
+            help='The queue name of fetching envelops from database'
+        )
         return parser
 
     def launch(self):
         loop = asyncio.get_event_loop()
-        # TODO: The name of the websocket worker queue must be derived from
-        # settings
-        connection = loop.run_until_complete(route_message('envelops_queue'))
+        try:
+            loop.run_until_complete(route_message(self.args.queue))
+        except:
+            # The value returned is based on UNIX-like cli applications
+            return 1
 
 
 class MessageRouterLauncher(Launcher, RequireSubCommand):

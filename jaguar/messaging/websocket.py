@@ -34,11 +34,12 @@ async def websocket_handler(request):
     identity = await authenticate(request)
     print('New session: %s has been connected' % identity.session_id)
 
+    # TODO: The name of the websocket worker queue must be derived from settings
     # Register session
     await session_manager.register_session(
         identity.id,
         identity.session_id,
-        f'queue:{identity.session_id}'
+        'websocket_worker1'
     )
 
     ws = web.WebSocketResponse()
