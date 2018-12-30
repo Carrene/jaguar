@@ -8,7 +8,7 @@ from nanohttp import settings
 from .authentication import Authenticator
 from .controllers.root import Root
 from .cli.email import EmailLauncher
-from .messaging.cli import WebsocketLauncher
+from .messaging.cli import WebsocketLauncher, MessageRouterLauncher
 
 
 __version__ = '0.3.5nightly'
@@ -56,6 +56,7 @@ class Jaguar(Application):
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
         WebsocketLauncher.register(subparsers)
+        MessageRouterLauncher.register(subparsers)
 
     @classmethod
     def initialize_orm(cls, engine=None):
