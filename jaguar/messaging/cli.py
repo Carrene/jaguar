@@ -1,3 +1,5 @@
+import asyncio
+
 from aiohttp import web
 from restfulpy.cli import Launcher, RequireSubCommand
 
@@ -17,10 +19,10 @@ class RouterStartLauncher(Launcher): # pragma: no cover
         return parser
 
     def launch(self):
+        loop = asyncio.get_event_loop()
         # TODO: The name of the websocket worker queue must be derived from
         # settings
-        # FIXME: put `await` before calling the route_message()
-        route_message('envelops_queue')
+        connection = loop.run_until_complete(route_message('envelops_queue'))
 
 
 class MessageRouterLauncher(Launcher, RequireSubCommand):
