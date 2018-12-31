@@ -80,8 +80,12 @@ async def callback(message: aio_pika.IncomingMessage):
 
 
 async def route_message(name):
-    await queue_manager.rabbitmq_async
+    # Prepare rabbitmq synchronous connection object to get used in
+    # `send message`
+    queue_manager.rabbitmq
+    queue_manager.create_queue
 
+    await queue_manager.rabbitmq_async
     await queue_manager.create_queue_async(name)
     await queue_manager.dequeue_async(name, callback_routing)
 
