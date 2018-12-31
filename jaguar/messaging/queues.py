@@ -34,16 +34,18 @@ class QueueManager:
         return self._connection
 
     async def create_queue_async(self, name: str):
+        connection_async = await self.rabbitmq_async
         if self._channel_async is None:
-            self._channel_async = await self._connection_async.channel()
+            self._channel_async = await connection_async.channel()
 
         queue = await self._channel_async.declare_queue(name)
         self.queues[name] = queue
         return queue
 
     def create_queue(self, name: str):
+        connection = self.rabbitmq
         if self._channel is None:
-            self._channel = self._connection.channel()
+            self._channel = connection.channel()
 
         queue = self._channel.queue_declare(name)
         self.queues[name] = queue

@@ -40,7 +40,7 @@ class Jaguar(Application):
     rabbitmq:
         url: amqp://guest:guest@127.0.0.1/
         worker_queue: workers
-        ws_queue: websocket_worker
+        websocket_queue: websocket_worker
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):

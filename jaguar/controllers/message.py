@@ -47,9 +47,7 @@ class MessageController(ModelRestController):
         # commit
         DBSession.commit()
 
-        # FIXME: The queue_name of workers must be derived from settings
-        queue_manager.enqueue('workers', message.to_dict())
-
+        queue_manager.enqueue(settings.rabbitmq.woker_queue, message.to_dict())
         return message
 
     @authorize

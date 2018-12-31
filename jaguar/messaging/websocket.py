@@ -67,8 +67,6 @@ async def websocket_handler(request):
 async def worker(name):
     # FIXME: Establishing rabbitmq connection must be moved to startup
     # configuration
-    await queue_manager.rabbitmq_async
-
     await queue_manager.create_queue_async(name)
     await queue_manager.queues[name].consume(callback)
 
@@ -82,10 +80,8 @@ async def callback(message: aio_pika.IncomingMessage):
 async def route_message(name):
     # Prepare rabbitmq synchronous connection object to get used in
     # `send message`
-    queue_manager.rabbitmq
     queue_manager.create_queue
 
-    await queue_manager.rabbitmq_async
     await queue_manager.create_queue_async(name)
     await queue_manager.dequeue_async(name, callback_routing)
 
