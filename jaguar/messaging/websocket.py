@@ -83,7 +83,7 @@ async def route_message(name):
     await queue_manager.rabbitmq_async
 
     await queue_manager.create_queue_async(name)
-    await queue_manager.queues[name].consume(callback_routing)
+    await queue_manager.dequeue_async(name, callback_routing)
 
 
 async def callback_routing(message: aio_pika.IncomingMessage):
