@@ -38,7 +38,9 @@ async def main(loop):
     )
 
     async with connection:
-        routing_key = 'websocket_worker1'
+        # The routing_key must be the same as the `queue` parameter in
+        # `jaguar route start <queue>`
+        routing_key = 'workers'
         channel = await connection.channel()
         payload = json.loads(args.payload)
         payload['sessionId'] = args.session_id
