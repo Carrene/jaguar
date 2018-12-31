@@ -4,6 +4,7 @@ from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
 
+from ..messaging.queues import queue_manager
 from ..models import Envelop, Message, TargetMember, Member, Target
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
@@ -20,7 +21,6 @@ class MessageController(ModelRestController):
     @send_message_validator
     @json
     @Message.expose
-    @commit
     def send(self, target_id):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
@@ -40,6 +40,16 @@ class MessageController(ModelRestController):
                 )
 
         DBSession.add(message)
+
+        # After consulting with Mr.Mardani, the result got to remove `commit`
+        # decorator and use `commit()` straightly instead. It's cause of
+        # enqueueing the message to `workers`(queue) must be applied after
+        # commit
+        DBSession.commit()
+
+        # FIXME: The queue_name of workers must be derived from settings
+        queue_manager.enqueue('workers', message.to_dict())
+
         return message
 
     @authorize
