@@ -78,6 +78,7 @@ async def callback(message: aio_pika.IncomingMessage):
 
 
 async def route_message(name):
+    # FIXME: Remove redis server connection establishing in `route_message`
     # Esbtalish connection with redis server
     await session_manager.redis()
 
@@ -120,10 +121,15 @@ async def cleanup_background_tasks(app):
     await app['message_dispatcher']
 
 
+async def establish_cache_manager_connection(app):
+    await session_manager.redis()
+
+
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 
 app.on_startup.append(configure)
+app.on_startup.append(establish_cache_manager_connection)
 app.on_startup.append(start_background_tasks)
 
 app.on_cleanup.append(cleanup_background_tasks)

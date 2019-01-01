@@ -51,6 +51,7 @@ class Jaguar(Application):
             version=__version__,
         )
 
+
     def insert_mockup(self, *args):
         mockup.insert()
         DBSession.commit()
@@ -72,6 +73,12 @@ class Jaguar(Application):
             default=True
         )
         super().initialize_orm(cls, engine)
+
+    def configure(self, files=None, context=None, force=False):
+        super().configure(files=files, context=context, force=force)
+        # Prepare rabbitmq synchronous connection object to get used in
+        # `send message`
+        queue_manager.create_queue(settings.rabbitmq.worker_queue)
 
 
 jaguar = Jaguar()
