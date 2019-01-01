@@ -78,9 +78,12 @@ async def callback(message: aio_pika.IncomingMessage):
 
 
 async def route_message(name):
+    # Esbtalish connection with redis server
+    await session_manager.redis()
+
     # Prepare rabbitmq synchronous connection object to get used in
     # `send message`
-    queue_manager.create_queue
+    queue_manager.create_queue(name)
 
     await queue_manager.create_queue_async(name)
     await queue_manager.dequeue_async(name, callback_routing)
