@@ -17,6 +17,7 @@ dependencies = [
     'sqlalchemy_media >= 0.17.1',
 
     # Messaging
+    'aioredis',
     'pika',
     'aio-pika',
     'aiohttp',
