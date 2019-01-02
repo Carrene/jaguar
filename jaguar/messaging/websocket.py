@@ -110,7 +110,6 @@ async def configure(app, force=True):
 
 async def start_background_tasks(app):
     await queue_manager.create_queue_async(settings.rabbitmq.websocket_queue)
-    # TODO: The name of the websocket worker queue must be derived from settings
     app['message_dispatcher'] = app.loop.create_task(
         worker(settings.rabbitmq.websocket_queue)
     )
