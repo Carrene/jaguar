@@ -10,7 +10,6 @@ import aio_pika
 
 DEFAULT_MESSAGE = '''{
     "id": 1,
-    "targetId": 10,
     "body": "Sample Message"
 }'''
 
@@ -19,6 +18,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     'session_id',
     help='Session id',
+)
+parser.add_argument(
+    'target_id',
+    help='Target id',
 )
 parser.add_argument(
     'payload',
@@ -44,6 +47,7 @@ async def main(loop):
         channel = await connection.channel()
         payload = json.loads(args.payload)
         payload['sessionId'] = args.session_id
+        payload['targetId'] = args.target_id
         payload = json.dumps(payload)
 
         await channel.default_exchange.publish(

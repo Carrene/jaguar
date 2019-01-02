@@ -39,7 +39,7 @@ async def websocket_handler(request):
     await session_manager.register_session(
         identity.id,
         identity.session_id,
-        'websocket_worker1'
+        settings.rabbitmq.websocket_queue
     )
 
     ws = web.WebSocketResponse()
@@ -65,11 +65,6 @@ async def websocket_handler(request):
 
 
 async def worker(name):
-    # FIXME: Establishing rabbitmq connection must be moved to startup
-    # configuration
-    await queue_manager.rabbitmq_async
-
-    await queue_manager.create_queue_async(name)
     await queue_manager.queues[name].consume(callback)
 
 
@@ -80,7 +75,13 @@ async def callback(message: aio_pika.IncomingMessage):
 
 
 async def route_message(name):
-    await queue_manager.rabbitmq_async
+    # FIXME: Remove redis server connection establishing in `route_message`
+    # Esbtalish connection with redis server
+    await session_manager.redis()
+
+    # Prepare rabbitmq synchronous connection object to get used in
+    # `send message`
+    queue_manager.create_queue(name)
 
     await queue_manager.create_queue_async(name)
     await queue_manager.dequeue_async(name, callback_routing)
@@ -108,8 +109,10 @@ async def configure(app, force=True):
 
 
 async def start_background_tasks(app):
-    # TODO: The name of the websocket worker queue must be derived from settings
-    app['message_dispatcher'] = app.loop.create_task(worker('websocket_worker1'))
+    await queue_manager.create_queue_async(settings.rabbitmq.websocket_queue)
+    app['message_dispatcher'] = app.loop.create_task(
+        worker(settings.rabbitmq.websocket_queue)
+    )
 
 
 async def cleanup_background_tasks(app):
@@ -117,10 +120,15 @@ async def cleanup_background_tasks(app):
     await app['message_dispatcher']
 
 
+async def establish_cache_manager_connection(app):
+    await session_manager.redis()
+
+
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 
 app.on_startup.append(configure)
+app.on_startup.append(establish_cache_manager_connection)
 app.on_startup.append(start_background_tasks)
 
 app.on_cleanup.append(cleanup_background_tasks)

@@ -15,10 +15,11 @@ class MessageRouter:
         return members
 
     async def route(self, envelop):
-        members = self.get_members_by_target(envelop['target_id'])
+        members = self.get_members_by_target(envelop['targetId'])
         for member in members:
             active_sessions = await session_manager.get_sessions(member.id)
             for session, queue in active_sessions:
+                envelop['sessionId'] = session.decode()
                 await queue_manager.enqueue_async(queue, envelop)
 
 

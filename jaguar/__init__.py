@@ -9,6 +9,7 @@ from .authentication import Authenticator
 from .controllers.root import Root
 from .cli.email import EmailLauncher
 from .messaging.cli import WebsocketLauncher, MessageRouterLauncher
+from .messaging.queues import queue_manager
 
 
 __version__ = '0.3.5nightly'
@@ -29,9 +30,9 @@ class Jaguar(Application):
       url: http://example.com/activate
 
     oauth:
-      secret: oauth2-secret
+      secret: A1dFVpz4w/qyym+HeXKWYmm6Ocj4X5ZNv1JQ7kgHBEk=
       application_id: 1
-      url: http://localhost:8080
+      url: http://localhost:8083
 
     storage:
       local_directory: %(root_path)s/data/assets
@@ -39,6 +40,8 @@ class Jaguar(Application):
 
     rabbitmq:
         url: amqp://guest:guest@127.0.0.1/
+        worker_queue: workers
+        websocket_queue: websocket_worker
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):
@@ -70,6 +73,12 @@ class Jaguar(Application):
             default=True
         )
         super().initialize_orm(cls, engine)
+
+    def configure(self, files=None, context=None, force=False):
+        super().configure(files=files, context=context, force=force)
+        # Prepare rabbitmq synchronous connection object to get used in
+        # `send message`
+        queue_manager.create_queue(settings.rabbitmq.worker_queue)
 
 
 jaguar = Jaguar()

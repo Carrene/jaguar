@@ -26,8 +26,10 @@ class RouterStartLauncher(Launcher): # pragma: no cover
 
     def launch(self):
         loop = asyncio.get_event_loop()
+
         try:
             loop.run_until_complete(route_message(self.args.queue))
+            loop.run_forever()
         except:
             # The value returned is based on UNIX-like cli applications
             return 1
