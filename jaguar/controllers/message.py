@@ -1,8 +1,9 @@
-from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
+from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
+    settings
 
 from ..messaging.queues import queue_manager
 from ..models import Envelop, Message, TargetMember, Member, Target
@@ -40,14 +41,20 @@ class MessageController(ModelRestController):
                 )
 
         DBSession.add(message)
+        DBSession.flush()
+
+        try:
+            queue_manager.enqueue(
+                settings.rabbitmq.worker_queue, message.to_dict()
+            )
+        except:
+            raise
 
         # After consulting with Mr.Mardani, the result got to remove `commit`
         # decorator and use `commit()` straightly instead. It's cause of
         # enqueueing the message to `workers`(queue) must be applied after
         # commit
         DBSession.commit()
-
-        queue_manager.enqueue(settings.rabbitmq.woker_queue, message.to_dict())
         return message
 
     @authorize

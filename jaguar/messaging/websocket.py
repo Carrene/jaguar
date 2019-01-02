@@ -39,7 +39,7 @@ async def websocket_handler(request):
     await session_manager.register_session(
         identity.id,
         identity.session_id,
-        'websocket_worker1'
+        settings.rabbitmq.websocket_queue
     )
 
     ws = web.WebSocketResponse()
@@ -65,9 +65,6 @@ async def websocket_handler(request):
 
 
 async def worker(name):
-    # FIXME: Establishing rabbitmq connection must be moved to startup
-    # configuration
-    await queue_manager.create_queue_async(name)
     await queue_manager.queues[name].consume(callback)
 
 
@@ -112,8 +109,11 @@ async def configure(app, force=True):
 
 
 async def start_background_tasks(app):
+    await queue_manager.create_queue_async(settings.rabbitmq.websocket_queue)
     # TODO: The name of the websocket worker queue must be derived from settings
-    app['message_dispatcher'] = app.loop.create_task(worker('websocket_worker1'))
+    app['message_dispatcher'] = app.loop.create_task(
+        worker(settings.rabbitmq.websocket_queue)
+    )
 
 
 async def cleanup_background_tasks(app):

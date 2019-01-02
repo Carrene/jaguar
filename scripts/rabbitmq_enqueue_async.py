@@ -10,7 +10,7 @@ import aio_pika
 
 DEFAULT_MESSAGE = '''{
     "id": 1,
-    "targetId": 10,
+    "targetId": 1,
     "body": "Sample Message"
 }'''
 

@@ -52,7 +52,7 @@ class QueueManager:
         return queue
 
     async def enqueue_async(self, queue_name: str, envelop: str):
-        encoded_envelop = bytes(json.dumps(envelop), 'utf-8')
+        encoded_envelop = json.dumps(envelop).encode()
 
         await self._channel_async.default_exchange.publish(
             aio_pika.Message(body=encoded_envelop),
@@ -63,7 +63,7 @@ class QueueManager:
         await self.queues[queue_name].consume(callback)
 
     def enqueue(self, queue_name: str, envelop: str):
-        encoded_envelop = bytes(json.dumps(envelop), 'utf-8')
+        encoded_envelop = json.dumps(envelop).encode()
 
         self._channel.basic_publish(
             exchange='',
