@@ -99,19 +99,26 @@ To start the websocket server run the following command:
 
 ```bash
 
-jaguar websocket start
+jaguar websocket start [-b PORT]
 
 ```
+
+The *bind* option is the custom port you would serve the websocket application on.
+
 
 To enqueue the message, run the following command:
 
 ```bash
 
-./scripts/rabbitmq_enqueue_async.py <session_id> [payload]
+./scripts/rabbitmq_enqueue_async.py <session_id> <target_id> [-p PAYLOAD]
 
 ```
 
 The *session_id* is a required parameter which must be the same as *session_id* in the token payload.
+
+The *target_id* is a required parameter which must be the same as *target_id* in the `targetId` sent in `send message` form.
+
+**NOTE:** Check if a target exists with the id of target_id you enter as cli parameter.
 
 The *payload*  is a optional parameter which has a default value. You can observe the default value by running: `jaguar -h`.
 
@@ -119,7 +126,19 @@ As a client you can recieve the message enqueued by the `wscat` cli app. Like:
 
 ```bash
 
-wscat -c localhost:8085?token=<token>
+wscat -c localhost:<websocket application port>?token=<token>
 
 ```
+
+**NOTE:** Be sure that the token payload contains the `id` of member which is joined to the target you sent a message to.
+
+To route the messages from `worker queue` to right `WebSocket` connection, use the following command:
+
+```bash
+
+jaguar router start [-q QUEUE_NAME]
+
+```
+
+The *queue* option is the name of the `worker queue` which must be exist in application configuration.
 
