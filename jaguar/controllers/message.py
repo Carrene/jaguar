@@ -30,7 +30,7 @@ class MessageController(ModelRestController):
             raise HTTPStatus('415 Unsupported Media Type')
 
         message = Message(body=body, mimetype=mimetype)
-        message.target_id = target_id
+        message.target_id = int(target_id)
         message.sender_id = Member.current().id
         if 'attachment' in context.form:
             message.attachment = attachment
