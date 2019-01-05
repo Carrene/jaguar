@@ -28,7 +28,7 @@ class QueueManager:
     def rabbitmq(self):
         if self._connection is None:
             self._connection = pika.BlockingConnection(
-                pika.ConnectionParameters('127.0.0.1')
+                pika.ConnectionParameters('127.0.0.1', heartbeat=0)
             )
 
         return self._connection
