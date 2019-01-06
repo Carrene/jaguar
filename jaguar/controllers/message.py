@@ -92,6 +92,16 @@ class MessageController(ModelRestController):
         message.body = 'This message is deleted'
         message.mimetype = 'text/plain'
         message.soft_delete()
+
+        DBSession.flush()
+
+        try:
+            queue_manager.enqueue(
+                settings.rabbitmq.worker_queue, message.to_dict()
+            )
+        except:
+            raise
+
         return message
 
     @authorize
