@@ -130,6 +130,16 @@ class MessageController(ModelRestController):
 
         message.body = new_message_body
         DBSession.add(message)
+
+        DBSession.flush()
+
+        try:
+            queue_manager.enqueue(
+                settings.rabbitmq.worker_queue, message.to_dict()
+            )
+        except:
+            raise
+
         return message
 
     @authorize
