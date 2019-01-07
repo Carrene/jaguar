@@ -4,7 +4,6 @@ import threading
 import aio_pika
 
 from jaguar.messaging.queues import QueueManager
-#from jaguar.messaging.websocket import queue_manager
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
