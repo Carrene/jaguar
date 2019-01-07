@@ -12,7 +12,7 @@ from .messaging.cli import WebsocketLauncher, MessageRouterLauncher
 from .messaging.queues import queue_manager
 
 
-__version__ = '0.4.0nightly'
+__version__ = '0.5.0nightly'
 
 
 class Jaguar(Application):
