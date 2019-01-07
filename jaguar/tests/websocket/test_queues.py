@@ -3,8 +3,7 @@ import threading
 
 import aio_pika
 
-from jaguar.messaging.queue_manager import QueueManager
-from jaguar.messaging.websocket import queue_manager
+from jaguar.messaging.queues import QueueManager
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
 
@@ -24,7 +23,7 @@ class TestQueueManager(AutoDocumentationBDDTest):
 
     async def setup(self):
         self.queue_name = 'test_queue'
-        self.envelop = {'target_id': 1, 'message': 'sample message'}
+        self.envelop = {'targetId': 1, 'message': 'sample message'}
         self.queue_manager = QueueManager()
 
         self.connection = await self.queue_manager.rabbitmq_async
@@ -39,7 +38,7 @@ class TestQueueManager(AutoDocumentationBDDTest):
 
         async for message in self.queue:
             with message.process():
-                assert message.body == bytes(json.dumps(self.envelop), 'utf-8')
+                assert message.body == json.dumps(self.envelop).encode()
                 break
         await self.connection.close()
 

@@ -30,13 +30,12 @@ async def websocket_server(loop, free_port):
 async def websocket_session(websocket_server):
     @asynccontextmanager
     async def connect(token=None, **kw):
+        query_string = ''
         if token:
-            headers = CIMultiDict()
-            headers['Authorization'] = token
-            kw['headers'] = headers
+            query_string = f'token={token}'
 
         async with aiohttp.ClientSession() as session, \
-                session.ws_connect(websocket_server, **kw) as ws:
+                session.ws_connect(websocket_server + f'?{query_string}') as ws:
             yield ws
     yield connect
 
