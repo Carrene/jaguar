@@ -32,7 +32,6 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         session.commit()
 
         cls.message_router = MessageRouter()
-        cls.envelop = {'target_id': cls.room.id}
 
     async def setup(self):
         await session_manager.redis()
@@ -42,7 +41,7 @@ class TestMessageRouter(AutoDocumentationBDDTest):
             'test_queue'
         )
         self.queue_name = 'test_queue'
-        self.envelop = {'target_id': self.room.id, 'message': 'sample message'}
+        self.envelop = {'targetId': self.room.id, 'message': 'sample message'}
         self.connection_async = await queue_manager.rabbitmq_async
         self.queue_async = await queue_manager.create_queue_async(self.queue_name)
 
