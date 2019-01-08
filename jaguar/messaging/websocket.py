@@ -134,7 +134,6 @@ async def establish_cache_manager_connection(app):
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 
-app.on_startup.append(configure)
 app.on_startup.append(establish_cache_manager_connection)
 app.on_startup.append(start_background_tasks)
 
