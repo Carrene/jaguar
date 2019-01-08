@@ -7,7 +7,7 @@ from aiohttp.web_runner import AppRunner, TCPSite
 from nanohttp.tests.conftest import free_port
 
 
-pytest_plugins = ['aiohttp.pytest_plugin']
+#pytest_plugins = ['aiohttp.pytest_plugin']
 from jaguar.messaging.websocket import app as websocket_application
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 

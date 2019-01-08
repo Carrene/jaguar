@@ -1,6 +1,6 @@
 import aio_pika
 
-from jaguar.messaging.queues import queue_manager
+from jaguar.messaging.queues import QueueManager
 from jaguar.messaging.routing import MessageRouter
 from jaguar.messaging.sessions import session_manager
 from jaguar.models import Member, Room
@@ -41,9 +41,15 @@ class TestMessageRouter(AutoDocumentationBDDTest):
             'test_queue'
         )
         self.queue_name = 'test_queue'
-        self.envelop = {'targetId': self.room.id, 'message': 'sample message'}
-        self.connection_async = await queue_manager.rabbitmq_async
-        self.queue_async = await queue_manager.create_queue_async(self.queue_name)
+        self.envelop = {
+            'targetId': self.room.id,
+            'message': 'sample message',
+            'senderId': 1,
+            'isMine': True
+        }
+        self.queue_manager = QueueManager()
+        self.queue_async = await self.queue_manager \
+            .create_queue_async(self.queue_name)
 
     def test_get_member_by_taget(self):
         members = self.message_router.get_members_by_target(self.room.id)
@@ -56,14 +62,14 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         last_message = None
 
         await self.setup()
-        await queue_manager._channel_async.default_exchange.publish(
+        await self.queue_manager._channel_async.default_exchange.publish(
             aio_pika.Message(b'Sample message'),
             routing_key='test_queue',
         )
 
         await self.message_router.route(self.envelop)
 
-        async with self.connection_async:
+        async with self.queue_manager._connection_async:
             async for message in self.queue_async:
                 with message.process():
                     number_of_messages += 1

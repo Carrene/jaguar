@@ -61,6 +61,8 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
             assert registered_session == settings.rabbitmq.websocket_queue.encode()
 
             active_sessions = await session_manager.get_sessions(token.id)
+
+            assert 1 == 1
             assert active_sessions[0] == (
                 token.session_id.encode(),
                 settings.rabbitmq.websocket_queue.encode()

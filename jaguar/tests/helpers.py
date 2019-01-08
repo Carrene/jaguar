@@ -47,6 +47,10 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             port: 6379
             password: ~
             db: 15
+        rabbitmq:
+          url: amqp://guest:guest@127.0.0.1/
+          worker_queue: workers_test
+          websocket_queue: websocket_worker_test
     '''
     __metadata__ = {
         r'^/apiv1/members.*': member_fields,

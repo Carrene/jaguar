@@ -1,5 +1,4 @@
 import json
-import threading
 
 import aio_pika
 
@@ -46,7 +45,7 @@ class TestQueueManager(AutoDocumentationBDDTest):
         await self.setup()
 
         await self.queue_manager._channel_async.default_exchange.publish(
-            aio_pika.Message(b'Sample message'),
+            aio_pika.Message(json.dumps(self.envelop).encode()),
             routing_key='test_queue',
         )
 
@@ -54,5 +53,5 @@ class TestQueueManager(AutoDocumentationBDDTest):
         await self.connection.close()
 
         assert self.number_of_callbacks == 1
-        assert self.last_message == b'Sample message'
+        assert self.last_message == b'{"targetId": 1, "message": "sample message"}'
 
