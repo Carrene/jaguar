@@ -5,10 +5,12 @@ import aiohttp
 import aio_pika
 import itsdangerous
 from aiohttp import web
+from cas import CASPrincipal
 from nanohttp import settings
-from restfulpy.principal import JwtPrincipal
+from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
+from ..models import Member
 from .queues import queue_manager
 from .routing import message_router
 from .sessions import session_manager
@@ -23,7 +25,7 @@ async def authenticate(request):
         raise web.HTTPUnauthorized()
 
     try:
-        principal = JwtPrincipal.load(encoded_token)
+        principal = CASPrincipal.load(encoded_token)
         return principal
     except itsdangerous.BadData:
         raise web.HTTPUnauthorized()
@@ -32,12 +34,17 @@ async def authenticate(request):
 #https://aiohttp.readthedocs.io/en/stable/web_advanced.html#graceful-shutdown
 async def websocket_handler(request):
     identity = await authenticate(request)
+
+    member_id = DBSession.query(Member.id) \
+        .filter(Member.reference_id == identity.reference_id) \
+        .one_or_none()
+    if member_id is None:
+        raise web.HTTPUnauthorized()
+
     print('New session: %s has been connected' % identity.session_id)
 
-    # TODO: The name of the websocket worker queue must be derived from settings
-    # Register session
     await session_manager.register_session(
-        identity.id,
+        member_id[0],
         identity.session_id,
         settings.rabbitmq.websocket_queue
     )

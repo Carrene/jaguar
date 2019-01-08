@@ -19,6 +19,7 @@ class MessageRouter:
         for member in members:
             active_sessions = await session_manager.get_sessions(member.id)
             for session, queue in active_sessions:
+                envelop['isMine'] = member.id == envelop['senderId']
                 envelop['sessionId'] = session.decode()
                 await queue_manager.enqueue_async(queue, envelop)
 
