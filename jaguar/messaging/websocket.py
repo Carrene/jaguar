@@ -10,6 +10,7 @@ from nanohttp import settings
 from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
+from ..models import Member
 from .queues import queue_manager
 from .routing import message_router
 from .sessions import session_manager
@@ -34,16 +35,16 @@ async def authenticate(request):
 async def websocket_handler(request):
     identity = await authenticate(request)
 
-    member = DBSession.query(Member) \
+    member_id = DBSession.query(Member.id) \
         .filter(Member.reference_id == identity.reference_id) \
         .one_or_none()
-    if member is None:
+    if member_id is None:
         raise web.HTTPUnauthorized()
 
     print('New session: %s has been connected' % identity.session_id)
 
     await session_manager.register_session(
-        member.id,
+        member_id[0],
         identity.session_id,
         settings.rabbitmq.websocket_queue
     )
