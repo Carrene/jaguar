@@ -1,8 +1,5 @@
-import aio_pika
 
-from jaguar.messaging.queues import QueueManager
-from jaguar.messaging.routing import MessageRouter
-from jaguar.messaging.sessions import session_manager
+from jaguar.messaging import queues, sessions, router
 from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
@@ -31,51 +28,32 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         session.add(cls.room)
         session.commit()
 
-        cls.message_router = MessageRouter()
-
-    async def setup(self):
-        await session_manager.redis()
-        await session_manager.register_session(
-            f'member:{self.member1.id}',
-            1,
-            'test_queue'
-        )
-        self.queue_name = 'test_queue'
-        self.envelop = {
-            'targetId': self.room.id,
-            'message': 'sample message',
-            'senderId': 1,
-            'isMine': True
-        }
-        self.queue_manager = QueueManager()
-        self.queue_async = await self.queue_manager \
-            .create_queue_async(self.queue_name)
-
     def test_get_member_by_taget(self):
-        members = self.message_router.get_members_by_target(self.room.id)
+        members = router.get_members_by_target(self.room.id)
         assert len(members) == 2
         assert members[0].title == self.member1.title
         assert members[1].title == self.member2.title
 
     async def test_route(self):
-        number_of_messages = 0
-        last_message = None
+        queue_name = 'test_queue'
+        session_id = '1'
 
-        await self.setup()
-        await self.queue_manager._channel_async.default_exchange.publish(
-            aio_pika.Message(b'Sample message'),
-            routing_key='test_queue',
+        await sessions.flush_all()
+        await sessions.register_session(
+            self.member1.id,
+            session_id,
+            queue_name
         )
 
-        await self.message_router.route(self.envelop)
+        envelop = {
+            'targetId': self.room.id,
+            'message': 'sample message',
+            'senderId': 1,
+            'isMine': True
+        }
+        await router.route(envelop)
 
-        async with self.queue_manager._connection_async:
-            async for message in self.queue_async:
-                with message.process():
-                    number_of_messages += 1
+        message = await queues.pop_async(queue_name)
+        assert message == envelop
 
-                if number_of_messages == 1:
-                    break
-
-        assert number_of_messages == 1
 

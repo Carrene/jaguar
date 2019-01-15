@@ -4,35 +4,41 @@ import aioredis
 from nanohttp import settings
 
 
-class SessionManager:
-    _redis = None
+from ..redis_ import create_async_redis
 
-    @classmethod
-    async def redis(cls):
-       if cls._redis is None:
-           cls._redis = await aioredis.create_redis(
-               f'redis://{settings.authentication.redis.host}:' \
-               f'{settings.authentication.redis.port}',
-               db=settings.authentication.redis.db,
-            )
-       return cls._redis
-
-    async def register_session(self, member_id, session_id, queue):
-        self._redis.hset(
-            f'member:{member_id}',
-            session_id,
-            queue
-        )
-
-    async def get_sessions(self, member_id: str) -> List[Tuple[str, str]]:
-        session_queue = await self._redis.hgetall(f'member:{member_id}')
-        return [
-            (session, queue) for session, queue in session_queue.items()
-        ]
-
-    async def cleanup_session(self, member_id: str, session_id: str):
-        self._redis.hdel(f'member:{member_id}', session_id)
+_redis = None
 
 
-session_manager = SessionManager()
+def _get_member_key(member_id):
+    return f'member:{member_id}'
+
+
+async def redis():
+    global _redis
+    if _redis is None:
+        _redis = await create_async_redis(settings.authentication.redis)
+    return _redis
+
+
+async def register_session(member_id, session_id, queue):
+    await (await redis()).hset(
+        _get_member_key(member_id),
+        session_id,
+        queue
+    )
+
+
+async def get_sessions(member_id: str) -> List[Tuple[str, str]]:
+    session_queue = await (await redis()).hgetall(_get_member_key(member_id))
+    for session, queue in session_queue.items():
+        yield session, queue
+
+
+
+async def cleanup_session(member_id: str, session_id: str):
+    (await redis()).hdel(f'member:{member_id}', session_id)
+
+
+async def flush_all():
+    await (await redis()).flushdb()
 

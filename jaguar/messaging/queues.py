@@ -2,33 +2,19 @@ import asyncio
 from typing import Callable
 
 import ujson
-import redis
-import aioredis
 from nanohttp import settings
+
+from ..redis_ import create_blocking_redis, create_async_redis
 
 
 _blocking_redis = None
 _async_redis = None
 
 
-def create_blocking_redis():
-    return redis.StrictRedis(**settings.messaging.redis)
-
-
-async def create_async_redis():
-    params = settings.messaging.redis
-    return await aioredis.create_redis(
-        (params.host, params.port),
-        db=params.db,
-        password=params.password,
-        loop=asyncio.get_event_loop()
-    )
-
-
 def blocking_redis():
     global _blocking_redis
     if _blocking_redis is None:
-        _blocking_redis = create_blocking_redis()
+        _blocking_redis = create_blocking_redis(settings.messaging.redis)
 
     return _blocking_redis
 
@@ -36,7 +22,7 @@ def blocking_redis():
 async def async_redis():
     global _async_redis
     if _async_redis is None:
-        _async_redis = await create_async_redis()
+        _async_redis = await create_async_redis(settings.messaging.redis)
 
     return _async_redis
 
@@ -53,4 +39,6 @@ async def pop_async(queue):
     encoded_message = await (await async_redis()).rpop(queue)
     return ujson.loads(encoded_message) if encoded_message else None
 
+async def flush_all_async():
+    await (await async_redis()).flushdb()
 

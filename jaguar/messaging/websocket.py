@@ -9,9 +9,7 @@ from nanohttp import settings
 from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
-from . import queues
-from .routing import message_router
-from .sessions import session_manager
+from . import queues, sessions
 
 
 async def authenticate(request):
