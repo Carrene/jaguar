@@ -1,5 +1,5 @@
 
-from nanohttp import json, context, HTTPUnauthorized, HTTPStatus
+from nanohttp import json, context, HTTPUnauthorized, HTTPStatus, HTTPNotFound
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession
@@ -25,7 +25,7 @@ class TargetController(ModelRestController):
             raise HTTPStatus('706 Invalid Target Id')
         target = DBSession.query(Target).filter(Target.id == id).one_or_none()
         if target is None:
-            raise HTTPStatus('614 Target Not Exist')
+            raise HTTPNotFound('Target Not Exists')
 
         return target
 

@@ -47,7 +47,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             assert status == '706 Invalid Target Id'
 
             when('Target does not exist', url_parameters=Update(id=3))
-            assert status == '614 Target Not Exist'
+            assert status == '404 Target Not Exists'
 
             when(
                 'Try to send unsopported media type',
