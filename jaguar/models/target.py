@@ -88,10 +88,16 @@ class Room(Target):
         'polymorphic_identity': 'room',
     }
 
+    def __repr__(self):
+        return f'Room: {self.id} {self.title}'
+
 
 class Direct(Target):
 
     __mapper_args__ = {
         'polymorphic_identity': 'direct',
     }
+
+    def __repr__(self):
+        return f'Direct: {self.id}'
 

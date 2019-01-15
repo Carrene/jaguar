@@ -26,7 +26,6 @@ class TestSendMessage(AutoDocumentationBDDTest):
             title='example',
             members=[user1]
         )
-        direct = Direct()
         session.add(room)
         session.commit()
 

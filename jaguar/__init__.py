@@ -7,7 +7,7 @@ from nanohttp import settings
 
 from .authentication import Authenticator
 from .controllers.root import Root
-from .cli.email import EmailLauncher
+from .cli import EmailLauncher, MemberLauncher, TargetLauncher, TokenLauncher
 from .messaging.cli import WebsocketLauncher, MessageRouterLauncher
 
 
@@ -59,6 +59,14 @@ class Jaguar(Application):
         EmailLauncher.register(subparsers)
         WebsocketLauncher.register(subparsers)
         MessageRouterLauncher.register(subparsers)
+        MemberLauncher.register(subparsers)
+        TargetLauncher.register(subparsers)
+        TokenLauncher.register(subparsers)
+
+    def insert_mockup(self):
+        from . import mockup
+        mockup.insert()
+
 
     @classmethod
     def initialize_orm(cls, engine=None):

@@ -152,3 +152,6 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
     def roles(self):
         return ['member']
 
+    def __repr__(self):
+        return f'Member: {self.id} {self.reference_id} {self.title} {self.email}'
+
