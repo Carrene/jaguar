@@ -55,10 +55,6 @@ class Jaguar(Application):
             version=__version__,
         )
 
-    def insert_mockup(self, *args):
-        mockup.insert()
-        DBSession.commit()
-
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
         WebsocketLauncher.register(subparsers)
