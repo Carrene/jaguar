@@ -1,3 +1,4 @@
+import pytest
 
 from jaguar.messaging import queues, sessions, router
 from jaguar.models import Member, Room
@@ -34,7 +35,13 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         assert members[0].title == self.member1.title
         assert members[1].title == self.member2.title
 
+    @pytest.mark.asyncio
     async def test_route(self):
+        await sessions.dispose()
+        await sessions.flush_all()
+        await queues.dispose_async()
+        await queues.flush_all_async()
+
         queue_name = 'test_queue'
         session_id = '1'
 

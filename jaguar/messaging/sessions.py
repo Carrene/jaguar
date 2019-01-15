@@ -40,3 +40,10 @@ async def cleanup_session(member_id: str, session_id: str):
 async def flush_all():
     await (await redis()).flushdb()
 
+
+async def dispose():
+    global _redis
+    if _redis and _redis.connection._loop.is_running():
+        _redis.close()
+    _redis = None
+

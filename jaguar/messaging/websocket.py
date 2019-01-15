@@ -46,13 +46,13 @@ async def websocket_handler(request):
     await sessions.register_session(
         member_id[0],
         identity.session_id,
-        app['queue_name']
+        app_state()['queue_name']
     )
 
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    app[str(identity.session_id)] = ws
+    app_state()[str(identity.session_id)] = ws
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -67,7 +67,7 @@ async def websocket_handler(request):
 
     print('websocket connection closed')
     await sessions.cleanup_session(identity.id, identity.session_id)
-    del app[str(identity.session_id)]
+    del app_state()[str(identity.session_id)]
     #await ws.close()
     return ws
 
@@ -81,7 +81,7 @@ async def worker(name):
             await asyncio.sleep(1)
             continue
         decoded_message = json.loads(message)
-        await app[decoded_message['sessionId']].send_json(decoded_message)
+        await app_state()[decoded_message['sessionId']].send_json(decoded_message)
 
 
 
@@ -105,24 +105,28 @@ async def configure(app, force=True):
 async def start_workers(app):
     queue_name = 'jaguar_websocket_server_1'
     loop = asyncio.get_event_loop()
-    app['queue_name'] = queue_name
-    app['message_dispatcher'] = loop.create_task(
+    app_state()['queue_name'] = queue_name
+    app_state()['message_dispatcher'] = loop.create_task(
         worker(queue_name)
     )
 
 
 async def cleanup_background_tasks(app):
-    app['message_dispatcher'].cancel()
-    await app['message_dispatcher']
+    app_state()['message_dispatcher'].cancel()
+    await app_state()['message_dispatcher']
 
 
 async def prepare_session_manager(app):
     await sessions.redis()
 
 
+def app_state():
+    return app['state']
+
+
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
-
+app['state'] = {}
 app.on_startup.append(configure)
 app.on_startup.append(prepare_session_manager)
 app.on_startup.append(start_workers)

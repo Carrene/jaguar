@@ -39,6 +39,15 @@ async def pop_async(queue):
     encoded_message = await (await async_redis()).rpop(queue)
     return ujson.loads(encoded_message) if encoded_message else None
 
+
 async def flush_all_async():
     await (await async_redis()).flushdb()
+
+
+async def dispose_async():
+    global _async_redis
+    if _async_redis and not _async_redis.closed \
+            and _async_redis.connection._loop.is_running():
+        _async_redis.close()
+    _async_redis = None
 

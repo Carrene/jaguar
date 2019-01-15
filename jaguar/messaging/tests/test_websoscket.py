@@ -33,7 +33,10 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
         session.commit()
 
 
+    @pytest.mark.asyncio
     async def test_websocket(self, websocket_session):
+        await sessions.dispose()
+        await queues.dispose_async()
         await sessions.flush_all()
         await queues.flush_all_async()
         self.login('member@example.com')
