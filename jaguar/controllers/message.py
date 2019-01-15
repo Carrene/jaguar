@@ -87,16 +87,8 @@ class MessageController(ModelRestController):
         message.body = 'This message is deleted'
         message.mimetype = 'text/plain'
         message.soft_delete()
-
         DBSession.flush()
-
-        try:
-            queue_manager.enqueue(
-                settings.rabbitmq.worker_queue, message.to_dict()
-            )
-        except:
-            raise
-
+        queues.push(settings.messaging.workers_queue, message.to_dict())
         return message
 
     @authorize
@@ -125,16 +117,8 @@ class MessageController(ModelRestController):
 
         message.body = new_message_body
         DBSession.add(message)
-
         DBSession.flush()
-
-        try:
-            queue_manager.enqueue(
-                settings.rabbitmq.worker_queue, message.to_dict()
-            )
-        except:
-            raise
-
+        queues.push(settings.messaging.workers_queue, message.to_dict())
         return message
 
     @authorize
@@ -193,15 +177,7 @@ class MessageController(ModelRestController):
         message.sender_id = Member.current().id
         message.reply_to = requested_message
         DBSession.add(message)
-
         DBSession.flush()
-
-        try:
-            queue_manager.enqueue(
-                settings.rabbitmq.worker_queue, message.to_dict()
-            )
-        except:
-            raise
-
+        queues.push(settings.messaging.workers_queue, message.to_dict())
         return message
 
