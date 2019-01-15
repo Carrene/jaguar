@@ -5,7 +5,7 @@ from sqlalchemy_media import store_manager
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
     settings
 
-from ..messaging.queues import queue_manager
+from ..messaging import queues
 from ..models import Envelop, Message, TargetMember, Member, Target
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
@@ -43,12 +43,7 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
 
-        try:
-            queue_manager.enqueue(
-                settings.rabbitmq.worker_queue, message.to_dict()
-            )
-        except:
-            raise
+        queues.push(settings.messaging.workers_queue, message.to_dict())
 
         # After consulting with Mr.Mardani, the result got to remove `commit`
         # decorator and use `commit()` straightly instead. It's cause of

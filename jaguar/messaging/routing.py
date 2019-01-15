@@ -1,6 +1,6 @@
 from restfulpy.orm import DBSession
 
-from jaguar.messaging.queues import queue_manager
+from jaguar.messaging import queues
 from jaguar.messaging.sessions import session_manager
 from jaguar.models import TargetMember, Member
 

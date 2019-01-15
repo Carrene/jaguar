@@ -3,7 +3,7 @@ import asyncio
 from aiohttp import web
 from restfulpy.cli import Launcher, RequireSubCommand
 
-from .websocket import app, route_message
+from .websocket import app
 
 
 DEFAULT_ADDRESS = '8085'

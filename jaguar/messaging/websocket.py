@@ -2,7 +2,6 @@ import json
 from os import path
 
 import aiohttp
-import aio_pika
 import itsdangerous
 from aiohttp import web
 from cas import CASPrincipal
@@ -10,8 +9,7 @@ from nanohttp import settings
 from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
-from ..models import Member
-from .queues import queue_manager
+from . import queues
 from .routing import message_router
 from .sessions import session_manager
 
@@ -72,36 +70,19 @@ async def websocket_handler(request):
 
 
 async def worker(name):
-    await queue_manager.queues[name].consume(callback)
-
-
-async def callback(message: aio_pika.IncomingMessage):
-    with message.process():
+    # Prepare rabbitmq synchronous connection object to get used in
+    # `send message`
+    while True:
+        message = await queue_manager.pop_async(name)
         decoded_message = json.loads(message.body.decode())
         await app[decoded_message['sessionId']].send_json(decoded_message)
 
 
-async def route_message(name):
-    # FIXME: Remove redis server connection establishing in `route_message`
-    # Esbtalish connection with redis server
-    await session_manager.redis()
-
-    # Prepare rabbitmq synchronous connection object to get used in
-    # `send message`
-    queue_manager.create_queue(name)
-
-    await queue_manager.create_queue_async(name)
-    await queue_manager.dequeue_async(name, callback_routing)
-
-
-async def callback_routing(message: aio_pika.IncomingMessage):
-    with message.process():
-        envelop = json.loads(message.body)
-        await message_router.route(envelop)
-
 
 HERE = path.abspath(path.dirname(__file__))
 ROOT = path.abspath(path.join(HERE, '../..'))
+
+
 async def configure(app, force=True):
     from jaguar import Jaguar
     _context = {
@@ -115,10 +96,10 @@ async def configure(app, force=True):
     # FIXME: Configuration file?
 
 
-async def start_background_tasks(app):
+async def start_workers(app):
     await queue_manager.create_queue_async(settings.rabbitmq.websocket_queue)
     app['message_dispatcher'] = app.loop.create_task(
-        worker(settings.rabbitmq.websocket_queue)
+        worker('jaguar_websocket_server_1')
     )
 
 
@@ -127,15 +108,16 @@ async def cleanup_background_tasks(app):
     await app['message_dispatcher']
 
 
-async def establish_cache_manager_connection(app):
+async def prepare_session_manager(app):
     await session_manager.redis()
 
 
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 
-app.on_startup.append(establish_cache_manager_connection)
-app.on_startup.append(start_background_tasks)
+app.on_startup.append(configure)
+app.on_startup.append(prepare_session_manager)
+app.on_startup.append(start_workers)
 
 app.on_cleanup.append(cleanup_background_tasks)
 

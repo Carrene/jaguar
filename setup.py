@@ -18,8 +18,6 @@ dependencies = [
 
     # Messaging
     'aioredis',
-    'pika',
-    'aio-pika',
     'aiohttp',
     'cchardet',
     'async_generator',
