@@ -1,3 +1,5 @@
+import asyncio
+
 from restfulpy.orm import DBSession
 
 from jaguar.messaging import queues, sessions
@@ -20,4 +22,10 @@ async def route(envelop):
             envelop['isMine'] = member.id == envelop['senderId']
             envelop['sessionId'] = session.decode()
             await queues.push_async(queue, envelop)
+
+
+async def start(name):
+    while True:
+        message = await queues.bpop_async(name)
+        router.route(json.loads(message))
 

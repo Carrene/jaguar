@@ -4,6 +4,7 @@ from aiohttp import web
 from restfulpy.cli import Launcher, RequireSubCommand
 
 from .websocket import app
+from . import router
 
 
 DEFAULT_ADDRESS = '8085'
@@ -28,8 +29,7 @@ class RouterStartLauncher(Launcher): # pragma: no cover
         loop = asyncio.get_event_loop()
 
         try:
-            loop.run_until_complete(route_message(self.args.queue))
-            loop.run_forever()
+            loop.run_until_complete(router.start(self.args.queue))
         except:
             # The value returned is based on UNIX-like cli applications
             return 1

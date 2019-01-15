@@ -40,6 +40,10 @@ async def pop_async(queue):
     return ujson.loads(encoded_message) if encoded_message else None
 
 
+async def bpop_async(queue):
+    return await (await async_redis()).brpop(queue)
+
+
 async def flush_all_async():
     await (await async_redis()).flushdb()
 
