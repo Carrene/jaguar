@@ -46,7 +46,7 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
             host: localhost
             port: 6379
             password: ~
-            db: 15
+            db: 3
         rabbitmq:
           url: amqp://guest:guest@127.0.0.1/
           worker_queue: workers_test

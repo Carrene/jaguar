@@ -1,4 +1,5 @@
 import json
+import asyncio
 from os import path
 
 import aiohttp
@@ -10,6 +11,7 @@ from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
 from . import queues, sessions
+from ..models import Member
 
 
 async def authenticate(request):
@@ -31,18 +33,20 @@ async def authenticate(request):
 async def websocket_handler(request):
     identity = await authenticate(request)
 
+    # FIXME: async
     member_id = DBSession.query(Member.id) \
         .filter(Member.reference_id == identity.reference_id) \
         .one_or_none()
-    if member_id is None:
+
+    if not member_id:
         raise web.HTTPUnauthorized()
 
     print('New session: %s has been connected' % identity.session_id)
 
-    await session_manager.register_session(
+    await sessions.register_session(
         member_id[0],
         identity.session_id,
-        settings.rabbitmq.websocket_queue
+        app['queue_name']
     )
 
     ws = web.WebSocketResponse()
@@ -54,7 +58,7 @@ async def websocket_handler(request):
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
                 await ws.send_str('closing')
-                await ws.close()
+                break
             else:
                 await ws.send_str(msg.data + '/answer')
         elif msg.type == aiohttp.WSMsgType.ERROR:
@@ -62,8 +66,9 @@ async def websocket_handler(request):
                   ws.exception())
 
     print('websocket connection closed')
-    await session_manager.cleanup_session(identity.id, identity.session_id)
-
+    await sessions.cleanup_session(identity.id, identity.session_id)
+    del app[str(identity.session_id)]
+    #await ws.close()
     return ws
 
 
@@ -71,8 +76,11 @@ async def worker(name):
     # Prepare rabbitmq synchronous connection object to get used in
     # `send message`
     while True:
-        message = await queue_manager.pop_async(name)
-        decoded_message = json.loads(message.body.decode())
+        message = await queues.pop_async(name)
+        if not message:
+            await asyncio.sleep(1)
+            continue
+        decoded_message = json.loads(message)
         await app[decoded_message['sessionId']].send_json(decoded_message)
 
 
@@ -95,9 +103,11 @@ async def configure(app, force=True):
 
 
 async def start_workers(app):
-    await queue_manager.create_queue_async(settings.rabbitmq.websocket_queue)
-    app['message_dispatcher'] = app.loop.create_task(
-        worker('jaguar_websocket_server_1')
+    queue_name = 'jaguar_websocket_server_1'
+    loop = asyncio.get_event_loop()
+    app['queue_name'] = queue_name
+    app['message_dispatcher'] = loop.create_task(
+        worker(queue_name)
     )
 
 
@@ -107,7 +117,7 @@ async def cleanup_background_tasks(app):
 
 
 async def prepare_session_manager(app):
-    await session_manager.redis()
+    await sessions.redis()
 
 
 app = web.Application()
@@ -117,5 +127,5 @@ app.on_startup.append(configure)
 app.on_startup.append(prepare_session_manager)
 app.on_startup.append(start_workers)
 
-app.on_cleanup.append(cleanup_background_tasks)
+#app.on_cleanup.append(cleanup_background_tasks)
 

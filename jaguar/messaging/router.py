@@ -16,7 +16,7 @@ def get_members_by_target(target_id):
 async def route(envelop):
     members = get_members_by_target(envelop['targetId'])
     for member in members:
-        async for session, queue in sessions.get_sessions(member.id):
+        for session, queue in (await sessions.get_sessions(member.id)).items():
             envelop['isMine'] = member.id == envelop['senderId']
             envelop['sessionId'] = session.decode()
             await queues.push_async(queue, envelop)

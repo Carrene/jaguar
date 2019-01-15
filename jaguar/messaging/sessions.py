@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import Dict
 
 import aioredis
 from nanohttp import settings
@@ -28,15 +28,13 @@ async def register_session(member_id, session_id, queue):
     )
 
 
-async def get_sessions(member_id: str) -> List[Tuple[str, str]]:
-    session_queue = await (await redis()).hgetall(_get_member_key(member_id))
-    for session, queue in session_queue.items():
-        yield session, queue
+async def get_sessions(member_id: str) -> Dict[str, str]:
+    return await (await redis()).hgetall(_get_member_key(member_id))
 
 
 
 async def cleanup_session(member_id: str, session_id: str):
-    (await redis()).hdel(f'member:{member_id}', session_id)
+    await (await redis()).hdel(_get_member_key(member_id), session_id)
 
 
 async def flush_all():
