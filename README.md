@@ -99,7 +99,7 @@ To start the websocket server run the following command:
 
 ```bash
 
-jaguar websocket start [-b PORT]
+jaguar websocket start
 
 ```
 
@@ -110,7 +110,7 @@ To route the messages from `worker queue` to right `WebSocket` connection, use t
 
 ```bash
 
-jaguar router start [-q QUEUE_NAME]
+jaguar router start
 
 ```
 
@@ -143,4 +143,26 @@ The *target_id* is a required parameter which must be the same as *target_id* in
 **NOTE:** Check if a target exists with the id of target_id you enter as cli parameter.
 
 The *payload*  is a optional parameter which has a default value. You can observe the default value by running: `jaguar -h`.
+
+### Create access token from panda repository
+
+The *member_id* and *application_id* is a required parameters.
+
+panda access-token create member_id application_id [-s scopes [scopes ...]]
+
+when given access token, panda must be running.
+
+./gunicorn
+
+### Create token from jaguar repository 
+
+jaguar token create member_id access_token
+
+when given token jaguar must be running.
+
+./gunicorn
+
+### Send a message to a target
+
+curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"authorization: <token>"
 
