@@ -41,10 +41,11 @@ async def websocket_handler(request):
     if not member_id:
         raise web.HTTPUnauthorized()
 
+    member_id = member_id[0]
     print('New session: %s has been connected' % identity.session_id)
 
     await sessions.register_session(
-        member_id[0],
+        member_id,
         identity.session_id,
         app_state()['queue_name']
     )
@@ -52,7 +53,9 @@ async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 
-    app_state()[str(identity.session_id)] = ws
+    print(f'Storing socket for session: {identity.session_id} for member: '\
+          f'{member_id}')
+    app_state()[identity.session_id] = ws
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -73,15 +76,18 @@ async def websocket_handler(request):
 
 
 async def worker(name):
-    # Prepare rabbitmq synchronous connection object to get used in
-    # `send message`
+    await sessions.flush_all()
     while True:
         message = await queues.pop_async(name)
         if not message:
             await asyncio.sleep(1)
             continue
-        decoded_message = json.loads(message)
-        await app_state()[decoded_message['sessionId']].send_json(decoded_message)
+
+        session_id = message['sessionId']
+        print(f'Sending to session: {session_id}')
+        ws = app_state().get(session_id)
+        if ws is not None:
+            await ws.send_json(message)
 
 
 

@@ -7,11 +7,11 @@ from nanohttp import settings
 
 from .authentication import Authenticator
 from .controllers.root import Root
-from .cli import EmailLauncher, MemberLauncher, TargetLauncher, TokenLauncher
-from .messaging.cli import WebsocketLauncher, MessageRouterLauncher
+from .cli import EmailLauncher, MemberLauncher, TargetLauncher, \
+    TokenLauncher, WebsocketLauncher, RouterLauncher
 
 
-__version__ = '0.5.2nightly'
+__version__ = '0.5.2a2'
 
 
 class Jaguar(Application):
@@ -58,7 +58,7 @@ class Jaguar(Application):
     def register_cli_launchers(self, subparsers):
         EmailLauncher.register(subparsers)
         WebsocketLauncher.register(subparsers)
-        MessageRouterLauncher.register(subparsers)
+        RouterLauncher.register(subparsers)
         MemberLauncher.register(subparsers)
         TargetLauncher.register(subparsers)
         TokenLauncher.register(subparsers)

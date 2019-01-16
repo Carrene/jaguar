@@ -1,50 +1,9 @@
-import asyncio
-
 from aiohttp import web
 from restfulpy.cli import Launcher, RequireSubCommand
 
-from .websocket import app
-from . import router
-
+from ..messaging.websocket import app
 
 DEFAULT_ADDRESS = '8085'
-
-
-class RouterStartLauncher(Launcher): # pragma: no cover
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser(
-            'start',
-            help='Starts the message router.'
-        )
-        parser.add_argument(
-            '-q',
-            '--queue',
-            default='workers',
-            help='The queue name of fetching envelops from database'
-        )
-        return parser
-
-    def launch(self):
-        loop = asyncio.get_event_loop()
-
-        try:
-            loop.run_until_complete(router.start(self.args.queue))
-        except:
-            # The value returned is based on UNIX-like cli applications
-            return 1
-
-
-class MessageRouterLauncher(Launcher, RequireSubCommand):
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('router', help='Message router.')
-        router_subparsers = parser.add_subparsers(
-            title='Message router',
-            dest='router_command'
-        )
-        RouterStartLauncher.register(router_subparsers)
-        return parser
 
 
 class WebsocketStartLauncher(Launcher): # pragma: no cover

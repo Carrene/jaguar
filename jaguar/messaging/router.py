@@ -1,5 +1,6 @@
 import asyncio
 
+import ujson
 from restfulpy.orm import DBSession
 
 from jaguar.messaging import queues, sessions
@@ -25,7 +26,9 @@ async def route(envelop):
 
 
 async def start(name):
+    print('Message router started')
     while True:
-        message = await queues.bpop_async(name)
-        router.route(json.loads(message))
+        queue, message = await queues.bpop_async(name)
+        print(f'Processing message: {message}')
+        await route(ujson.loads(message))
 

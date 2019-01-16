@@ -21,6 +21,7 @@ async def redis():
 
 
 async def register_session(member_id, session_id, queue):
+    print(f'Registering session: {session_id} for member: {member_id}')
     await (await redis()).hset(
         _get_member_key(member_id),
         session_id,
