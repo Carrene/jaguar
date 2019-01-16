@@ -1,11 +1,11 @@
 import pytest
 
 from jaguar.messaging import queues, sessions, router
+from jaguar import asyncdb
 from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 
-
-class TestMessageRouter(AutoDocumentationBDDTest):
+class TestAsyncDB(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -30,31 +30,12 @@ class TestMessageRouter(AutoDocumentationBDDTest):
         session.commit()
 
     @pytest.mark.asyncio
-    async def test_route(self):
-        await sessions.dispose()
-        await sessions.flush_all()
-        await queues.dispose_async()
-        await queues.flush_all_async()
-
-        queue_name = 'test_queue'
-        session_id = '1'
-
-        await sessions.flush_all()
-        await sessions.register_session(
+    async def test_get_member_by_taget(self):
+        members = await asyncdb.get_members_by_target(self.room.id)
+        assert len(members) == 2
+        assert set(m.get('id') for m in members) == set((
             self.member1.id,
-            session_id,
-            queue_name
-        )
-
-        envelop = {
-            'targetId': self.room.id,
-            'message': 'sample message',
-            'senderId': 1,
-            'isMine': True
-        }
-        await router.route(envelop)
-
-        message = await queues.pop_async(queue_name)
-        assert message == envelop
+            self.member2.id
+        ))
 
 

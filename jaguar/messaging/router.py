@@ -3,24 +3,18 @@ import asyncio
 import ujson
 from restfulpy.orm import DBSession
 
-from jaguar.messaging import queues, sessions
+from . import queues, sessions
+from jaguar import asyncdb
 from jaguar.models import TargetMember, Member
 
 
-def get_members_by_target(target_id):
-    # FIXME: Use async sqlalchemy
-    members = DBSession.query(Member) \
-        .join(TargetMember, TargetMember.member_id == Member.id) \
-        .filter(TargetMember.target_id == target_id) \
-        .all()
-    return members
-
-
 async def route(envelop):
-    members = get_members_by_target(envelop['targetId'])
+    members = await asyncdb.get_members_by_target(envelop['targetId'])
     for member in members:
-        for session, queue in (await sessions.get_sessions(member.id)).items():
-            envelop['isMine'] = member.id == envelop['senderId']
+        member_id = member.get('id')
+        active_sessions = await sessions.get_sessions(member_id)
+        for session, queue in active_sessions.items():
+            envelop['isMine'] = member_id == envelop['senderId']
             envelop['sessionId'] = session.decode()
             await queues.push_async(queue, envelop)
 

@@ -1,3 +1,4 @@
+import asyncio
 from os import path, makedirs
 from contextlib import contextmanager
 
@@ -9,7 +10,7 @@ from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 from restfulpy.orm.metadata import FieldInfo
 
-from jaguar import Jaguar
+from jaguar import Jaguar, asyncdb
 from jaguar.authentication import Authenticator
 from jaguar.controllers.root import Root
 from jaguar.models import Member, Room, Message
@@ -66,6 +67,23 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
         member = session.query(Member).filter(Member.email == email).one()
         token = member.create_jwt_principal().dump()
         self._authentication_token = token.decode()
+
+    def setup(self):
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            return
+        else:
+            loop.run_until_complete(asyncdb.close_connection())
+
+
+    def teardown(self):
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            return
+        else:
+            loop.run_until_complete(asyncdb.close_connection())
 
 
 @contextmanager
