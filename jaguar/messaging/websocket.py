@@ -10,6 +10,7 @@ from nanohttp import settings
 from restfulpy.orm import DBSession
 from restfulpy.configuration import configure as restfulpy_configure
 
+from jaguar import asyncdb
 from . import queues, sessions
 from ..models import Member
 
@@ -34,14 +35,12 @@ async def websocket_handler(request):
     identity = await authenticate(request)
 
     # FIXME: async
-    member_id = DBSession.query(Member.id) \
-        .filter(Member.reference_id == identity.reference_id) \
-        .one_or_none()
+    member_id = await asyncdb\
+        .get_member_id_by_reference_id(identity.reference_id)
 
     if not member_id:
         raise web.HTTPUnauthorized()
 
-    member_id = member_id[0]
     print('New session: %s has been connected' % identity.session_id)
 
     await sessions.register_session(

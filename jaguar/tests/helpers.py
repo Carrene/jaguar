@@ -41,18 +41,6 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
     __application_factory__ = Jaguar
     __story_directory__ = path.join(DATA_DIRECTORY, 'stories')
     __api_documentation_directory__ = path.join(DATA_DIRECTORY, 'markdown')
-    __configuration__ = '''
-        authentication:
-          redis:
-            host: localhost
-            port: 6379
-            password: ~
-            db: 3
-        rabbitmq:
-          url: amqp://guest:guest@127.0.0.1/
-          worker_queue: workers_test
-          websocket_queue: websocket_worker_test
-    '''
     __metadata__ = {
         r'^/apiv1/members.*': member_fields,
         r'^/apiv1/contacts.*': contact_fields,

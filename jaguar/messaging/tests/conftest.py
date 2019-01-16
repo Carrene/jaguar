@@ -6,6 +6,7 @@ import aiohttp
 from multidict import CIMultiDict
 from aiohttp.web_runner import AppRunner, TCPSite
 from nanohttp.tests.conftest import free_port
+from nanohttp import settings
 
 from jaguar.tests.helpers import AutoDocumentationBDDTest
 from jaguar.messaging.websocket import app as websocket_application
@@ -54,6 +55,7 @@ class AsyncTest(AutoDocumentationBDDTest):
             await queues.dispose_async()
             await queues.flush_all_async()
             await asyncdb.close_connection()
+            await asyncdb.get_connection(settings.db.test_url)
 
         loop.run_until_complete(do_())
 

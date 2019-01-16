@@ -7,10 +7,10 @@ from nanohttp import settings
 _connection = None
 
 
-async def get_connection():
+async def get_connection(url=None):
     global _connection
     if _connection is None:
-        _connection = await asyncpg.connect(settings.db.url)
+        _connection = await asyncpg.connect(url or settings.db.url)
 
     return _connection
 
@@ -34,4 +34,15 @@ async def get_members_by_target(target_id):
     '''
     members = await (await get_connection()).fetch(query, target_id)
     return members
+
+
+async def get_member_id_by_reference_id(reference_id):
+    query = '''
+    SELECT m.id
+    FROM member m
+    WHERE m.reference_id = $1
+    '''
+    return await (await get_connection()).fetchval(query, reference_id)
+
+
 
