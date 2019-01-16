@@ -2,14 +2,13 @@ import json
 import pytest
 
 from jaguar.messaging import queues
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.messaging.tests.conftest import AsyncTest
 
 
-class TestQueueManager(AutoDocumentationBDDTest):
+class TestQueueManager(AsyncTest):
 
     @pytest.mark.asyncio
     async def test_push_pop_async(self):
-        await queues.flush_all_async()
         queue_name = 'test_queue'
         envelop = {
             'targetId': 1,

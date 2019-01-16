@@ -1,11 +1,11 @@
 import pytest
 
-from jaguar.messaging import queues, sessions, router
+from jaguar.messaging import sessions, router, queues
 from jaguar.models import Member, Room
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.messaging.tests.conftest import AsyncTest
 
 
-class TestMessageRouter(AutoDocumentationBDDTest):
+class TestMessageRouter(AsyncTest):
 
     @classmethod
     def mockup(cls):
@@ -31,15 +31,9 @@ class TestMessageRouter(AutoDocumentationBDDTest):
 
     @pytest.mark.asyncio
     async def test_route(self):
-        await sessions.dispose()
-        await sessions.flush_all()
-        await queues.dispose_async()
-        await queues.flush_all_async()
-
         queue_name = 'test_queue'
         session_id = '1'
 
-        await sessions.flush_all()
         await sessions.register_session(
             self.member1.id,
             session_id,

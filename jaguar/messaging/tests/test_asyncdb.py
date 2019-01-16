@@ -3,9 +3,10 @@ import pytest
 from jaguar.messaging import queues, sessions, router
 from jaguar import asyncdb
 from jaguar.models import Member, Room
-from jaguar.tests.helpers import AutoDocumentationBDDTest
+from jaguar.messaging.tests.conftest import AsyncTest
 
-class TestAsyncDB(AutoDocumentationBDDTest):
+
+class TestAsyncDB(AsyncTest):
 
     @classmethod
     def mockup(cls):

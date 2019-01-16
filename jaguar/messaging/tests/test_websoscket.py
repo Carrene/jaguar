@@ -1,17 +1,12 @@
 import pytest
-import asyncio
-import aiohttp
-import aioredis
-from nanohttp import settings
 from restfulpy.principal import JwtPrincipal
-from bddrest.authoring import when, Update, Remove, status
 
+from jaguar.messaging import sessions
 from jaguar.models import Member
-from jaguar.messaging import sessions, queues
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+from jaguar.messaging.tests.conftest import AsyncTest
 
 
-class TestWebsocketConnection(AutoDocumentationBDDTest):
+class TestWebsocketConnection(AsyncTest):
 
     @classmethod
     def mockup(cls):
@@ -35,10 +30,6 @@ class TestWebsocketConnection(AutoDocumentationBDDTest):
 
     @pytest.mark.asyncio
     async def test_websocket(self, websocket_session):
-        await sessions.dispose()
-        await queues.dispose_async()
-        await sessions.flush_all()
-        await queues.flush_all_async()
         self.login('member@example.com')
 
         async with websocket_session(token=self._authentication_token) as ws:
