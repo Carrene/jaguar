@@ -7,8 +7,7 @@ A chat application
 ## Branches
 
 ### master
-
-[![Build Status](https://travis-ci.com/Carrene/jaguar.svg?token=JgyQwxgapUeYpgeJwWxz&branch=master)](https://travis-ci.com/Carrene/jaguar)
+[![Build Status](https://travis-ci.com/Carrene/jaguar.svg?token=HWnTqWuJD5Ap9uCZHQqx&branch=master)](https://travis-ci.com/Carrene/jaguar)
 [![Coverage Status](https://coveralls.io/repos/github/Carrene/jaguar/badge.svg?branch=master&t=JBn3pI)](https://coveralls.io/github/Carrene/jaguar?branch=master)
 
 Setting up development Environment on Linux
