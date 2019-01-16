@@ -120,6 +120,12 @@ cd path/to/panda
 ./gunicorn
 ```
 
+Run jaguar REST API server
+```bash
+cd path/to/jaguar
+./gunicorn
+```
+
 To enqueue the message, run the following command:
 
 ```bash
