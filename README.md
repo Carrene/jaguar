@@ -148,21 +148,21 @@ The *payload*  is a optional parameter which has a default value. You can observ
 
 The *member_id* and *application_id* is a required parameters.
 
-panda access-token create member_id application_id [-s scopes [scopes ...]]
+`panda access-token create member_id application_id [-s scopes [scopes ...]]`
 
 when given access token, panda must be running.
 
-./gunicorn
+`./gunicorn`
 
 ### Create token from jaguar repository 
 
-jaguar token create member_id access_token
+`jaguar token create member_id access_token`
 
 when given token jaguar must be running.
 
-./gunicorn
+`./gunicorn`
 
 ### Send a message to a target
 
-curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"authorization: <token>"
+`curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"authorization: <token>"`
 
