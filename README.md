@@ -121,24 +121,12 @@ cd path/to/panda
 ./gunicorn
 ```
 
-
 To enqueue the message, run the following command:
 
 ```bash
-
-./scripts/rabbitmq_enqueue_async.py <session_id> <target_id> [-p PAYLOAD]
-
+curl -XSEND localhost:8084/apiv1/targets/1/messages \
+    -H"Authorization: $(jaguar token create 2 `panda access-token create -s email title avatar -- 2 1`)" \
+    -F"body=abc" \
+    -F"mimetype=text/plain"
 ```
-
-The *session_id* is a required parameter which must be the same as *session_id* in the token payload.
-
-The *target_id* is a required parameter which must be the same as *target_id* in the `targetId` sent in `send message` form.
-
-**NOTE:** Check if a target exists with the id of target_id you enter as cli parameter.
-
-The *payload*  is a optional parameter which has a default value. You can observe the default value by running: `jaguar -h`.
-
-### Send a message to a target
-
-`curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"Authorization: <token>"`
 
