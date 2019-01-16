@@ -119,7 +119,7 @@ async def start_workers(app):
 async def cleanup_background_tasks(app):
     #app_state()['message_dispatcher'].cancel()
     #await app_state()['message_dispatcher']
-    asyncdb.close_connection()
+    await asyncdb.close_connection()
 
 
 async def prepare_session_manager(app):
