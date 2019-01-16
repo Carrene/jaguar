@@ -98,34 +98,28 @@ jaguar [-c path/to/config.yml] db create --drop
 To start the websocket server run the following command:
 
 ```bash
-
 jaguar websocket start
-
 ```
 
-The *bind* option is the custom port you would serve the websocket application on.
-
-
-To route the messages from `worker queue` to right `WebSocket` connection, use the following command:
+To route the messages from the `worker queue` to right `WebSocket` connection, 
+use the following command:
 
 ```bash
-
 jaguar router start
-
 ```
-
-The *queue* option is the name of the `worker queue` which must be exist in application configuration.
-
 
 As a client you can recieve the message enqueued by the `wscat` cli app. Like:
 
 ```bash
-
-wscat -c localhost:<websocket application port>?token=<token>
-
+wscat -c ws://localhost:8085?token=$(jaguar token create 1 `panda access-token create 2 1`)
 ```
 
-**NOTE:** Be sure that the token payload contains the `id` of member which is joined to the target you sent a message to.
+when given access token, panda must be running.
+
+```bash
+cd path/to/panda
+./gunicorn
+```
 
 
 To enqueue the message, run the following command:
@@ -144,25 +138,7 @@ The *target_id* is a required parameter which must be the same as *target_id* in
 
 The *payload*  is a optional parameter which has a default value. You can observe the default value by running: `jaguar -h`.
 
-### Create access token from panda repository
-
-The *member_id* and *application_id* is a required parameters.
-
-`panda access-token create member_id application_id [-s scopes [scopes ...]]`
-
-when given access token, panda must be running.
-
-`./gunicorn`
-
-### Create token from jaguar repository 
-
-`jaguar token create member_id access_token`
-
-when given token jaguar must be running.
-
-`./gunicorn`
-
 ### Send a message to a target
 
-`curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"authorization: <token>"`
+`curl -XSEND localhost:8084/apiv1/targets/:id/messages -H"Authorization: <token>"`
 
