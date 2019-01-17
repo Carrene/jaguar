@@ -30,7 +30,7 @@ class TestMessageRouter(AsyncTest):
         session.commit()
 
     @pytest.mark.asyncio
-    async def test_route(self):
+    async def test_route(self, asyncpg):
         queue_name = 'test_queue'
         session_id = '1'
 

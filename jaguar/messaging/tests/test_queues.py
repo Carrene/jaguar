@@ -8,7 +8,7 @@ from jaguar.messaging.tests.conftest import AsyncTest
 class TestQueueManager(AsyncTest):
 
     @pytest.mark.asyncio
-    async def test_push_pop_async(self):
+    async def test_push_pop_async(self, asyncpg):
         queue_name = 'test_queue'
         envelop = {
             'targetId': 1,

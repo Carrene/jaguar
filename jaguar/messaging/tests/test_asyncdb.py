@@ -31,12 +31,11 @@ class TestAsyncDB(AsyncTest):
         session.commit()
 
     @pytest.mark.asyncio
-    async def test_get_member_by_taget(self):
+    async def test_get_member_by_taget(self, asyncpg):
         members = await asyncdb.get_members_by_target(self.room.id)
         assert len(members) == 2
         assert set(m.get('id') for m in members) == set((
             self.member1.id,
             self.member2.id
         ))
-
 

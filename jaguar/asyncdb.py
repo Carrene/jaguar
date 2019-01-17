@@ -21,6 +21,7 @@ async def close_connection():
         return
 
     await _connection.close()
+
     _connection = None
 
 
@@ -32,7 +33,8 @@ async def get_members_by_target(target_id):
     LEFT OUTER JOIN target_member tm ON m.id = tm.member_id
     WHERE tm.target_id = $1
     '''
-    members = await (await get_connection()).fetch(query, target_id)
+    connection = await get_connection()
+    members = await connection.fetch(query, target_id)
     return members
 
 

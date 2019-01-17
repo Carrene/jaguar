@@ -23,7 +23,7 @@ services:
   - redis-server
 
 install: ./scripts/travis-install.sh
-script: py.test --cov=jaguar jaguar/tests jaguar/models/tests
+script: py.test --cov=jaguar jaguar/tests jaguar/models/tests jaguar/messaging/tests
 after_success: 
   - coveralls  
   - ./scripts/travis-upload-wiki.sh

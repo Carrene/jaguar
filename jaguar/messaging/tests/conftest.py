@@ -41,38 +41,23 @@ async def websocket_session(websocket_server):
             yield ws
     yield connect
 
+@pytest.fixture
+async def asyncpg(loop):
+    await sessions.dispose()
+    await sessions.flush_all()
+    await queues.dispose_async()
+    await queues.flush_all_async()
+    await asyncdb.close_connection()
+
+    yield await asyncdb.get_connection(settings.db.test_url)
+
+    await sessions.dispose()
+    await sessions.flush_all()
+    await queues.dispose_async()
+    await queues.flush_all_async()
+    await asyncdb.close_connection()
+
 
 class AsyncTest(AutoDocumentationBDDTest):
-    def setup(self):
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            return
-
-        async def do_():
-            await sessions.dispose()
-            await sessions.flush_all()
-            await queues.dispose_async()
-            await queues.flush_all_async()
-            await asyncdb.close_connection()
-            await asyncdb.get_connection(settings.db.test_url)
-
-        loop.run_until_complete(do_())
-
-
-    def teardown(self):
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            return
-
-        async def do_():
-            await sessions.dispose()
-            await sessions.flush_all()
-            await queues.dispose_async()
-            await queues.flush_all_async()
-            await asyncdb.close_connection()
-
-        loop.run_until_complete(do_())
-
+    pass
 
