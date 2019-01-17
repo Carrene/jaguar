@@ -29,7 +29,7 @@ class TestWebsocketConnection(AsyncTest):
 
 
     @pytest.mark.asyncio
-    async def test_websocket(self, websocket_session):
+    async def test_websocket(self, websocket_session, asyncpg):
         self.login('member@example.com')
 
         async with websocket_session(token=self._authentication_token) as ws:
