@@ -39,4 +39,3 @@ class TestAsyncDB(AsyncTest):
             self.member2.id
         ))
 
-
