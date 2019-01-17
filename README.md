@@ -110,7 +110,7 @@ jaguar router start
 As a client you can recieve the message enqueued by the `wscat` cli app. Like:
 
 ```bash
-wscat -c ws://localhost:8085?token=$(jaguar token create 1 `panda access-token create 2 1`)
+wscat -c ws://localhost:8085?token=$(jaguar token create 2 `panda access-token create -s email -- 2 1`)
 ```
 
 when given access token, panda must be running.
