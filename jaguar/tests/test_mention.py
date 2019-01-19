@@ -36,7 +36,7 @@ class TestMention(AutoDocumentationBDDTest):
 
             when(
                 'Body length is more than limit',
-                form=given | dict(body=(1024 + 1) * 'a')
+                form=given | dict(body=(65536 + 1) * 'a')
             )
             assert status == '702 Must be less than 1024 charecters'
 
