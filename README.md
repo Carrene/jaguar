@@ -15,10 +15,6 @@ Setting up development Environment on Linux
 
 ### Install Project (edit mode)
 
-##### NOTE: You need to have RabbitMQ installed on your machine. you can install it from [RabbitMQ guide](https://www.rabbitmq.com/install-debian.html).
-
-### Install Project (edit mode)
-
 #### Working copy
 
 ```bash
