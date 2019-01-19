@@ -43,7 +43,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             assert response.json['isMine'] is True
 
             when(
-                'trying to pass with application/x-auditlog minetype',
+                'Trying to pass with application/x-auditlog minetype',
                 form=Update(minetype='application/x-auditlog'),
             )
             assert status == 200
