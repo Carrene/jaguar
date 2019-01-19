@@ -1,8 +1,9 @@
 from nanohttp import json, context
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
+from restfulpy.orm import DBSession, commit
 
-from ..models import Mention
+from ..models import Mention, Member
 from ..validators import mention_validator
 
 
@@ -13,8 +14,15 @@ class MentionController(ModelRestController):
     @mention_validator
     @json
     @Mention.expose
-    def mention(self):
+    @commit
+    def mention(self, target_id):
+
         mention = Mention()
         mention.reference = context.form.get('reference')
+        mention.body = context.form.get('body')
+        mention.target_id = int(target_id)
+        mention.sender_id = Member.current().id
+        DBSession.add(mention)
+
         return mention
 
