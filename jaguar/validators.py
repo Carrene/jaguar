@@ -81,3 +81,10 @@ reply_message_validator = validate(
     )
 )
 
+
+mention_validator = validate(
+    reference=dict(
+        max_length=(512, '715 At Most 512 Characters Valid For Reference')
+    )
+)
+

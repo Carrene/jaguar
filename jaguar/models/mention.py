@@ -1,4 +1,5 @@
-from sqlalchemy import NVARCHAR
+from sqlalchemy import Unicode
+from restfulpy.orm import Field
 
 from .envelop import Envelop
 
@@ -8,13 +9,13 @@ class Mention(Envelop):
     __mapper_args__ = {'polymorphic_identity': 'mention'}
 
     reference = Field(
-        NVARCHAR(512),
+        Unicode(512),
         label='Reference',
         message='Lorem Ipsum',
-        required=True,
+        required=False,
         python_type=str,
-        nullable=False,
-        not_none=True,
+        nullable=True,
+        not_none=False,
         watermark='Lorem Ipsum',
         example='Lorem Ipsum',
     )
