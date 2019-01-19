@@ -1,9 +1,9 @@
 from sqlalchemy import NVARCHAR
+
 from .envelop import Envelop
 
 
 class Mention(Envelop):
-    __tablename__ = 'mention'
 
     reference = Field(
         NVARCHAR(512),
