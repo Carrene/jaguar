@@ -5,6 +5,8 @@ from .envelop import Envelop
 
 class Mention(Envelop):
 
+    __mapper_args__ = {'polymorphic_identity': 'mention'}
+
     reference = Field(
         NVARCHAR(512),
         label='Reference',
