@@ -1,7 +1,7 @@
-from bddrest.authoring import given, when, Update, status, response, Remove
+from bddrest.authoring import when, Update, status, response, Remove
 
+from jaguar.models import Member, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
-from jaguar.models import Member, Room, Direct
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -41,6 +41,12 @@ class TestSendMessage(AutoDocumentationBDDTest):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] is True
+
+            when(
+                'Trying to pass with application/x-auditlog minetype',
+                form=Update(minetype='application/x-auditlog'),
+            )
+            assert status == 200
 
             when('Invalid target id', url_parameters=Update(id='Invalid'))
             assert status == '706 Invalid Target Id'
