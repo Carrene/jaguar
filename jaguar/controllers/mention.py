@@ -18,7 +18,6 @@ class MentionController(ModelRestController):
     def mention(self, target_id):
 
         mention = Mention()
-        mention.reference = context.form.get('reference')
         mention.body = context.form.get('body')
         mention.target_id = int(target_id)
         mention.sender_id = Member.current().id

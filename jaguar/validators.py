@@ -83,12 +83,8 @@ reply_message_validator = validate(
 
 
 mention_validator = validate(
-    reference=dict(
-        max_length=(512, '715 At Most 512 Characters Valid For Reference')
-    ),
     body=dict(
         max_length=(1024, '702 Must be less than 1024 charecters'),
-        required='400 Bad Request',
     )
 )
 
