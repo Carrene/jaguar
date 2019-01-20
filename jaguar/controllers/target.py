@@ -14,7 +14,6 @@ class TargetController(ModelRestController):
 
     def __call__(self, *remaining_paths):
         if len(remaining_paths) > 1 and remaining_paths[1] == 'messages':
-            target = self.get_target(remaining_paths[0])
             return MessageController()(remaining_paths[0], *remaining_paths[2:])
 
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
