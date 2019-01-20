@@ -81,3 +81,10 @@ reply_message_validator = validate(
     )
 )
 
+
+mention_validator = validate(
+    body=dict(
+        max_length=(1024, '702 Must be less than 1024 charecters'),
+    )
+)
+
