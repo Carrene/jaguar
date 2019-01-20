@@ -16,7 +16,6 @@ class MentionController(ModelRestController):
     @Mention.expose
     @commit
     def mention(self, target_id):
-
         mention = Mention()
         mention.body = context.form.get('body')
         mention.target_id = int(target_id)
