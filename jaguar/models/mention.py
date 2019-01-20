@@ -1,6 +1,3 @@
-from sqlalchemy import Unicode
-from restfulpy.orm import Field
-
 from .envelop import Envelop
 
 
