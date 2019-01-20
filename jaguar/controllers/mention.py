@@ -1,8 +1,9 @@
-from nanohttp import json, context
+from nanohttp import json, context, settings
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
+from ..messaging import queues
 from ..models import Mention, Member
 from ..validators import mention_validator
 
@@ -21,6 +22,8 @@ class MentionController(ModelRestController):
         mention.target_id = int(target_id)
         mention.sender_id = Member.current().id
         DBSession.add(mention)
+
+        queues.push(settings.messaging.workers_queue, mention.to_dict())
 
         return mention
 
