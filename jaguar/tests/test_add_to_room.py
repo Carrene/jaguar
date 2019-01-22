@@ -93,7 +93,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
             assert status == '602 Not Allowed To Add This Person To Any Room'
 
             when('Room not exist', url_parameters=Update(id='2'))
-            assert status == 612
+            assert status == '612 Room Not Found'
 
             self.logout()
             self.login('blocked1@example.com')
