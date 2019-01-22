@@ -1,4 +1,4 @@
-from bddrest.authoring import when, Update, status, response
+from bddrest.authoring import when, status, response
 
 from jaguar.models import Envelop, Room, Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server

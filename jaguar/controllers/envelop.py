@@ -13,6 +13,5 @@ class EnvelopController(ModelRestController):
     @json
     @Envelop.expose
     def list(self):
-        query = DBSession.query(Envelop)
-        return query
+        return DBSession.query(Envelop)
 
