@@ -18,12 +18,12 @@ class TestEnvelop(AutoDocumentationBDDTest):
         cls.envelop4 = Envelop(body='This is envelop 4')
 
         user1 = Member(
-                email='user1@example.com',
-                title='user',
-                access_token='access token1',
-                reference_id=2,
-                messages=[cls.envelop1, cls.envelop2, cls.envelop3, cls.envelop4]
-            )
+            email='user1@example.com',
+            title='user',
+            access_token='access token1',
+            reference_id=2,
+            messages=[cls.envelop1, cls.envelop2, cls.envelop3, cls.envelop4]
+        )
 
         room1 = Room(
             title='room1',
