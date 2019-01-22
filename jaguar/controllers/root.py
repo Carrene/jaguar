@@ -18,6 +18,7 @@ from .message import MessageController
 from .oauth2 import OAUTHController
 from .subscribetarget import SubscribeTargetController
 from .mention import MentionController
+from .envelop import EnvelopController
 
 
 here = abspath(dirname(__file__))
@@ -37,6 +38,7 @@ class ApiV1(Controller):
     oauth2 = OAUTHController()
     subscribetargets = SubscribeTargetController()
     mentions = MentionController()
+    envelops = EnvelopController()
 
     @json
     def version(self):
