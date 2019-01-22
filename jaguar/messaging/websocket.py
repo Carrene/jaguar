@@ -94,19 +94,6 @@ HERE = path.abspath(path.dirname(__file__))
 ROOT = path.abspath(path.join(HERE, '../..'))
 
 
-async def configure(app, force=True):
-    from jaguar import Jaguar
-    _context = {
-        'process_name': 'Jaguar Websocket Server',
-        'root_path': ROOT,
-        'data_dir': path.join(ROOT, 'data'),
-    }
-
-    restfulpy_configure(context=_context, force=force)
-    settings.merge(Jaguar.__configuration__)
-    # FIXME: Configuration file?
-
-
 async def start_workers(app):
     queue_name = 'jaguar_websocket_server_1'
     loop = asyncio.get_event_loop()
@@ -133,7 +120,6 @@ def app_state():
 app = web.Application()
 app.add_routes([web.get('/', websocket_handler)])
 app['state'] = {}
-app.on_startup.append(configure)
 app.on_startup.append(prepare_session_manager)
 app.on_startup.append(start_workers)
 
