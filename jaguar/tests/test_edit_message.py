@@ -77,7 +77,7 @@ class TestEditMessage(AutoDocumentationBDDTest):
                 'Try to edit a deleted message',
                 url_parameters=Update(id=self.message3.id)
             )
-            assert status == 616
+            assert status == '616 Message Already Deleted'
 
             self.logout()
             self.login('user2@example.com')
