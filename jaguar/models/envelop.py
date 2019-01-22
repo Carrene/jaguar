@@ -45,7 +45,7 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
     target_id = Field(Integer, ForeignKey('target.id'))
     sender_id = Field(Integer, ForeignKey('member.id'))
     body = Field(
-        JSONB,
+        Unicode(65536),
         required=True,
         not_none=True,
         min_length=1,

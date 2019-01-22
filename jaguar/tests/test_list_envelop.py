@@ -44,54 +44,36 @@ class TestEnvelop(AutoDocumentationBDDTest):
             assert status == 200
             assert len(response.json) == 4
 
-#            when('Sort envelops', query=dict(sort='body'))
-#            assert response.json[0]['body'] == self.envelop1.body
-#
-#            when(
-#                'Reverse sorting body content by alphabet',
-#                query=dict(sort='-body')
-#            )
-#            assert response.json[0]['body'] == self.envelop4.body
+            when('Sort envelops', query=dict(sort='body'))
+            assert response.json[0]['body'] == self.envelop1.body
 
-            import pudb; pudb.set_trace()  # XXX BREAKPOINT
+            when(
+                'Reverse sorting body content by alphabet',
+                query=dict(sort='-body')
+            )
+            assert response.json[0]['body'] == self.envelop4.body
+
             when(
                 'Filter envelops',
                 query=dict(sort='id', body=self.envelop1.body)
             )
             assert response.json[0]['body'] == self.envelop1.body
 
-#            when(
-#                'List projects except one of them',
-#                query=dict(sort='id', title='!My awesome project')
-#            )
-#            assert response.json[0]['title'] == 'My first project'
-#
-#            when(
-#                'List projects with filtering by status',
-#                query=dict(sort='id', status='active')
-#            )
-#            assert response.json[0]['status'] == 'active'
-#
-#            when(
-#                'List projects excepts one of statuses',
-#                query=dict(sort='id', status='!active')
-#            )
-#            assert response.json[0]['status'] == 'on-hold'
+            when(
+                'List envelops except one of them',
+                query=dict(sort='id', body=f'!{self.envelop1.body}')
+            )
+            assert response.json[0]['body'] == self.envelop2.body
 
-#            with self.given(
-#                'Project pagination',
-#                '/apiv1/projects',
-#                'LIST',
-#                query=dict(sort='id', take=1, skip=2)
-#            ):
-#                assert response.json[0]['title'] == 'My third project'
-#
-#                when(
-#                    'Manipulate sorting and pagination',
-#                    query=dict(sort='-title', take=1, skip=2)
-#                )
-#                assert response.json[0]['title'] == 'My first project'
-#
-#                when('Request is not authorized', authorization=None)
-#                assert status == 401
-#
+            when('Envelop pagination', query=dict(sort='id', take=1, skip=2))
+            assert response.json[0]['body'] == self.envelop3.body
+
+            when(
+                'Manipulate sorting and pagination',
+                query=dict(sort='-body', take=1, skip=2)
+            )
+            assert response.json[0]['body'] == self.envelop2.body
+
+            when('Request is not authorized', authorization=None)
+            assert status == 401
+
