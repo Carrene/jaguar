@@ -19,7 +19,7 @@ class TargetController(ModelRestController):
 
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
             target = self.get_target(remaining_paths[0])
-            return MentionController()(remaining_paths[0], *remaining_paths[2:])
+            return MentionController(target=target)(*remaining_paths[2:])
 
         return super().__call__(*remaining_paths)
 

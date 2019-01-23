@@ -4,12 +4,16 @@ from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
 from ..messaging import queues
-from ..models import Mention, Member
+from ..models import Mention, Member, Direct
 from ..validators import mention_validator
 
 
 class MentionController(ModelRestController):
     __model__ = Mention
+
+    def __init__(self, target=None, member=None):
+        self.target = target
+        self.member = member
 
     @authorize
     @mention_validator
@@ -19,7 +23,11 @@ class MentionController(ModelRestController):
     def mention(self, target_id):
         mention = Mention()
         mention.body = context.form.get('body')
-        mention.target_id = int(target_id)
+        if self.target:
+            mention.target_id = int(target_id)
+        else:
+            direct = DBSession.query(
+
         mention.sender_id = Member.current().id
         DBSession.add(mention)
 
