@@ -63,7 +63,7 @@ class TestGetMember(AutoDocumentationBDDTest):
             assert response.json['body'] == 'This is message 3'
 
             when('Invalid message id', url_parameters=Update(id='message1'))
-            assert status == 707
+            assert status == '707 Invalid Message Id'
 
             when('Message not found', url_parameters=Update(id=5))
             assert status == '614 Message Not Found'
