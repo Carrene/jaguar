@@ -131,3 +131,9 @@ curl -XSEND localhost:8084/apiv1/targets/1/messages \
     -F"mimetype=text/plain"
 ```
 
+**NOTE:** If you want to get by another user, notice you enter `sudo -u <username>` before the commands. like:
+
+```bash
+jaguar token create 2 `panda access-token create -s email -- 2 1`
+```
+
