@@ -34,16 +34,23 @@ class MentionController(ModelRestController):
             mentioner = Member.current()
             mentioned = self.member
 
-            t = aliased(Target)
-            tm1 = aliased(TargetMember)
-            tm2 = aliased(TargetMember)
+            aliased_target = aliased(Target)
+            aliased_target_member1 = aliased(TargetMember)
+            aliased_target_member2 = aliased(TargetMember)
 
-            target_member = DBSession.query(tm1) \
-                .join(tm2, tm1.target_id == tm2.target_id) \
-                .filter(tm1.member_id == mentioned.id) \
-                .filter(tm2.member_id == mentioner.id) \
-                .join(t, t.id == tm1.target_id) \
-                .filter(t.type == 'direct') \
+            target_member = DBSession.query(aliased_target_member1) \
+                .join(
+                    aliased_target_member2,
+                    aliased_target_member2.target_id == \
+                    aliased_target_member1.target_id
+                ) \
+                .filter(aliased_target_member1.member_id == mentioned.id) \
+                .filter(aliased_target_member2.member_id == mentioner.id) \
+                .join(
+                    aliased_target,
+                    aliased_target.id == aliased_target_member1.target_id
+                ) \
+                .filter(aliased_target.type == 'direct') \
                 .one_or_none()
 
             mention.sender_id = mentioner.id

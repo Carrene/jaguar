@@ -22,7 +22,7 @@ class MemberController(ModelRestController):
 
     def _get_member(self, id):
         try:
-            id = int(id)
+            int(id)
         except:
             raise HTTPNotFound()
 
