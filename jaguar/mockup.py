@@ -1,6 +1,7 @@
 from restfulpy.orm import DBSession
+from sqlalchemy.orm import aliased
 
-from .models import Member, Room, Direct
+from .models import Member, Room, Direct, TargetMember, Target
 
 
 def insert():
@@ -34,11 +35,13 @@ def insert():
     )
     room = Room(
         title='example',
-        members=[user1]
+        members=[god, user1, user2, user3]
     )
-    direct = Direct(members=[god, user1, user2, user3])
+    direct1 = Direct(members=[god, user1])
+    direct2 = Direct(members=[god, user2])
 
     DBSession.add(room)
-    DBSession.add(direct)
+    DBSession.add(direct1)
+    DBSession.add(direct2)
     DBSession.commit()
 
