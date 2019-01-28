@@ -2,9 +2,12 @@ import ujson
 from nanohttp import settings, HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
-    SoftDeleteMixin
+    SoftDeleteMixin, TimestampMixin
 from restfulpy.orm.metadata import FieldInfo
-from sqlalchemy import Integer, ForeignKey, Unicode, Table, Boolean, JSON
+from sqlalchemy import Integer, ForeignKey, Unicode, Table, Boolean, JSON, \
+    select, bindparam
+from sqlalchemy.orm import column_property
+from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 from sqlalchemy_media.constants import KB
 from sqlalchemy_media.exceptions import ContentTypeValidationError, \
@@ -16,12 +19,11 @@ from .membership import Member
 JSON_MIMETYPE = ['application/x-auditlog']
 
 
-member_message = Table(
-    'member_message',
-    DeclarativeBase.metadata,
-    Field('message_id', Integer, ForeignKey('envelop.id')),
-    Field('member_id', Integer, ForeignKey('member.id')),
-)
+class MemberMessage(DeclarativeBase, TimestampMixin):
+    __tablename__ = 'member_message'
+
+    message_id = Field(Integer, ForeignKey('envelop.id'), primary_key=True)
+    member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
 
 
 class FileAttachment(File):
@@ -157,8 +159,20 @@ class Message(Envelop):
     seen_by = relationship(
         'Member',
         protected=False,
-        secondary=member_message,
+        secondary='member_message',
         lazy='selectin'
+    )
+
+    seen_at = column_property(
+        select([MemberMessage.created_at]) \
+        .where(MemberMessage.message_id == Envelop.id) \
+        .where(MemberMessage.member_id == bindparam(
+                'member_id',
+                callable_=lambda: context.identity.id
+            )
+        ) \
+        .correlate_except(MemberMessage),
+        deferred=True
     )
 
     @property
