@@ -1,16 +1,19 @@
+import ujson
 from nanohttp import settings, HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
 from restfulpy.orm.metadata import FieldInfo
 from sqlalchemy import Integer, ForeignKey, Unicode, Table, Boolean, JSON
-from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 from sqlalchemy_media.constants import KB
 from sqlalchemy_media.exceptions import ContentTypeValidationError, \
     MaximumLengthIsReachedError
 
 from .membership import Member
+
+
+JSON_MIMETYPE = ['application/x-auditlog']
 
 
 member_message = Table(
@@ -168,8 +171,9 @@ class Message(Envelop):
             isMine=self.is_mine,
             activatedAt=self.activated_at,
             attachment=self.attachment.locate() \
-                if self.attachment and not self.is_deleted \
-                else None
+                if self.attachment and not self.is_deleted else None,
+            body=ujson.loads(self.body) \
+                if self.mimetype in JSON_MIMETYPE else self.body
         )
         return message_dictionary
 
