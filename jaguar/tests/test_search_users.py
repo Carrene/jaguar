@@ -45,12 +45,6 @@ class TestSearchMember(AutoDocumentationBDDTest):
             assert status == '708 Search Query Is Required'
 
             when(
-                'Trying to pass search non existing user',
-                form=Update(query='sample')
-            )
-            assert status == '611 Member Not Found'
-
-            when(
                 'Search string must be less than 20 charecters',
                 form=Update(
                     query= \

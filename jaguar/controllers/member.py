@@ -47,8 +47,6 @@ class MemberController(ModelRestController):
                 Member.title.ilike(query),
                 Member.email.ilike(query)
             ))
-        if not query.count():
-            raise HTTPStatus('611 Member Not Found')
 
         return query
 
