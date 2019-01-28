@@ -31,57 +31,55 @@ def test_message_model(db):
     if exists(temp_path):
         shutil.rmtree(temp_path)
 
-    with StoreManager(session):
-        message1 = Message(
-            mimetype='message1',
-            body='This is message 1',
-            attachment=text_path
-        )
-        message2 = Message(
-            mimetype='message2',
-            body='This is message 2',
-        )
-        message3 = Message(
-            mimetype='message3',
-            body='This is message 3',
-        )
-        member = Member(
-            title='member',
-            email='member@example.com',
-            access_token='access token',
-            reference_id=1,
-            messages=[message1, message2, message3]
-        )
-        room = Room(
-            title='example',
-            type='room',
-            messages=[message1, message2, message3],
-            members=[member]
-        )
-        session.add(room)
-        session.commit()
+    message1 = Message(
+        mimetype='message1',
+        body='This is message 1',
+    )
+    message2 = Message(
+        mimetype='message2',
+        body='This is message 2',
+    )
+    message3 = Message(
+        mimetype='message3',
+        body='This is message 3',
+    )
+    member = Member(
+        title='member',
+        email='member@example.com',
+        access_token='access token',
+        reference_id=1,
+        messages=[message1, message2, message3]
+    )
+    room = Room(
+        title='example',
+        type='room',
+        messages=[message1, message2, message3],
+        members=[member]
+    )
+    session.add(room)
+    session.commit()
 
-        # Test message model. As every message should have a sender
-        # to be send, sender_id and target_id can not be nullable
-        assert session.query(Message).count() == 3
+    # Test message model. As every message should have a sender
+    # to be send, sender_id and target_id can not be nullable
+    assert session.query(Message).count() == 3
 
-        # Test target id of a message
-        assert message1.target_id == 1
+    # Test target id of a message
+    assert message1.target_id == 1
 
-        # Test messages of a room
-        assert len(room.messages) == 3
-        assert room.messages[0].body == 'This is message 1'
+    # Test messages of a room
+    assert len(room.messages) == 3
+    assert room.messages[0].body == 'This is message 1'
 
-        # Test messages of a member
-        message1.seen_by.append(member)
-        session.commit()
-        assert len(message1.seen_by) == 1
+    # Test messages of a member
+    message1.seen_by.append(member)
+    session.commit()
+    assert len(message1.seen_by) == 1
 
-        # The replied_to is a many to one relationship
-        message2.reply_to = message1
-        message3.reply_to = message1
-        session.commit()
-        assert message2.reply_root == message1.id
-        assert message3.reply_root == message1.id
+    # The replied_to is a many to one relationship
+    message2.reply_to = message1
+    message3.reply_to = message1
+    session.commit()
+    assert message2.reply_root == message1.id
+    assert message3.reply_root == message1.id
 
-        # TODO: Check content validator error
+    # TODO: Check content validator error
