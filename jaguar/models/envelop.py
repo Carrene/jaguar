@@ -1,4 +1,4 @@
-from nanohttp import HTTPStatus
+from nanohttp import settings, HTTPStatus
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin
@@ -22,6 +22,11 @@ member_message = Table(
 
 
 class FileAttachment(File):
+
+    _internal_max_length = None
+
+    _internal_min_length = None
+
     __pre_processors__ = [
         MagicAnalyzer(),
         ContentTypeValidator([
@@ -32,8 +37,29 @@ class FileAttachment(File):
         ])
     ]
 
-    __max_length__ = 50 * KB
-    __min_length__ = 1 * KB
+    @property
+    def __max_length__(self):
+        if self._internal_max_length is None:
+            self._internal_max_length = \
+                settings.attachements.messages.files.max_length * KB
+
+        return self._internal_max_length
+
+    @__max_length__.setter
+    def __max_length__(self, v):
+        self._internal_max_length = v
+
+    @property
+    def __min_length__(self):
+        if self._internal_min_length is None:
+            self._internal_min_length = \
+                settings.attachements.messages.files.min_length * KB
+
+        return self._internal_min_length
+
+    @__min_length__.setter
+    def __min_length__(self, v):
+        self._internal_min_length = v
 
 
 class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,

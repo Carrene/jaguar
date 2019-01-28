@@ -37,6 +37,12 @@ class Jaguar(Application):
       local_directory: %(root_path)s/data/assets
       base_url: http://localhost:8080/assets
 
+    attachements:
+      messages:
+        files:
+          max_length: 50 # KB
+          min_length: 1 # KB
+
     messaging:
         workers_queue: jaguar_workers
         redis:
