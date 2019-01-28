@@ -1,5 +1,5 @@
 import ujson
-from nanohttp import settings, HTTPStatus
+from nanohttp import settings, HTTPStatus, context
 from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     ActivationMixin, OrderingMixin, FilteringMixin, PaginationMixin, \
     SoftDeleteMixin, TimestampMixin
