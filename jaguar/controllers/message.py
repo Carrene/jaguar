@@ -190,7 +190,7 @@ class MessageController(ModelRestController):
         member = Member.current()
         try:
             id = int(id)
-        except(ValueError, TypeError):
+        except (ValueError, TypeError):
             raise HTTPNotFound()
 
         message = DBSession.query(Message).get(id)

@@ -37,7 +37,6 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             sender_id=user.id
         )
         session.add(cls.message1)
-        session.flush()
 
         cls.message2 = Message(
             body='This is message 2',
@@ -46,7 +45,6 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             sender_id=user.id
         )
         session.add(cls.message2)
-        session.flush()
 
         cls.message3 = Message(
             body='This is message 3',
