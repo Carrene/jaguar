@@ -3,10 +3,11 @@ from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
-    settings
+    settings, HTTPNotFound
 
 from ..messaging import queues
-from ..models import Envelop, Message, TargetMember, Member, Target
+from ..models import Envelop, Message, TargetMember, Member, Target, \
+    MemberMessage
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 
@@ -180,5 +181,38 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
+        return message
+
+    @authorize
+    @json
+    @commit
+    def see(self, id):
+        member = Member.current()
+        try:
+            id = int(id)
+        except (ValueError, TypeError):
+            raise HTTPNotFound()
+
+        message = DBSession.query(Message).get(id)
+        if message is None:
+            raise HTTPNotFound()
+
+        member_message = DBSession.query(MemberMessage) \
+            .filter(MemberMessage.member_id == member.id) \
+            .filter(MemberMessage.message_id == message.id) \
+            .one_or_none()
+
+        if member_message is not None:
+            raise HTTPStatus('619 Message Already Seen')
+
+        messages = DBSession.query(Message) \
+            .filter(Message.target_id == message.target_id) \
+            .filter(Message.created_at <= message.created_at) \
+            .filter(Message.seen_at == None) \
+            .all()
+
+        for m in messages:
+            m.seen_by.append(member)
+
         return message
 
