@@ -4,7 +4,7 @@ from jaguar.models import Member, Room, Message, MemberMessage
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-class TestDeleteMessage(AutoDocumentationBDDTest):
+class TestSeeMessage(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
