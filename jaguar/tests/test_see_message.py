@@ -1,7 +1,4 @@
-from os.path import abspath, join, dirname
-
-from bddrest.authoring import when, status, response, Update
-from sqlalchemy_media import StoreManager
+from bddrest.authoring import when, status, response
 
 from jaguar.models import Member, Room, Message, MemberMessage
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
