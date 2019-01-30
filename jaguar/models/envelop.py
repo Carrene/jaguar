@@ -186,6 +186,8 @@ class Message(Envelop):
             activatedAt=self.activated_at,
             attachment=self.attachment.locate() \
                 if self.attachment and not self.is_deleted else None,
+            body=ujson.loads(self.body) \
+                if self.mimetype in JSON_MIMETYPE else self.body
         )
         return message_dictionary
 
