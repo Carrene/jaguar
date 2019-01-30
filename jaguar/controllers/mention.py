@@ -1,7 +1,7 @@
 from sqlalchemy.orm import aliased
 from nanohttp import json, context, settings, HTTPNotFound
 from restfulpy.authorization import authorize
-from restfulpy.controllers import ModelRestController, JsonPatchControllerMixin
+from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 
 from ..messaging import queues
@@ -9,7 +9,7 @@ from ..models import Mention, Member, Direct, TargetMember, Target
 from ..validators import mention_validator
 
 
-class MentionController(ModelRestController, JsonPatchControllerMixin):
+class MentionController(ModelRestController):
     __model__ = Mention
 
     def __init__(self, target=None, member=None):

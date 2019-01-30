@@ -2,7 +2,7 @@
 from os.path import abspath, dirname, join
 
 from nanohttp import Controller, json, action, Static
-from restfulpy.controllers import RootController
+from restfulpy.controllers import RootController, JsonPatchControllerMixin
 from restfulpy.authorization import authorize
 
 import jaguar
@@ -25,7 +25,7 @@ here = abspath(dirname(__file__))
 attachment_storage = abspath(join(here, '../..', 'data/assets'))
 
 
-class ApiV1(Controller):
+class ApiV1(Controller, JsonPatchControllerMixin):
 
     members = MemberController()
     emails = EmailController()
