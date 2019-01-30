@@ -124,19 +124,15 @@ class MessageController(ModelRestController):
         return message
 
     @authorize
+    @store_manager(DBSession)
     @json
     @Message.expose
     def get(self, id):
-        try:
-            id = int(id)
-        except(ValueError, TypeError):
-            raise HTTPStatus('707 Invalid Message Id')
+        id = int_or_notfound(id)
 
-        message = DBSession.query(Message) \
-            .filter(Message.id == id) \
-            .one_or_none()
+        message = DBSession.query(Message).get(id)
         if message is None:
-            raise HTTPStatus('614 Message Not Found')
+            raise HTTPNotFound()
 
         is_subscribe = DBSession.query(Target) \
             .filter(
