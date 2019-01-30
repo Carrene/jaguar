@@ -1,6 +1,6 @@
 from restfulpy.authorization import authorize
 from restfulpy.orm import commit, DBSession
-from restfulpy.controllers import ModelRestController
+from restfulpy.controllers import ModelRestController, JsonPatchControllerMixin
 from sqlalchemy_media import store_manager
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
     settings, HTTPNotFound
@@ -16,7 +16,7 @@ SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',
                       'application/x-auditlog']
 
 
-class MessageController(ModelRestController):
+class MessageController(ModelRestController, JsonPatchControllerMixin):
     __model__ = Message
 
     @store_manager(DBSession)

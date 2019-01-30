@@ -1,7 +1,7 @@
 
 from nanohttp import json, context, HTTPUnauthorized, HTTPStatus, HTTPNotFound
 from restfulpy.authorization import authorize
-from restfulpy.controllers import ModelRestController
+from restfulpy.controllers import ModelRestController, JsonPatchControllerMixin
 from restfulpy.orm import DBSession
 
 from ..models import Target, Room
@@ -9,7 +9,7 @@ from .message import MessageController
 from .mention import MentionController
 
 
-class TargetController(ModelRestController):
+class TargetController(ModelRestController, JsonPatchControllerMixin):
     __model__ = Target
 
     def __call__(self, *remaining_paths):
