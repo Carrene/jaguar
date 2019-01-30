@@ -1,7 +1,7 @@
 from sqlalchemy import or_
 from nanohttp import json, context, HTTPStatus, settings, validate, \
     HTTPNotFound, HTTPBadRequest
-from restfulpy.controllers import ModelRestController, JsonPatchControllerMixin
+from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 from restfulpy.authorization import authorize
 
@@ -10,7 +10,7 @@ from .mention import MentionController
 from ..validators import search_member_validator, create_member_validator
 
 
-class MemberController(ModelRestController, JsonPatchControllerMixin):
+class MemberController(ModelRestController):
     __model__ = Member
 
     def __call__(self, *remaining_paths):
