@@ -3,7 +3,7 @@ from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController, JsonPatchControllerMixin
 from sqlalchemy_media import store_manager
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
-    settings, HTTPNotFound
+    settings, HTTPNotFound, int_or_notfound
 
 from ..messaging import queues
 from ..models import Envelop, Message, TargetMember, Member, Target, \
@@ -150,16 +150,14 @@ class MessageController(ModelRestController, JsonPatchControllerMixin):
 
         return message
 
+    @store_manager(DBSession)
     @authorize
     @reply_message_validator
     @json
     @Message.expose
     @commit
     def reply(self, message_id):
-        try:
-            message_id = int(message_id)
-        except(ValueError, TypeError):
-            raise HTTPStatus('707 Invalid MessageId')
+        id = int_or_notfound(message_id)
 
         mimetype = context.form.get('mimetype')
         if not mimetype in SUPPORTED_MIME_TYPES:
@@ -169,7 +167,7 @@ class MessageController(ModelRestController, JsonPatchControllerMixin):
             .filter(Message.id == message_id) \
             .one_or_none()
         if requested_message is None:
-            raise HTTPStatus('614 Message Not Found')
+            raise HTTPNotFound()
 
         if requested_message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
