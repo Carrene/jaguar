@@ -1,42 +1,54 @@
-from bddrest.authoring import given, when, status, response, Update, Remove
+import io
+from os.path import abspath, join, dirname
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+from bddrest.authoring import when, status, response, Update, Remove
+from sqlalchemy_media import StoreManager
+
 from jaguar.models import Member, Message, Room
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+
+
+THIS_DIR = abspath(join(dirname(__file__)))
+IMAGE_PATH = join(THIS_DIR, 'stuff', '150x150.png')
+
 
 class TestReplyMessage(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session(expire_on_commit=True)
-        cls.message1 = Message(
-            body='This is message 1',
-            mimetype='text/plain'
-        )
-        cls.message2 = Message(
-            body='This is message 2',
-            mimetype='text/plain'
-        )
-        user = Member(
-            title='user',
-            email='user@example.com',
-            access_token='access token',
-            reference_id=1
-        )
-        session.add(user)
-        user1 = Member(
-            title='user1',
-            email='user1@example.com',
-            access_token='access token1',
-            reference_id=2,
-            messages=[cls.message1, cls.message2]
-        )
-        cls.room = Room(
-            title='room',
-            messages=[cls.message1, cls.message2],
-            members=[user1]
-        )
-        session.add(cls.room)
-        cls.message2.soft_delete()
-        session.commit()
+        with StoreManager(session):
+            with open(IMAGE_PATH, 'rb') as f:
+                cls.message1 = Message(
+                    body='This is message 1',
+                    mimetype='image/png',
+                    attachment=io.BytesIO(f.read()),
+                )
+                cls.message2 = Message(
+                    body='This is message 2',
+                    mimetype='text/plain'
+                )
+                user = Member(
+                    title='user',
+                    email='user@example.com',
+                    access_token='access token',
+                    reference_id=1
+                )
+                session.add(user)
+                user1 = Member(
+                    title='user1',
+                    email='user1@example.com',
+                    access_token='access token1',
+                    reference_id=2,
+                    messages=[cls.message1, cls.message2]
+                )
+                cls.room = Room(
+                    title='room',
+                    messages=[cls.message1, cls.message2],
+                    members=[user1]
+                )
+                session.add(cls.room)
+                cls.message2.soft_delete()
+                session.commit()
 
     def test_reply_a_message(self):
         self.login('user@example.com')
@@ -56,13 +68,13 @@ class TestReplyMessage(AutoDocumentationBDDTest):
             assert len(self.room.messages) == 3
 
             when('Requested message not found', url_parameters=Update(id=4))
-            assert status == '614 Message Not Found'
+            assert status == 404
 
             when(
                 'Request a message with invalid message id',
                 url_parameters=Update(id='message1')
             )
-            assert status == '707 Invalid MessageId'
+            assert status == 404
 
             when(
                 'Try to reply with unsopported media type',
