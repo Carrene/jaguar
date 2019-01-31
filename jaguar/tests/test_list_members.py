@@ -39,7 +39,7 @@ class TestListMembers(AutoDocumentationBDDTest):
         self.login('user1@example.com')
 
         with cas_mockup_server(), self.given(
-            'List messages of a target',
+            'List members of a target',
             f'/apiv1/targets/id:{self.room1.id}/members',
             'LIST',
         ):
