@@ -174,14 +174,12 @@ class MessageController(ModelRestController):
         return message
 
     @authorize
+    @store_manager(DBSession)
     @json
     @commit
     def see(self, id):
+        id = int_or_notfound(id)
         member = Member.current()
-        try:
-            id = int(id)
-        except (ValueError, TypeError):
-            raise HTTPNotFound()
 
         message = DBSession.query(Message).get(id)
         if message is None:
