@@ -94,22 +94,18 @@ class MessageController(ModelRestController):
         return message
 
     @authorize
+    @store_manager(DBSession)
     @edit_message_validator
     @json
     @Message.expose
     @commit
     def edit(self, id):
-        try:
-            id = int(id)
-        except ValueError:
-            raise HTTPStatus('707 Invalid MessageId')
-
+        id = int_or_notfound(id)
         new_message_body = context.form.get('body')
-        message = DBSession.query(Message) \
-            .filter(Message.id == id) \
-            .one_or_none()
+
+        message = DBSession.query(Message).get(id)
         if message is None:
-            raise HTTPStatus('614 Message Not Found')
+            raise HTTPNotFound()
 
         if message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
