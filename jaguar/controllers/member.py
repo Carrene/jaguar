@@ -41,7 +41,6 @@ class MemberController(ModelRestController):
             .filter(TargetMember.target_id == self.target.id)
         return query
 
-
     @authorize
     @search_member_validator
     @json
