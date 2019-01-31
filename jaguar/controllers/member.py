@@ -1,17 +1,20 @@
 from sqlalchemy import or_
 from nanohttp import json, context, HTTPStatus, settings, validate, \
-    HTTPNotFound, HTTPBadRequest
+    HTTPNotFound, HTTPBadRequest, int_or_notfound
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
 from restfulpy.authorization import authorize
 
-from ..models import Member
+from ..models import Member, TargetMember
 from .mention import MentionController
 from ..validators import search_member_validator, create_member_validator
 
 
 class MemberController(ModelRestController):
     __model__ = Member
+
+    def __init__(self, target=None):
+        self.target = target
 
     def __call__(self, *remaining_paths):
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
@@ -21,16 +24,23 @@ class MemberController(ModelRestController):
         return super().__call__(*remaining_paths)
 
     def _get_member(self, id):
-        try:
-            int(id)
-        except:
-            raise HTTPNotFound()
+        id = int_or_notfound(id)
 
         member = DBSession.query(Member).filter(Member.id == id).one_or_none()
         if member is None:
             raise HTTPNotFound()
 
         return member
+
+    @authorize
+    @json(prevent_form='711 Form Not Allowed')
+    @Member.expose
+    def list(self):
+        query = DBSession.query(Member) \
+            .join(TargetMember, TargetMember.member_id == Member.id) \
+            .filter(TargetMember.target_id == self.target.id)
+        return query
+
 
     @authorize
     @search_member_validator

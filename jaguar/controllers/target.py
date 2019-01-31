@@ -7,6 +7,7 @@ from restfulpy.orm import DBSession
 from ..models import Target, Room
 from .message import MessageController
 from .mention import MentionController
+from .member import MemberController
 
 
 class TargetController(ModelRestController):
@@ -20,6 +21,10 @@ class TargetController(ModelRestController):
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
             target = self._get_target(remaining_paths[0])
             return MentionController(target=target)(*remaining_paths[2:])
+
+        if len(remaining_paths) > 1 and remaining_paths[1] == 'members':
+            target = self._get_target(remaining_paths[0])
+            return MemberController(target=target)(*remaining_paths[2:])
 
         return super().__call__(*remaining_paths)
 
