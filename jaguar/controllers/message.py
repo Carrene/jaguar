@@ -12,8 +12,16 @@ from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 
 
-SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',
-                      'application/x-auditlog']
+SUPPORTED_MIME_TYPES=[
+    'text/plain',
+    'image/jpeg',
+    'image/png',
+    'image/jpg',
+    'application/x-auditlog',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/pdf',
+]
 
 
 class MessageController(ModelRestController):

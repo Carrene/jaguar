@@ -38,7 +38,10 @@ class FileAttachment(File):
             'image/jpeg',
             'image/png',
             'text/plain',
-            'image/jpg'
+            'image/jpg',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/pdf',
         ])
     ]
 
