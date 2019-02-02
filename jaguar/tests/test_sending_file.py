@@ -11,11 +11,14 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import Member, Room, Direct
 
 
-this_dir = abspath(join(dirname(__file__)))
-text_path = join(this_dir, 'stuff', 'text_file.txt')
-tex_path = join(this_dir, 'stuff', 'sample_tex_file.tex')
-image_path = join(this_dir, 'stuff', '150x150.png')
-maximum_image_path = join(this_dir, 'stuff', 'maximum-length.jpg')
+THIS_DIR = abspath(join(dirname(__file__)))
+TEXT_PATH = join(THIS_DIR, 'stuff', 'text_file.txt')
+TEX_PATH = join(THIS_DIR, 'stuff', 'sample_tex_file.tex')
+IMAGE_PATH = join(THIS_DIR, 'stuff', '150x150.png')
+MAXIMUM_IMAGE_PATH = join(THIS_DIR, 'stuff', 'maximum-length.jpg')
+PDF_PATH = join(THIS_DIR, 'stuff', 'sample.pdf')
+DOC_PATH = join(THIS_DIR, 'stuff', 'sample.doc')
+DOCX_PATH = join(THIS_DIR, 'stuff', 'sample.docx')
 
 
 class TestFileSharing(AutoDocumentationBDDTest):
@@ -42,7 +45,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
     def test_attach_file_to_message(self):
         self.login('user1@example.com')
 
-        with cas_mockup_server(), open(image_path, 'rb') as f ,self.given(
+        with cas_mockup_server(), open(IMAGE_PATH, 'rb') as f ,self.given(
             'Send a message to a target',
             '/apiv1/targets/id:1/messages',
             'SEND',
@@ -57,23 +60,62 @@ class TestFileSharing(AutoDocumentationBDDTest):
             assert response.json['isMine'] is True
             assert 'attachment' in response.json
 
-            when(
-                'does not match file content type',
-                multipart = Update(attachment=tex_path)
-            )
-            assert status == '710 The Mimetype Does Not Match The File Type'
 
-            when(
-                'mime type does not match content type',
-                multipart=Update(attachment=text_path)
-            )
-            assert status == '710 The Mimetype Does Not Match The File Type'
+            with open(PDF_PATH, 'rb') as f:
+                when(
+                    'File format is .pdf',
+                    multipart=Update(
+                        attachment=io.BytesIO(f.read()),
+                        mimetype='application/pdf'
+                    )
+                )
+                assert status == 200
+                assert response.json['mimetype'] == 'application/pdf'
 
-            when(
-                'Image size is more than maximum length',
-                multipart=Update(
-                    mimetype='image/jpeg',
-                    attachment=maximum_image_path)
-            )
-            assert status == 413
+
+            with open(DOC_PATH, 'rb') as f:
+                when(
+                    'File format is .doc',
+                    multipart=Update(
+                        attachment=io.BytesIO(f.read()),
+                        mimetype='application/CDFV2'
+                    )
+                )
+                assert status == 200
+                assert response.json['mimetype'] == 'application/CDFV2'
+
+            with open(DOCX_PATH, 'rb') as f:
+                when(
+                    'File format is .doc',
+                    multipart=Update(
+                        attachment=io.BytesIO(f.read()),
+                        mimetype='application/zip'
+                    )
+                )
+                assert status == 200
+                assert response.json['mimetype'] == 'application/zip'
+
+
+            with open(TEX_PATH, 'rb') as f:
+                when(
+                    'does not match file content type',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == '710 The Mimetype Does Not Match The File Type'
+
+            with open(TEXT_PATH, 'rb') as f:
+                when(
+                    'mime type does not match content type',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == '710 The Mimetype Does Not Match The File Type'
+
+            with open(MAXIMUM_IMAGE_PATH, 'rb') as f:
+                when(
+                    'Image size is more than maximum length',
+                    multipart=Update(
+                        mimetype='image/jpeg',
+                        attachment=io.BytesIO(f.read()))
+                )
+                assert status == 413
 

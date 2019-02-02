@@ -6,22 +6,10 @@ from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
     settings, HTTPNotFound, int_or_notfound
 
 from ..messaging import queues
-from ..models import Envelop, Message, TargetMember, Member, Target, \
-    MemberMessage
+from ..models import TargetMember, Member, Target, MemberMessage
+from ..models.envelop import Envelop, Message, VALID_MIMETYPES
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
-
-
-SUPPORTED_MIME_TYPES=[
-    'text/plain',
-    'image/jpeg',
-    'image/png',
-    'image/jpg',
-    'application/x-auditlog',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/pdf',
-]
 
 
 class MessageController(ModelRestController):
@@ -36,12 +24,13 @@ class MessageController(ModelRestController):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
         attachment = context.form.get('attachment')
-        if not mimetype in SUPPORTED_MIME_TYPES:
+        if not mimetype in VALID_MIMETYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         message = Message(body=body, mimetype=mimetype)
         message.target_id = int(target_id)
         message.sender_id = Member.current().id
+
         if 'attachment' in context.form:
             message.attachment = attachment
 
@@ -160,7 +149,7 @@ class MessageController(ModelRestController):
         id = int_or_notfound(message_id)
 
         mimetype = context.form.get('mimetype')
-        if not mimetype in SUPPORTED_MIME_TYPES:
+        if not mimetype in VALID_MIMETYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         requested_message = DBSession.query(Message) \
