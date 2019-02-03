@@ -139,3 +139,16 @@ class RoomController(ModelRestController):
             .delete()
         return room
 
+
+    @authorize
+    @json(prevent_form='711 Form Not Allowed')
+    @Room.expose
+    @commit
+    def subscribe(self):
+        query = DBSession.query(Room)
+        query2 = Target.filter_by_request(query)
+        import pudb; pudb.set_trace()  # XXX BREAKPOINT
+
+
+        return dict()
+
