@@ -42,8 +42,9 @@ class AutoDocumentationBDDTest(ApplicableTestCase):
     __story_directory__ = path.join(DATA_DIRECTORY, 'stories')
     __api_documentation_directory__ = path.join(DATA_DIRECTORY, 'markdown')
     __configuration__ = '''
-          room_subscription:
-              max_length: 5
+            room:
+              subscription:
+                max_length: 5
     '''
     __metadata__ = {
         r'^/apiv1/members.*': member_fields,

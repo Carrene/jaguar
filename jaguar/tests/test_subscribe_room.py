@@ -53,7 +53,7 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
 
          with cas_mockup_server(), self.given(
              'Subscribe multiple rooms',
-             '/apiv1/rooms?id=IN(1,2)',
+             f'/apiv1/rooms?id=IN({self.room1.id}, {self.room2.id})',
              'SUBSCRIBE',
          ):
              assert status == 200

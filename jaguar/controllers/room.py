@@ -149,9 +149,9 @@ class RoomController(ModelRestController):
         query = DBSession.query(Room)
         requested_rooms = Target.filter_by_request(query).all()
 
-        if len(requested_rooms) >= settings.room_subscription.max_length:
+        if len(requested_rooms) >= settings.room.subscription.max_length:
             raise HTTPStatus(
-                f'716 Maximum {settings.room_subscription.max_length} Rooms '
+                f'716 Maximum {settings.room.subscription.max_length} Rooms '
                 f'To Subscribe At A Time'
             )
 
@@ -163,10 +163,9 @@ class RoomController(ModelRestController):
             .filter(Target.type == 'room') \
             .all()
         subscribed_rooms_id = {i.target_id for i in subscribed_rooms}
-
-        flush_counter = 0
         not_subscribed_rooms_id = requested_rooms_id - subscribed_rooms_id
 
+        flush_counter = 0
         for each_room_id in not_subscribed_rooms_id:
             flush_counter += 1
             target_member = TargetMember(
@@ -179,6 +178,5 @@ class RoomController(ModelRestController):
 
         not_subscribed_rooms = DBSession.query(Target) \
             .filter(Target.id.in_(not_subscribed_rooms_id))
-
         return not_subscribed_rooms
 
