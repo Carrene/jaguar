@@ -24,11 +24,11 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
             access_token='access token2',
             reference_id=3
         )
-        room1 = Room(title='room1', owner=cls.user2)
-        session.add(room1)
+        cls.room1 = Room(title='room1', owner=cls.user2)
+        session.add(cls.room1)
 
-        room2 = Room(title='room2', owner=cls.user2)
-        session.add(room2)
+        cls.room2 = Room(title='room2', owner=cls.user2)
+        session.add(cls.room2)
 
         room3 = Room(title='room3', owner=cls.user2)
         session.add(room3)
@@ -48,7 +48,7 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
 
     def test_subscribe_rooms(self):
          self.login('user1@example.com')
-         rooms = (str(i)+', ' for i in range(1,102))
+         rooms = (str(i) + ', ' for i in range(1, 102))
          rooms_string = ''.join(rooms)
 
          with cas_mockup_server(), self.given(
@@ -60,6 +60,12 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
              assert len(response.json) == 2
              assert response.json[0]['title'] == 'room1'
              assert response.json[0]['ownerId'] == self.user2.id
+
+             when(
+                 'There is form parameter',
+                 form=dict(parameter='abc')
+             )
+             assert status == '711 Form Not Allowed'
 
              when(
                  'The number of rooms to subscribe is more than limit',
