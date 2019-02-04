@@ -42,7 +42,7 @@ class MentionController(ModelRestController):
             aliased_target_member2 = aliased(TargetMember)
 
             target_member = DBSession.query(aliased_target_member1) \
-                .outerjoin(
+                .join(
                     aliased_target_member2,
                     aliased_target_member2.target_id == \
                     aliased_target_member1.target_id
@@ -54,7 +54,7 @@ class MentionController(ModelRestController):
                     aliased_target.id == aliased_target_member1.target_id
                 ) \
                 .filter(aliased_target.type == 'direct') \
-                .all()
+                .one_or_none()
 
             mention.sender_id = mentioner.id
             if target_member is None:
