@@ -44,7 +44,7 @@ class Jaguar(Application):
           min_length: 1 # KB
 
     room_subscription:
-        max_length: 100
+      max_length: 100
 
     messaging:
         workers_queue: jaguar_workers
