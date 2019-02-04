@@ -30,6 +30,7 @@ class MentionController(ModelRestController):
         if self.target:
             mention.target_id = self.target.id
             mention.sender_id = Member.current().id
+
         else:
             mentioner = Member.current()
             mentioned = self.member
@@ -62,11 +63,12 @@ class MentionController(ModelRestController):
                 DBSession.add(direct)
                 DBSession.flush()
                 mention.target_id = direct.id
+
             else:
                 mention.target_id = target_member.target_id
 
         DBSession.add(mention)
+        DBSession.flush()
         queues.push(settings.messaging.workers_queue, mention.to_dict())
-
         return mention
 
