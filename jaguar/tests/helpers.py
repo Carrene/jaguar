@@ -102,6 +102,8 @@ def cas_mockup_server():
             url: {url}
           oauth:
               url: {url}
+          room_subscription:
+              max_length: 5
         ''')
 
         yield app
