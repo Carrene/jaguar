@@ -1,5 +1,5 @@
 from sqlalchemy.orm import aliased
-from nanohttp import json, context, settings, HTTPNotFound
+from nanohttp import json, context, settings, HTTPNotFound, HTTPStatus
 from restfulpy.authorization import authorize
 from restfulpy.controllers import ModelRestController
 from restfulpy.orm import DBSession, commit
@@ -30,9 +30,13 @@ class MentionController(ModelRestController):
         if self.target:
             mention.target_id = self.target.id
             mention.sender_id = Member.current().id
+
         else:
             mentioner = Member.current()
             mentioned = self.member
+
+            if mentioner.id == mentioned.id:
+                raise HTTPStatus('620 Can Not Mention Yourself')
 
             aliased_target = aliased(Target)
             aliased_target_member1 = aliased(TargetMember)
@@ -44,8 +48,8 @@ class MentionController(ModelRestController):
                     aliased_target_member2.target_id == \
                     aliased_target_member1.target_id
                 ) \
-                .filter(aliased_target_member1.member_id == mentioned.id) \
                 .filter(aliased_target_member2.member_id == mentioner.id) \
+                .filter(aliased_target_member1.member_id == mentioned.id) \
                 .join(
                     aliased_target,
                     aliased_target.id == aliased_target_member1.target_id
@@ -59,11 +63,12 @@ class MentionController(ModelRestController):
                 DBSession.add(direct)
                 DBSession.flush()
                 mention.target_id = direct.id
+
             else:
                 mention.target_id = target_member.target_id
 
         DBSession.add(mention)
+        DBSession.flush()
         queues.push(settings.messaging.workers_queue, mention.to_dict())
-
         return mention
 

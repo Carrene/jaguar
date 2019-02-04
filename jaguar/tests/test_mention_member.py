@@ -9,7 +9,7 @@ class TestMention(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        member1 = Member(
+        cls.member1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
@@ -29,14 +29,19 @@ class TestMention(AutoDocumentationBDDTest):
         )
         session.add(cls.member3)
 
-        direct = Direct(
-            members=[member1, cls.member2]
+        direct1 = Direct(
+            members=[cls.member1, cls.member2]
         )
-        session.add(direct)
+        session.add(direct1)
+
+        direct2 = Direct(
+            members=[cls.member1, cls.member3]
+        )
+        session.add(direct2)
         session.commit()
 
     def test_mention(self):
-        self.login('user1@example.com')
+        self.login(self.member1.email)
 
         with cas_mockup_server(), self.given(
             'Mention a target',
@@ -57,7 +62,6 @@ class TestMention(AutoDocumentationBDDTest):
                 'There is no direct between mentioned and mentioner member',
                 url_parameters=dict(member_id=self.member3.id)
             )
-            assert 200
             assert response.json['body'] == 'abc'
 
             when('User is logged out', authorization=None)
