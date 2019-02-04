@@ -1,12 +1,11 @@
-
-from bddrest.authoring import response, when, Update, Remove, status
+from bddrest.authoring import response, when, status
 
 from jaguar.models.membership import Member
 from jaguar.models.target import Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-class TestListRooms(AutoDocumentationBDDTest):
+class TestSubscribeRoom(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
@@ -47,7 +46,7 @@ class TestListRooms(AutoDocumentationBDDTest):
         session.add(room7)
         session.commit()
 
-    def test_list_rooms_of_user(self):
+    def test_subscribe_rooms(self):
          self.login('user1@example.com')
          rooms = (str(i)+', ' for i in range(1,102))
          rooms_string = ''.join(rooms)
