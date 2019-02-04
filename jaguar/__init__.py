@@ -43,6 +43,10 @@ class Jaguar(Application):
           max_length: 50 # KB
           min_length: 1 # KB
 
+    room:
+      subscription:
+        max_length: 100
+
     messaging:
         workers_queue: jaguar_workers
         redis:
