@@ -23,6 +23,12 @@ class Jaguar(Application):
       test_url: postgresql://postgres:postgres@localhost/jaguar_test
       administrative_url: postgresql://postgres:postgres@localhost/postgres
 
+
+    migration:
+      directory: %(root_path)s/migration
+      ini: %(root_path)s/alembic.ini
+
+
     activation:
       secret: activation-secret
       max_age: 86400  # seconds
@@ -34,7 +40,7 @@ class Jaguar(Application):
       url: http://localhost:8083
 
     storage:
-      local_directory: %(root_path)s/data/assets
+      local_directory: %(root_path)s/../data/assets
       base_url: http://localhost:8080/assets
 
     attachements:
@@ -61,7 +67,7 @@ class Jaguar(Application):
         super().__init__(
             application_name,
             root=root,
-            root_path=join(dirname(__file__), '..'),
+            root_path=join(dirname(__file__)),
             version=__version__,
         )
 

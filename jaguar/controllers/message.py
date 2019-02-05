@@ -7,7 +7,7 @@ from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
 
 from ..messaging import queues
 from ..models import TargetMember, Member, Target, MemberMessage
-from ..models.envelop import Envelop, Message, VALID_MIMETYPES
+from ..models.envelop import Envelop, Message, SUPPORTED_MIMETYPES
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 
@@ -24,7 +24,7 @@ class MessageController(ModelRestController):
         body = context.form.get('body')
         mimetype = context.form.get('mimetype')
         attachment = context.form.get('attachment')
-        if not mimetype in VALID_MIMETYPES:
+        if not mimetype in SUPPORTED_MIMETYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         message = Message(body=body, mimetype=mimetype)
@@ -149,7 +149,7 @@ class MessageController(ModelRestController):
         id = int_or_notfound(message_id)
 
         mimetype = context.form.get('mimetype')
-        if not mimetype in VALID_MIMETYPES:
+        if not mimetype in SUPPORTED_MIMETYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
         requested_message = DBSession.query(Message) \

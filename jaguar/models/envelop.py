@@ -17,7 +17,7 @@ from .membership import Member
 
 
 JSON_MIMETYPE = ['application/x-auditlog']
-VALID_MIMETYPES = [
+ATTACHMENT_MIMETYPES = [
     'image/jpeg',
     'image/png',
     'text/plain',
@@ -26,6 +26,7 @@ VALID_MIMETYPES = [
     'application/zip',
     'application/pdf',
 ]
+SUPPORTED_MIMETYPES = ATTACHMENT_MIMETYPES + JSON_MIMETYPE
 
 
 class MemberMessage(DeclarativeBase, TimestampMixin):
@@ -43,7 +44,7 @@ class FileAttachment(File):
 
     __pre_processors__ = [
         MagicAnalyzer(),
-        ContentTypeValidator(VALID_MIMETYPES)
+        ContentTypeValidator(ATTACHMENT_MIMETYPES)
     ]
 
     @property
