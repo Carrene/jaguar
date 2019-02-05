@@ -2,7 +2,7 @@ env:
   global:
     - COMMIT_AUTHOR_EMAIL: m.khajezade@carrene.com
 language: python
-dist: trusty
+dist: xenial
 python: "3.6"
 branches:
   only:
