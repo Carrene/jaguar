@@ -30,6 +30,9 @@ class MentionController(ModelRestController):
         if self.target:
             mention.target_id = self.target.id
             mention.sender_id = Member.current().id
+            DBSession.add(mention)
+            DBSession.flush()
+            queues.push(settings.messaging.workers_queue, mention.to_dict())
 
         else:
             mentioner = Member.current()
@@ -67,8 +70,13 @@ class MentionController(ModelRestController):
             else:
                 mention.target_id = target_member.target_id
 
-        DBSession.add(mention)
-        DBSession.flush()
-        queues.push(settings.messaging.workers_queue, mention.to_dict())
+            DBSession.add(mention)
+            DBSession.flush()
+            mention_message = mention.to_dict()
+            mention_message.update(
+                {'mentionedMember': mentioned.id, 'type': 'mention'}
+            )
+            queues.push(settings.messaging.workers_queue, mention_message)
+
         return mention
 

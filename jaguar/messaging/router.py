@@ -12,6 +12,9 @@ async def route(envelop):
     if envelop.get('type') == 'seen':
         await dispatch(envelop, envelop['senderId'])
 
+    elif envelop.get('type') == 'mention':
+        await dispatch(envelop, envelop['mentionedMember'])
+
     else:
         members = await asyncdb.get_members_by_target(envelop['targetId'])
         for member in members:
