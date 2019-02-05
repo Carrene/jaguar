@@ -22,6 +22,14 @@ class TestMessageRouter(AsyncTest):
             access_token='access token',
             reference_id=2
         )
+        cls.member3 = Member(
+            email='member3@example.com',
+            title='member3',
+            access_token='access token',
+            reference_id=3
+        )
+        session.add(cls.member3)
+
         cls.room = Room(
             title='room1',
             members=[cls.member1, cls.member2]
@@ -32,11 +40,18 @@ class TestMessageRouter(AsyncTest):
     @pytest.mark.asyncio
     async def test_route(self, asyncpg):
         queue_name = 'test_queue'
-        session_id = '1'
+        session_id1 = '1'
+        session_id2 = '2'
 
         await sessions.register_session(
             self.member1.id,
-            session_id,
+            session_id1,
+            queue_name
+        )
+
+        await sessions.register_session(
+            self.member3.id,
+            session_id2,
             queue_name
         )
 
@@ -63,4 +78,18 @@ class TestMessageRouter(AsyncTest):
 
         message = await queues.pop_async(queue_name)
         assert message == seen_envelop
-        
+
+        mention = {
+            'type': 'mention',
+            'mentionedMember': self.member3.id,
+            'targetId': self.room.id,
+            'message': 'sample message',
+            'senderId': 1,
+            'isMine': True
+        }
+
+        await router.route(mention)
+
+        message = await queues.pop_async(queue_name)
+        assert message == mention
+
