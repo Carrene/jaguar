@@ -51,4 +51,16 @@ class TestMessageRouter(AsyncTest):
         message = await queues.pop_async(queue_name)
         assert message == envelop
 
+        seen_envelop = {
+            'type': 'seen',
+            'targetId': self.room.id,
+            'message': 'sample message',
+            'senderId': 1,
+            'isMine': True
+        }
 
+        await router.route(seen_envelop)
+
+        message = await queues.pop_async(queue_name)
+        assert message == seen_envelop
+        
