@@ -63,12 +63,4 @@ class TestMessageRouter(AsyncTest):
 
         message = await queues.pop_async(queue_name)
         assert message == seen_envelop
-
-
-
-
-
-
-
-
-
+        
