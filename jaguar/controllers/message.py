@@ -1,19 +1,18 @@
+from nanohttp import json, context, HTTPStatus, HTTPForbidden, settings, \
+    HTTPNotFound, int_or_notfound
 from restfulpy.authorization import authorize
-from restfulpy.orm import commit, DBSession
 from restfulpy.controllers import ModelRestController
+from restfulpy.orm import commit, DBSession
 from sqlalchemy_media import store_manager
-from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
-    settings, HTTPNotFound, int_or_notfound
 
 from ..messaging import queues
-from ..models import Envelop, Message, TargetMember, Member, Target, \
-    MemberMessage
+from ..models import Message, TargetMember, Member, Target, MemberMessage
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 
 
-SUPPORTED_MIME_TYPES=['text/plain', 'image/jpeg', 'image/png', 'image/jpg',
-                      'application/x-auditlog']
+BLACKLIST_MIME_TYPES = ['application/x-dosexec']
+SUPPORTED_TEXT_MIME_TYPES = ['text/plain', 'application/x-auditlog']
 
 
 class MessageController(ModelRestController):
@@ -24,34 +23,33 @@ class MessageController(ModelRestController):
     @send_message_validator
     @json
     @Message.expose
+    @commit
     def send(self, target_id):
-        body = context.form.get('body')
         mimetype = context.form.get('mimetype')
-        attachment = context.form.get('attachment')
-        if not mimetype in SUPPORTED_MIME_TYPES:
-            raise HTTPStatus('415 Unsupported Media Type')
 
-        message = Message(body=body, mimetype=mimetype)
+        message = Message(body=context.form.get('body'))
         message.target_id = int(target_id)
         message.sender_id = Member.current().id
-        if 'attachment' in context.form:
-            message.attachment = attachment
 
-            if message.attachment.content_type != mimetype:
-                raise HTTPStatus(
-                    '710 The Mimetype Does Not Match The File Type'
-                )
+        if 'attachment' in context.form:
+            message.attachment = context.form.get('attachment')
+            message.mimetype = message.attachment.content_type
+
+            if message.attachment.content_type in BLACKLIST_MIME_TYPES:
+                raise HTTPStatus('415 Unsupported Media Type')
+
+        elif mimetype:
+            if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
+                raise HTTPStatus('415 Unsupported Media Type')
+
+            message.mimetype = context.form.get('mimetype')
+
+        else:
+            message.mimetype = 'text/plain'
 
         DBSession.add(message)
         DBSession.flush()
-
         queues.push(settings.messaging.workers_queue, message.to_dict())
-
-        # After consulting with Mr.Mardani, the result got to remove `commit`
-        # decorator and use `commit()` straightly instead. It's cause of
-        # enqueueing the message to `workers`(queue) must be applied after
-        # commit
-        DBSession.commit()
         return message
 
     @authorize
@@ -142,12 +140,10 @@ class MessageController(ModelRestController):
         id = int_or_notfound(message_id)
 
         mimetype = context.form.get('mimetype')
-        if not mimetype in SUPPORTED_MIME_TYPES:
+        if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
             raise HTTPStatus('415 Unsupported Media Type')
 
-        requested_message = DBSession.query(Message) \
-            .filter(Message.id == message_id) \
-            .one_or_none()
+        requested_message = DBSession.query(Message).get(id)
         if requested_message is None:
             raise HTTPNotFound()
 

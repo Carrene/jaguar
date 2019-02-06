@@ -1,21 +1,19 @@
 import io
-from os.path import join, dirname, abspath, exists
-import shutil
-import functools
+from os.path import join, dirname, abspath
 
-from sqlalchemy_media import StoreManager, FileSystemStore
-from sqlalchemy_media.exceptions import ContentTypeValidationError
-from bddrest.authoring import given, when, Update, status, response, Remove
+from bddrest.authoring import when, Update, status, response
+from nanohttp import settings
 
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 from jaguar.models import Member, Room, Direct
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
-this_dir = abspath(join(dirname(__file__)))
-text_path = join(this_dir, 'stuff', 'text_file.txt')
-tex_path = join(this_dir, 'stuff', 'sample_tex_file.tex')
-image_path = join(this_dir, 'stuff', '150x150.png')
-maximum_image_path = join(this_dir, 'stuff', 'maximum-length.jpg')
+THIS_DIR = abspath(join(dirname(__file__)))
+TEXT_PATH = join(THIS_DIR, 'stuff', 'text_file.txt')
+IMAGE_PATH = join(THIS_DIR, 'stuff', '150x150.png')
+EXECUTABLE_PATH = join(THIS_DIR, 'stuff', 'putty.exe')
+DLL_PATH = join(THIS_DIR, 'stuff', 'file.dll')
+MAXIMUM_IMAGE_PATH = join(THIS_DIR, 'stuff', 'maximum-length.jpg')
 
 
 class TestFileSharing(AutoDocumentationBDDTest):
@@ -23,29 +21,27 @@ class TestFileSharing(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = Member(
+        cls.user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2
         )
-        room = Room(
+        cls.room = Room(
             title='example',
             type='room',
-            members=[user1],
+            members=[cls.user1],
         )
-        direct = Direct()
-        session.add(user1)
-        session.add(room)
+        session.add(cls.room)
         session.commit()
 
     def test_attach_file_to_message(self):
-        self.login('user1@example.com')
+        self.login(self.user1.email)
 
-        with cas_mockup_server(), open(image_path, 'rb') as f ,self.given(
-            'Send a message to a target',
-            '/apiv1/targets/id:1/messages',
-            'SEND',
+        with cas_mockup_server(), open(IMAGE_PATH, 'rb') as f, self.given(
+            f'Send a message to a target',
+            f'/apiv1/targets/id:{self.room.id}/messages',
+            f'SEND',
             multipart=dict(
                 body='hello world!',
                 mimetype='image/png',
@@ -57,23 +53,38 @@ class TestFileSharing(AutoDocumentationBDDTest):
             assert response.json['isMine'] is True
             assert 'attachment' in response.json
 
-            when(
-                'does not match file content type',
-                multipart = Update(attachment=tex_path)
-            )
-            assert status == '710 The Mimetype Does Not Match The File Type'
+            with open(TEXT_PATH, 'rb') as f:
+                when(
+                    'mime type does not match content type',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == 200
 
-            when(
-                'mime type does not match content type',
-                multipart=Update(attachment=text_path)
-            )
-            assert status == '710 The Mimetype Does Not Match The File Type'
+            with open(MAXIMUM_IMAGE_PATH, 'rb') as f:
+                when(
+                    'Image size is more than maximum length',
+                    multipart=Update(
+                        mimetype='image/jpeg',
+                        attachment=io.BytesIO(f.read()))
+                )
+                assert status == 413
 
-            when(
-                'Image size is more than maximum length',
-                multipart=Update(
-                    mimetype='image/jpeg',
-                    attachment=maximum_image_path)
-            )
-            assert status == 413
+            settings.attachements.messages.files.max_length = 800
+            with open(EXECUTABLE_PATH, 'rb') as f:
+                when(
+                    'Image size is more than maximum length',
+                    multipart=Update(
+                        mimetype='image/jpeg',
+                        attachment=io.BytesIO(f.read()))
+                )
+                assert status == '415 Unsupported Media Type'
+
+            with open(DLL_PATH, 'rb') as f:
+                when(
+                    'Image size is more than maximum length',
+                    multipart=Update(
+                        mimetype='image/jpeg',
+                        attachment=io.BytesIO(f.read()))
+                )
+                assert status == '415 Unsupported Media Type'
 
