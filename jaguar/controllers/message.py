@@ -130,16 +130,6 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPNotFound()
 
-        is_subscribe = DBSession.query(Target) \
-            .filter(
-                Target.id == message.target_id,
-                TargetMember.target_id == message.target_id,
-                TargetMember.member_id == Member.current().id
-            ) \
-            .count()
-        if not is_subscribe:
-            raise HTTPForbidden()
-
         return message
 
     @store_manager(DBSession)
