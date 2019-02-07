@@ -87,6 +87,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
             assert response.json['body'] == self.message3.body
             assert response.json['seenAt'] is not None
             assert response.json['attachment'] is not None
+            assert response.json['modifiedAt'] is None
 
             when('Trying to pass with message already seen')
             assert status == '619 Message Already Seen'
