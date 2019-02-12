@@ -34,12 +34,6 @@ class FileAttachment(File):
 
     __pre_processors__ = [
         MagicAnalyzer(),
-        ContentTypeValidator([
-            'image/jpeg',
-            'image/png',
-            'text/plain',
-            'image/jpg'
-        ])
     ]
 
     @property

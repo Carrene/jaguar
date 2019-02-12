@@ -39,16 +39,17 @@ class TestSendMessage(AutoDocumentationBDDTest):
             f'Send a message to a target',
             f'/apiv1/targets/id:{self.room.id}/messages',
             f'SEND',
-            form=dict(body='hello world!', mimetype='text/plain')
+            form=dict(body='hello world!')
         ):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] is True
+            assert response.json['mimetype'] == 'text/plain'
 
             when('Invalid target id', url_parameters=Update(id='Invalid'))
             assert status == '706 Invalid Target Id'
 
-            when('Target does not exist', url_parameters=Update(id=3))
+            when('Target does not exist', url_parameters=Update(id=0))
             assert status == '404 Target Not Exists'
 
             when(

@@ -12,3 +12,7 @@ class CASServerNotAvailable(HTTPKnownStatus):
 class CASInternallError(HTTPKnownStatus):
     status = '801 CAS Server Internal Error'
 
+
+class HTTPUnsupportedMediaType(HTTPKnownStatus):
+    status = '415 Unsupported Media Type'
+
