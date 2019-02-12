@@ -93,6 +93,7 @@ is_mine_fieldinfo = FieldInfo(Boolean, not_none=True, readonly=True)
 class Message(Envelop):
 
     __mapper_args__ = {'polymorphic_identity': 'message'}
+    __exclude__ = {'seen_by'}
 
     mimetype = Field(
         Unicode(25),
