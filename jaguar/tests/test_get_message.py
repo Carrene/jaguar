@@ -83,12 +83,6 @@ class TestGetMember(AutoDocumentationBDDTest):
             when('Message not found', url_parameters=Update(id=0))
             assert status == 404
 
-            when(
-                'Try to get a message from an unsubscribe target',
-                url_parameters=Update(id=f'{self.message2.id}')
-            )
-            assert status == 403
-
             when('Try to pass unauthorize request', authorization=None)
             assert status == 401
 
