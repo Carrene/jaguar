@@ -1,12 +1,13 @@
-from nanohttp import json, context, HTTPStatus, HTTPForbidden, settings, \
-    HTTPNotFound, int_or_notfound
 from restfulpy.authorization import authorize
-from restfulpy.controllers import ModelRestController
 from restfulpy.orm import commit, DBSession
+from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
+from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
+    settings, HTTPNotFound, int_or_notfound
 
 from ..messaging import queues
-from ..models import Message, TargetMember, Member, Target, MemberMessage
+from ..models import Envelop, Message, TargetMember, Member, Target, \
+    MemberMessage
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 from ..exceptions import HTTPUnsupportedMediaType
