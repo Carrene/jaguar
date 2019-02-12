@@ -9,6 +9,7 @@ from ..messaging import queues
 from ..models import Message, TargetMember, Member, Target, MemberMessage
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
+from ..exceptions import HTTPUnsupportedMediaType
 
 
 BLACKLIST_MIME_TYPES = ['application/x-dosexec']
@@ -36,11 +37,11 @@ class MessageController(ModelRestController):
             message.mimetype = message.attachment.content_type
 
             if message.attachment.content_type in BLACKLIST_MIME_TYPES:
-                raise HTTPStatus('415 Unsupported Media Type')
+                raise HTTPUnsupportedMediaType()
 
         elif mimetype:
             if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
-                raise HTTPStatus('415 Unsupported Media Type')
+                raise HTTPUnsupportedMediaType()
 
             message.mimetype = context.form.get('mimetype')
 
@@ -141,7 +142,7 @@ class MessageController(ModelRestController):
 
         mimetype = context.form.get('mimetype')
         if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
-            raise HTTPStatus('415 Unsupported Media Type')
+            raise HTTPUnsupportedMediaType()
 
         requested_message = DBSession.query(Message).get(id)
         if requested_message is None:

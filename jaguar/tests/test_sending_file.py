@@ -55,7 +55,7 @@ class TestFileSharing(AutoDocumentationBDDTest):
 
             with open(TEXT_PATH, 'rb') as f:
                 when(
-                    'mime type does not match content type',
+                    'Mime type does not match content type',
                     multipart=Update(attachment=io.BytesIO(f.read()))
                 )
                 assert status == 200
