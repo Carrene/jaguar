@@ -5,7 +5,7 @@ from restfulpy.orm import Field, DeclarativeBase, ModifiedMixin,relationship,\
     SoftDeleteMixin, TimestampMixin
 from restfulpy.orm.metadata import FieldInfo
 from sqlalchemy import Integer, ForeignKey, Unicode, Table, Boolean, JSON, \
-    select, bindparam
+    select, bindparam, join
 from sqlalchemy.orm import column_property
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
@@ -160,12 +160,14 @@ class Message(Envelop):
 
     seen_at = column_property(
         select([MemberMessage.created_at]) \
-        .where(MemberMessage.message_id == Envelop.id) \
-        .where(MemberMessage.member_id == bindparam(
-                'member_id',
-                callable_=lambda: context.identity.id
-            )
+        .select_from(
+            join(Member, MemberMessage, MemberMessage.member_id == Member.id)
         ) \
+        .where(MemberMessage.message_id == Envelop.id) \
+        .where(Member.reference_id == bindparam(
+            'reference_id',
+            callable_=lambda: context.identity.reference_id
+        )) \
         .correlate_except(MemberMessage),
         deferred=True
     )
@@ -192,6 +194,7 @@ class Message(Envelop):
         metadata['fields']['isMine'] = is_mine_fieldinfo.to_json()
         return metadata
 
+    # TODO: Remove these redundant lines.
     __mapper_args__ = {
         'polymorphic_identity' : 'message',
     }
