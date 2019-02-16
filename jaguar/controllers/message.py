@@ -189,9 +189,9 @@ class MessageController(ModelRestController):
 
         for m in messages:
             m.seen_by.append(member)
-            seen_message = m.to_dict()
-            seen_message.update({'type': 'seen'})
-            queues.push(settings.messaging.workers_queue, seen_message)
 
+        seen_message = message.to_dict()
+        seen_message.update({'type': 'seen'})
+        queues.push(settings.messaging.workers_queue, seen_message)
         return message
 
