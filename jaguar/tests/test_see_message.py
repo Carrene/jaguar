@@ -74,7 +74,6 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                     mimetype='text/plain',
                     target_id=room.id,
                     sender_id=cls.user2.id,
-                    attachment=io.BytesIO(f.read()),
                 )
                 session.add(cls.message3)
 
