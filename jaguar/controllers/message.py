@@ -173,6 +173,9 @@ class MessageController(ModelRestController):
         if message is None:
             raise HTTPNotFound()
 
+        if message.sender_id == member.id:
+            raise HTTPStatus('621 Can Not See Own Message')
+
         member_message = DBSession.query(MemberMessage) \
             .filter(MemberMessage.member_id == member.id) \
             .filter(MemberMessage.message_id == message.id) \
@@ -185,6 +188,7 @@ class MessageController(ModelRestController):
             .filter(Message.target_id == message.target_id) \
             .filter(Message.created_at <= message.created_at) \
             .filter(Message.seen_at == None) \
+            .filter(Message.sender_id != member.id) \
             .all()
 
         for m in messages:
