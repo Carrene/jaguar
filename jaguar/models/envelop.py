@@ -94,6 +94,18 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
         envelop_dictionary.update(
             senderReferenceId=self.sender_reference_id
         )
+        return envelop_dictionary
+
+    @classmethod
+    def json_metadata(cls):
+        metadata = super().json_metadata()
+        metadata['fields']['senderReferenceId'] = FieldInfo(
+            Integer,
+            not_none=True,
+            readonly=True,
+            required=False,
+        ).to_json()
+        return metadata
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,

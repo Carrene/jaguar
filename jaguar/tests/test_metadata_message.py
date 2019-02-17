@@ -30,3 +30,7 @@ class TestMessageMetadata(AutoDocumentationBDDTest):
             assert fields['mimetype']['watermark'] is not None
             assert fields['mimetype']['message'] is not None
 
+            assert fields['senderReferenceId']['notNone'] is not None
+            assert fields['senderReferenceId']['required'] is not None
+            assert fields['senderReferenceId']['readonly'] is not None
+
