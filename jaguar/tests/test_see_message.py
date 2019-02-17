@@ -19,18 +19,26 @@ class TestSeeMessage(AutoDocumentationBDDTest):
         session = cls.create_session()
         with StoreManager(session):
             with open(IMAGE_PATH, 'rb') as f:
-                cls.user = Member(
+                cls.user1 = Member(
                     email='user@example.com',
                     title='user',
                     access_token='access token',
                     reference_id=1,
                 )
-                session.add(cls.user)
+                session.add(cls.user1)
+
+                cls.user2 = Member(
+                    email='user2@example.com',
+                    title='user2',
+                    access_token='access token2',
+                    reference_id=2,
+                )
+                session.add(cls.user2)
 
                 room = Room(
                     title='room',
                     type='room',
-                    members=[cls.user]
+                    members=[cls.user1, cls.user2]
                 )
                 session.add(room)
                 session.flush()
@@ -39,7 +47,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                     body='This is message 1',
                     mimetype='text/plain',
                     target_id=room.id,
-                    sender_id=cls.user.id,
+                    sender_id=cls.user1.id,
                 )
                 session.add(cls.message1)
 
@@ -47,7 +55,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                     body='This is message 2',
                     mimetype='text/plain',
                     target_id=room.id,
-                    sender_id=cls.user.id
+                    sender_id=cls.user1.id
                 )
                 session.add(cls.message2)
 
@@ -55,27 +63,35 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                     body='This is message 3',
                     mimetype='text/plain',
                     target_id=room.id,
-                    sender_id=cls.user.id,
+                    sender_id=cls.user2.id,
                     attachment=io.BytesIO(f.read()),
                 )
                 session.add(cls.message3)
                 session.flush()
 
+                cls.message4 = Message(
+                    body='This is message 4',
+                    mimetype='text/plain',
+                    target_id=room.id,
+                    sender_id=cls.user2.id,
+                )
+                session.add(cls.message3)
+
                 member_message1 = MemberMessage(
-                    member_id=cls.user.id,
+                    member_id=cls.user1.id,
                     message_id=cls.message1.id
                 )
                 session.add(member_message1)
 
                 member_message2 = MemberMessage(
-                    member_id=cls.user.id,
+                    member_id=cls.user1.id,
                     message_id=cls.message2.id
                 )
                 session.add(member_message2)
                 session.commit()
 
     def test_see_message(self):
-        self.login(self.user.email)
+        self.login(self.user1.email)
 
         with cas_mockup_server(), self.given(
             f'See a message',
@@ -88,6 +104,12 @@ class TestSeeMessage(AutoDocumentationBDDTest):
             assert response.json['seenAt'] is not None
             assert response.json['attachment'] is not None
             assert response.json['modifiedAt'] is None
+
+            when(
+                'Sender wants to see own message',
+                url_parameters=dict(id=self.message1.id)
+            )
+            assert status == '621 Can Not See Own Message'
 
             when('Trying to pass with message already seen')
             assert status == '619 Message Already Seen'
