@@ -45,6 +45,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] is True
             assert response.json['mimetype'] == 'text/plain'
+            assert response.json['senderReferenceId'] == self.user1.reference_id
 
             when('Invalid target id', url_parameters=Update(id='Invalid'))
             assert status == '706 Invalid Target Id'
