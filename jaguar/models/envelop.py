@@ -81,6 +81,32 @@ class Envelop(OrderingMixin, PaginationMixin, FilteringMixin, ModifiedMixin,
         message='Loerm Ipsum',
         label='Text or caption',
     )
+
+    sender_reference_id = column_property(
+        select([Member.reference_id]) \
+        .where(Member.id == sender_id) \
+        .correlate_except(Member),
+        deferred=True
+    )
+
+    def to_dict(self):
+        envelop_dictionary = super().to_dict()
+        envelop_dictionary.update(
+            senderReferenceId=self.sender_reference_id
+        )
+        return envelop_dictionary
+
+    @classmethod
+    def json_metadata(cls):
+        metadata = super().json_metadata()
+        metadata['fields']['senderReferenceId'] = FieldInfo(
+            Integer,
+            not_none=True,
+            readonly=True,
+            required=False,
+        ).to_json()
+        return metadata
+
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,
         'polymorphic_on': type,
