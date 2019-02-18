@@ -68,7 +68,7 @@ async def websocket_handler(request):
                   ws.exception())
 
     print('websocket connection closed')
-    await sessions.cleanup_session(identity.id, identity.session_id)
+    await sessions.cleanup_session(member_id, identity.session_id)
     del app_state()[str(identity.session_id)]
     #await ws.close()
     return ws

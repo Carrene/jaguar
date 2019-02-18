@@ -16,7 +16,7 @@ def _get_member_key(member_id):
 async def redis():
     global _redis
     if _redis is None:
-        _redis = await create_async_redis(settings.authentication.redis)
+        _redis = await create_async_redis(settings.messaging.redis)
     return _redis
 
 
