@@ -200,7 +200,7 @@ class Message(Envelop):
 
     @property
     def is_mine(self):
-        return Member.current().id == self.sender_id
+        return Member.current().reference_id == self.sender_reference_id
 
     def to_dict(self):
         message_dictionary = super().to_dict()
