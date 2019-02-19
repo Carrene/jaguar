@@ -56,7 +56,7 @@ class TestMention(AutoDocumentationBDDTest):
                 'Body length is more than limit',
                 form=given | dict(body=(65536 + 1) * 'a')
             )
-            assert status == '702 Must be less than 1024 charecters'
+            assert status == '702 Must be less than 65536 charecters'
 
             when(
                 'There is no direct between mentioned and mentioner member',

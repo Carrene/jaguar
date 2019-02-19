@@ -57,7 +57,7 @@ search_member_validator = validate(
 
 send_message_validator = validate(
     body=dict(
-        max_length=(1024, '702 Must be less than 1024 charecters'),
+        max_length=(65536, '702 Must be less than 65536 charecters'),
         required='400 Bad Request',
     )
 )
@@ -65,7 +65,7 @@ send_message_validator = validate(
 
 edit_message_validator = validate(
     body=dict(
-        max_length=(1024, '702 Must be less than 1024 charecters'),
+        max_length=(65536, '702 Must be less than 65536 charecters'),
         required='400 Bad Request',
     )
 )
@@ -73,7 +73,7 @@ edit_message_validator = validate(
 
 reply_message_validator = validate(
     body=dict(
-        max_length=(1024, '702 Must be less than 1024 charecters'),
+        max_length=(65536, '702 Must be less than 65536 charecters'),
         required='712 Message Body Required',
     ),
     mimetype=dict(
@@ -84,7 +84,7 @@ reply_message_validator = validate(
 
 mention_validator = validate(
     body=dict(
-        max_length=(1024, '702 Must be less than 1024 charecters'),
+        max_length=(65536, '702 Must be less than 65536 charecters'),
     )
 )
 
