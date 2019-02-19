@@ -84,9 +84,9 @@ class TestReplyMessage(AutoDocumentationBDDTest):
 
             when(
                 'Try to send reply with long text',
-                form=Update(body=(1024 + 1) * 'a')
+                form=Update(body=(65536 + 1) * 'a')
             )
-            assert status == '702 Must be less than 1024 charecters'
+            assert status == '702 Must be less than 65536 charecters'
 
             when('Remove body from the form', form=Remove('body'))
             assert status == '712 Message Body Required'
