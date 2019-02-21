@@ -4,7 +4,7 @@ from os.path import abspath, join, dirname
 from bddrest.authoring import when, status, response
 from sqlalchemy_media import StoreManager
 
-from jaguar.models import Member, Room, Message, MemberMessage
+from jaguar.models import Member, Room, Message, MemberMessageSeen
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -77,17 +77,17 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 )
                 session.add(cls.message3)
 
-                member_message1 = MemberMessage(
+                member_message_seen1 = MemberMessageSeen(
                     member_id=cls.user1.id,
                     message_id=cls.message1.id
                 )
-                session.add(member_message1)
+                session.add(member_message_seen1)
 
-                member_message2 = MemberMessage(
+                member_message_seen2 = MemberMessageSeen(
                     member_id=cls.user1.id,
                     message_id=cls.message2.id
                 )
-                session.add(member_message2)
+                session.add(member_message_seen1)
                 session.commit()
 
     def test_see_message(self):
