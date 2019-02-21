@@ -7,7 +7,7 @@ from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
 
 from ..messaging import queues
 from ..models import Envelop, Message, TargetMember, Member, Target, \
-    MemberMessage
+    MemberMessageSeen
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 from ..exceptions import HTTPUnsupportedMediaType
@@ -176,12 +176,12 @@ class MessageController(ModelRestController):
         if message.sender_id == member.id:
             raise HTTPStatus('621 Can Not See Own Message')
 
-        member_message = DBSession.query(MemberMessage) \
-            .filter(MemberMessage.member_id == member.id) \
-            .filter(MemberMessage.message_id == message.id) \
+        member_message_seen = DBSession.query(MemberMessageSeen) \
+            .filter(MemberMessageSeen.member_id == member.id) \
+            .filter(MemberMessageSeen.message_id == message.id) \
             .one_or_none()
 
-        if member_message is not None:
+        if member_message_seen is not None:
             raise HTTPStatus('619 Message Already Seen')
 
         messages = DBSession.query(Message) \

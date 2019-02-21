@@ -19,8 +19,8 @@ from .membership import Member
 JSON_MIMETYPE = ['application/x-auditlog']
 
 
-class MemberMessage(DeclarativeBase, TimestampMixin):
-    __tablename__ = 'member_message'
+class MemberMessageSeen(DeclarativeBase, TimestampMixin):
+    __tablename__ = 'member_message_seen'
 
     message_id = Field(Integer, ForeignKey('envelop.id'), primary_key=True)
     member_id = Field(Integer, ForeignKey('member.id'), primary_key=True)
@@ -180,21 +180,25 @@ class Message(Envelop):
     seen_by = relationship(
         'Member',
         protected=False,
-        secondary='member_message',
+        secondary='member_message_seen',
         lazy='selectin'
     )
 
     seen_at = column_property(
-        select([MemberMessage.created_at]) \
+        select([MemberMessageSeen.created_at]) \
         .select_from(
-            join(Member, MemberMessage, MemberMessage.member_id == Member.id)
+            join(
+                Member,
+                MemberMessageSeen,
+                MemberMessageSeen.member_id == Member.id
+            )
         ) \
-        .where(MemberMessage.message_id == Envelop.id) \
+        .where(MemberMessageSeen.message_id == Envelop.id) \
         .where(Member.reference_id == bindparam(
             'reference_id',
             callable_=lambda: context.identity.reference_id
         )) \
-        .correlate_except(MemberMessage),
+        .correlate_except(MemberMessageSeen),
         deferred=True
     )
 
