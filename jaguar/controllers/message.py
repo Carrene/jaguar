@@ -184,14 +184,15 @@ class MessageController(ModelRestController):
         if member_message_seen is not None:
             raise HTTPStatus('619 Message Already Seen')
 
-        messages = DBSession.query(Message) \
+        query = DBSession.query(Message) \
             .filter(Message.target_id == message.target_id) \
             .filter(Message.created_at <= message.created_at) \
             .filter(Message.seen_at == None) \
             .filter(Message.sender_id != member.id) \
-            .all()
 
-        for m in messages:
+        query = Message.filter_by_request(query)
+
+        for m in query:
             m.seen_by.append(member)
 
         seen_message = message.to_dict()
