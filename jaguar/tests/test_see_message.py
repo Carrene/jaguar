@@ -1,6 +1,9 @@
 import io
 from os.path import abspath, join, dirname
+import ujson
 
+from nanohttp.contexts import Context
+from nanohttp import context
 from bddrest.authoring import when, status, response
 from sqlalchemy_media import StoreManager
 
@@ -42,6 +45,30 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 )
                 session.add(room)
                 session.flush()
+
+                auditlog_message1 = Message(
+                    body='{"log": 1}',
+                    mimetype='application/x-auditlog',
+                    target_id=room.id,
+                    sender_id=cls.user2.id,
+                )
+                session.add(auditlog_message1)
+
+                auditlog_message2 = Message(
+                    body='{"log": 1}',
+                    mimetype='application/x-auditlog',
+                    target_id=room.id,
+                    sender_id=cls.user2.id,
+                )
+                session.add(auditlog_message2)
+
+                auditlog_message3 = Message(
+                    body='{"log": 1}',
+                    mimetype='application/x-auditlog',
+                    target_id=room.id,
+                    sender_id=cls.user2.id,
+                )
+                session.add(auditlog_message3)
 
                 cls.message1 = Message(
                     body='This is message 1',
@@ -87,16 +114,26 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                     member_id=cls.user1.id,
                     message_id=cls.message2.id
                 )
-                session.add(member_message_seen1)
+                session.add(member_message_seen2)
                 session.commit()
 
+                cls.auditlog_message1_id = auditlog_message1.id
+                cls.auditlog_message2_id = auditlog_message2.id
+                cls.auditlog_message3_id = auditlog_message3.id
+
     def test_see_message(self):
+        class Identity:
+            def __init__(self, user):
+                self.id = user.id
+                self.reference_id = user.reference_id
+
         self.login(self.user1.email)
 
-        with cas_mockup_server(), self.given(
+        with Context(dict()), cas_mockup_server(), self.given(
             f'See a message',
             f'/apiv1/messages/id:{self.message3.id}',
-            f'SEE'
+            f'SEE',
+            query=dict(mimetype='!application/x-auditlog')
         ):
             assert status == 200
             assert response.json['id'] == self.message3.id
@@ -104,6 +141,46 @@ class TestSeeMessage(AutoDocumentationBDDTest):
             assert response.json['seenAt'] is not None
             assert response.json['attachment'] is not None
             assert response.json['modifiedAt'] is None
+
+            context.identity = Identity(self.user1)
+            session = self.create_session()
+            auditlog_message1 = session.query(Message) \
+                .get(self.auditlog_message1_id)
+            auditlog_message2 = session.query(Message) \
+                .get(self.auditlog_message2_id)
+            auditlog_message3 = session.query(Message) \
+                .get(self.auditlog_message3_id)
+
+            assert auditlog_message1.seen_at is None
+            assert auditlog_message2.seen_at is None
+            assert auditlog_message3.seen_at is None
+
+            message1 = session.query(Message).get(self.message1.id)
+            message2 = session.query(Message).get(self.message2.id)
+            message3 = session.query(Message).get(self.message3.id)
+
+            assert message1.seen_at is not None
+            assert message2.seen_at is not None
+            assert message3.seen_at is not None
+
+            when(
+                'See an auditlog message',
+                url_parameters=dict(id=self.auditlog_message2_id),
+                query=dict(mimetype='application/x-auditlog'),
+            )
+            assert status == 200
+
+            session = self.create_session()
+            auditlog_message1 = session.query(Message) \
+                .get(self.auditlog_message1_id)
+            auditlog_message2 = session.query(Message) \
+                .get(self.auditlog_message2_id)
+            auditlog_message3 = session.query(Message) \
+                .get(self.auditlog_message3_id)
+
+            assert auditlog_message1.seen_at is not None
+            assert auditlog_message2.seen_at is not None
+            assert auditlog_message3.seen_at is None
 
             when(
                 'Sender wants to see own message',
