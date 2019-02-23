@@ -19,7 +19,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
 
     @classmethod
     def mockup(cls):
-        session = cls.create_session(expire_on_commit=False)
+        session = cls.create_session()
         with StoreManager(session):
             with open(IMAGE_PATH, 'rb') as f:
                 cls.user1 = Member(
@@ -47,7 +47,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 session.flush()
 
                 auditlog_message1 = Message(
-                    body='{"log":1}',
+                    body='{"log": 1}',
                     mimetype='application/x-auditlog',
                     target_id=room.id,
                     sender_id=cls.user2.id,
@@ -55,7 +55,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 session.add(auditlog_message1)
 
                 auditlog_message2 = Message(
-                    body='{"log":1}',
+                    body='{"log": 1}',
                     mimetype='application/x-auditlog',
                     target_id=room.id,
                     sender_id=cls.user2.id,
@@ -63,7 +63,7 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 session.add(auditlog_message2)
 
                 auditlog_message3 = Message(
-                    body='{"log":1}',
+                    body='{"log": 1}',
                     mimetype='application/x-auditlog',
                     target_id=room.id,
                     sender_id=cls.user2.id,
