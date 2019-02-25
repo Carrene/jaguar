@@ -4,7 +4,7 @@ import requests
 from nanohttp import settings, HTTPFound, HTTPForbidden, HTTPUnauthorized
 
 from .exceptions import CASServerNotAvailable, CASServerNotFound, \
-    CASInternallError
+    CASInternallError, DolhinIssueNotFound, DolhinIssueNotSubscribed
 
 
 class CASClient:
@@ -62,4 +62,19 @@ class CASClient:
 
         member = json.loads(response.text)
         return member
+
+
+class DolphinClient:
+
+    def unsee_issue(self, issue_id):
+        response = requests.request(
+            'UNSEE',
+            f'{settings.dolphin.url}/apiv1/issues',
+            params=dict(issueId=issue_id)
+        )
+        if response.status_code == 404:
+            raise DolhinIssueNotFound()
+
+        if response.status_code == 637:
+            raise DolhinIssueNotSubscribed
 

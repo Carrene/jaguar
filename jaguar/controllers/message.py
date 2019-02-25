@@ -52,6 +52,7 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
+        unsee_issue()
         return message
 
     @authorize

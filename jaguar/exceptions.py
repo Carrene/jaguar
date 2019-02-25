@@ -16,3 +16,10 @@ class CASInternallError(HTTPKnownStatus):
 class HTTPUnsupportedMediaType(HTTPKnownStatus):
     status = '415 Unsupported Media Type'
 
+
+class DolhinIssueNotFound(HTTPKnownStatus):
+    status = '802 Issue Not Found'
+
+
+class DolhinIssueNotSubscribed(HTTPKnownStatus):
+    status = '803 Issue Not Subscribed'
