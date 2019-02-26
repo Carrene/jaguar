@@ -5,8 +5,7 @@ from bddrest.authoring import when, Update, status, response
 from nanohttp import settings
 
 from jaguar.models import Member, Room, Direct
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server, \
-    dolphin_mockup_server
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 THIS_DIR = abspath(join(dirname(__file__)))
@@ -39,19 +38,16 @@ class TestFileSharing(AutoDocumentationBDDTest):
     def test_attach_file_to_message(self):
         self.login(self.user1.email)
 
-        with cas_mockup_server(), \
-            dolphin_mockup_server(), \
-            open(IMAGE_PATH, 'rb') as f, \
-            self.given(
-                f'Send a message to a target',
-                f'/apiv1/targets/id:{self.room.id}/messages',
-                f'SEND',
-                multipart=dict(
-                    body='hello world!',
-                    mimetype='image/png',
-                    attachment=io.BytesIO(f.read())
-                )
-            ):
+        with cas_mockup_server(), open(IMAGE_PATH, 'rb') as f, self.given(
+            f'Send a message to a target',
+            f'/apiv1/targets/id:{self.room.id}/messages',
+            f'SEND',
+            multipart=dict(
+                body='hello world!',
+                mimetype='image/png',
+                attachment=io.BytesIO(f.read())
+            )
+        ):
             assert status == 200
             assert response.json['body'] == 'hello world!'
             assert response.json['isMine'] is True

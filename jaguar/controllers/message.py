@@ -11,7 +11,6 @@ from ..models import Envelop, Message, TargetMember, Member, Target, \
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 from ..exceptions import HTTPUnsupportedMediaType
-from ..backends import DolphinClient
 
 
 BLACKLIST_MIME_TYPES = ['application/x-dosexec']
@@ -19,10 +18,6 @@ SUPPORTED_TEXT_MIME_TYPES = ['text/plain', 'application/x-auditlog']
 
 
 class MessageController(ModelRestController):
-
-    def __init__(self, dolphin_client: DolphinClient=DolphinClient()):
-        self.dolphin_client = dolphin_client
-
     __model__ = Message
 
     @store_manager(DBSession)
@@ -57,7 +52,6 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
-        self.dolphin_client.unsee_issue(target_id)
         return message
 
     @authorize
