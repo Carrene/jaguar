@@ -18,6 +18,10 @@ SUPPORTED_TEXT_MIME_TYPES = ['text/plain', 'application/x-auditlog']
 
 
 class MessageController(ModelRestController):
+
+    def __init__(self, dolphin_client):
+        self.dolphin_client = dolphin_client
+
     __model__ = Message
 
     @store_manager(DBSession)
@@ -52,7 +56,7 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
-        unsee_issue()
+        self.dolphin_client.unsee_issue(target_id)
         return message
 
     @authorize

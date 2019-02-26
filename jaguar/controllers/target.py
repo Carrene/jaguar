@@ -8,6 +8,7 @@ from ..models import Target, Room
 from .message import MessageController
 from .mention import MentionController
 from .member import MemberController
+from ..backends import DolphinClient
 
 
 class TargetController(ModelRestController):
@@ -16,7 +17,9 @@ class TargetController(ModelRestController):
     def __call__(self, *remaining_paths):
         if len(remaining_paths) > 1 and remaining_paths[1] == 'messages':
             target = self._get_target(remaining_paths[0])
-            return MessageController()(remaining_paths[0], *remaining_paths[2:])
+            return MessageController(
+                dolphin_client=DolphinClient()
+            )(remaining_paths[0], *remaining_paths[2:])
 
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
             target = self._get_target(remaining_paths[0])

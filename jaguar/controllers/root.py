@@ -19,6 +19,7 @@ from .oauth2 import OAUTHController
 from .subscribetarget import SubscribeTargetController
 from .mention import MentionController
 from .envelop import EnvelopController
+from ..backends import DolphinClient
 
 
 here = abspath(dirname(__file__))
@@ -34,7 +35,7 @@ class ApiV1(RestController, JsonPatchControllerMixin):
     targets = TargetController()
     contacts = ContactController()
     directs = DirectController()
-    messages = MessageController()
+    messages = MessageController(dolphin_client=DolphinClient())
     oauth2 = OAUTHController()
     subscribetargets = SubscribeTargetController()
     mentions = MentionController()

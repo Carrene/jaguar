@@ -34,7 +34,7 @@ class Jaguar(Application):
       url: http://localhost:8083
       
     dolphin:
-      url: http://localhost:8082
+      url: http://localhost:8081
 
     storage:
       local_directory: %(root_path)s/data/assets

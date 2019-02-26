@@ -7,7 +7,8 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
+from nanohttp import RegexRouteController, json, settings, context, \
+    HTTPStatus, HTTPKnownStatus
 from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
@@ -140,4 +141,42 @@ class Authorization(Authenticator):
 
     def authenticate_request(self):
         pass
+
+
+@contextmanager
+def dolphin_mockup_server():
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self.unsee)
+            ])
+
+        @json
+        def unsee(self):
+            if 'roomId' not in context.form:
+                raise HTTPKnownStatus('780')
+
+            room_id = context.form['roomId']
+            if room_id is None:
+                raise HTTPKnownStatus('779')
+
+            try:
+                room_id = int(room_id)
+            except (ValueError, TypeError):
+                raise HTTPKnownStatus('781')
+
+            if room_id == 0:
+                raise HTTPKnownStatus('618')
+
+            return {}
+
+    app = MockupApplication('dolphin-mockup', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          dolphin:
+              url: {url}
+        ''')
+
+        yield app
 
