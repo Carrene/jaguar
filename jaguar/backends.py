@@ -82,6 +82,7 @@ class DolphinClient:
             raise HTTPStatus('804 Target Id Not In Form')
         elif response.status_code == 781:
             raise HTTPStatus('805 Invalid Target Id type')
-        else:
-            issue = json.loads(response.text)
-            return issue
+
+        issue = json.loads(response.text)
+        return issue
+
