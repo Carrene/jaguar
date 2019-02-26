@@ -32,9 +32,6 @@ class Jaguar(Application):
       secret: A1dFVpz4w/qyym+HeXKWYmm6Ocj4X5ZNv1JQ7kgHBEk=
       application_id: 1
       url: http://localhost:8083
-      
-    dolphin:
-      url: http://localhost:8081
 
     storage:
       local_directory: %(root_path)s/data/assets

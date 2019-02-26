@@ -2,8 +2,7 @@ import ujson
 from bddrest.authoring import when, Update, status, response, Remove
 
 from jaguar.models import Member, Room
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server, \
-    dolphin_mockup_server
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -36,7 +35,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
     def test_send_message_to_target(self):
         self.login(self.user1.email)
 
-        with cas_mockup_server(), dolphin_mockup_server(), self.given(
+        with cas_mockup_server(), self.given(
             f'Send a message to a target',
             f'/apiv1/targets/id:{self.room.id}/messages',
             f'SEND',
@@ -77,7 +76,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
         body = dict(action='Create', attribute='a', new=1, old=2)
         mimetype = 'application/x-auditlog'
 
-        with cas_mockup_server(), dolphin_mockup_server(), self.given(
+        with cas_mockup_server(), self.given(
             None,
             f'/apiv1/targets/id:{self.room.id}/messages',
             f'SEND',

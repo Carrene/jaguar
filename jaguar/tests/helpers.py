@@ -7,8 +7,7 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context, \
-    HTTPStatus, HTTPKnownStatus
+from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
@@ -141,68 +140,4 @@ class Authorization(Authenticator):
 
     def authenticate_request(self):
         pass
-
-
-@contextmanager
-def dolphin_mockup_server():
-    class Root(RegexRouteController):
-
-        def __init__(self):
-            super().__init__([
-                ('/apiv1/issues', self.unsee)
-            ])
-
-        @json
-        def unsee(self):
-            if 'roomId' not in context.form:
-                raise HTTPKnownStatus('780')
-
-            room_id = context.form['roomId']
-            if room_id is None:
-                raise HTTPKnownStatus('779')
-
-            try:
-                room_id = int(room_id)
-            except (ValueError, TypeError):
-                raise HTTPKnownStatus('781')
-
-            if room_id == 0:
-                raise HTTPKnownStatus('618')
-
-            return MOCKUP_ISSUE
-
-    app = MockupApplication('dolphin-mockup', Root())
-    with mockup_http_server(app) as (server, url):
-        settings.merge(f'''
-          dolphin:
-              url: {url}
-        ''')
-
-        yield app
-
-
-MOCKUP_ISSUE = {
-    'projectId': 2,
-    'status': 'on-hold',
-    'isSubscribed': False,
-    'createdAt': '2019-02-26T11: 00: 38.402198',
-    'priority': 'low',
-    'type_': 'issue',
-    'roomId': 2,
-    'boarding': 'on-time',
-    'modifiedAt': None,
-    'tags': [
-    ],
-    'days': 1,
-    'seenAt': None,
-    'title': 'First issue',
-    'kind': 'feature',
-    'description': 'This is description of first issue',
-    'id': 3,
-    'items': [
-    ],
-    'dueDate': '2020-02-20T00: 00: 00',
-    'relations': [
-    ]
-}
 
