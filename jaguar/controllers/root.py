@@ -35,7 +35,7 @@ class ApiV1(RestController, JsonPatchControllerMixin):
     targets = TargetController()
     contacts = ContactController()
     directs = DirectController()
-    messages = MessageController(dolphin_client=DolphinClient())
+    messages = MessageController()
     oauth2 = OAUTHController()
     subscribetargets = SubscribeTargetController()
     mentions = MentionController()

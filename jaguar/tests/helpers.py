@@ -169,7 +169,7 @@ def dolphin_mockup_server():
             if room_id == 0:
                 raise HTTPKnownStatus('618')
 
-            return {}
+            return MOCKUP_ISSUE
 
     app = MockupApplication('dolphin-mockup', Root())
     with mockup_http_server(app) as (server, url):
@@ -179,4 +179,30 @@ def dolphin_mockup_server():
         ''')
 
         yield app
+
+
+MOCKUP_ISSUE = {
+    'projectId': 2,
+    'status': 'on-hold',
+    'isSubscribed': False,
+    'createdAt': '2019-02-26T11: 00: 38.402198',
+    'priority': 'low',
+    'type_': 'issue',
+    'roomId': 2,
+    'boarding': 'on-time',
+    'modifiedAt': None,
+    'tags': [
+    ],
+    'days': 1,
+    'seenAt': None,
+    'title': 'First issue',
+    'kind': 'feature',
+    'description': 'This is description of first issue',
+    'id': 3,
+    'items': [
+    ],
+    'dueDate': '2020-02-20T00: 00: 00',
+    'relations': [
+    ]
+}
 
