@@ -12,6 +12,7 @@ from sqlalchemy_media import File, MagicAnalyzer, ContentTypeValidator
 from sqlalchemy_media.constants import KB
 from sqlalchemy_media.exceptions import ContentTypeValidationError, \
     MaximumLengthIsReachedError
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from .membership import Member
 
@@ -202,9 +203,16 @@ class Message(Envelop):
         deferred=True
     )
 
-    @property
+    @hybrid_property
     def is_mine(self):
         return Member.current().reference_id == self.sender_reference_id
+
+    @is_mine.expression
+    def is_mine(cls):
+        return cls.sender_reference_id == bindparam(
+            'reference_id',
+            callable_=lambda: context.identity.reference_id
+        )
 
     def to_dict(self):
         message_dictionary = super().to_dict()

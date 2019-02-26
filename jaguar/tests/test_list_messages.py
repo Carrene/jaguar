@@ -21,35 +21,45 @@ class TestListMessages(AutoDocumentationBDDTest):
                 body='This is message 1',
                 mimetype='text/plain',
             )
-            message2 = Message(
+            cls.message2 = Message(
                 body='This is message 2',
                 mimetype='text/plain',
             )
-            message3 = Message(
+            cls.message3 = Message(
                 body='This is message 3',
                 mimetype='text/plain',
             )
-            message4 = Message(
+            cls.message4 = Message(
                 body='This is message 4',
                 mimetype='text/plain',
             )
-            message5 = Message(
+            cls.message5 = Message(
                 body='This is message 5',
                 mimetype='image/png',
                 attachment=image_path
+            )
+            cls.message6 = Message(
+                body='This is message 6',
+                mimetype='text/plain',
             )
             user1 = Member(
                 email='user1@example.com',
                 title='user',
                 access_token='access token1',
                 reference_id=2,
-                messages=[cls.message1, message2, message3, message5]
+                messages=[
+                    cls.message1,
+                    cls.message2,
+                    cls.message3,
+                    cls.message5
+                ]
             )
             user2 = Member(
                 email='user2@example.com',
                 title='user2',
                 access_token='access token2',
-                reference_id=3
+                reference_id=3,
+                messages=[cls.message4, cls.message6]
             )
             session.add(user2)
             user3 = Member(
@@ -57,16 +67,26 @@ class TestListMessages(AutoDocumentationBDDTest):
                 title='user3',
                 access_token='access token3',
                 reference_id=4,
-                messages=[message4]
             )
             room1 = Room(
                 title='room1',
                 type='room',
                 members=[user1, user3],
-                messages=[cls.message1, message3, message4, message5]
+                messages=[
+                    cls.message1,
+                    cls.message3,
+                    cls.message4,
+                    cls.message5,
+                    cls.message6
+                ]
             )
             session.add(room1)
-            room2 = Room(title='room2', type='room', messages=[message2])
+            room2 = Room(
+                title='room2',
+                type='room',
+                members=[user1, user3],
+                messages=[cls.message2],
+            )
             session.add(room2)
             session.commit()
 
@@ -79,12 +99,12 @@ class TestListMessages(AutoDocumentationBDDTest):
             'LIST',
         ):
             assert status == 200
-            assert len(response.json) == 4
-            assert response.json[0]['body'] == 'This is message 1'
-            assert response.json[0]['isMine'] is True
+            assert len(response.json) == 5
+            assert response.json[0]['body'] == self.message4.body
+            assert response.json[0]['isMine'] is False
 
-            assert response.json[2]['body'] == 'This is message 4'
-            assert response.json[2]['isMine'] is False
+            assert response.json[2]['body'] == self.message1.body
+            assert response.json[2]['isMine'] is True
 
             when(
                 'Try to send form in the request',
@@ -93,25 +113,33 @@ class TestListMessages(AutoDocumentationBDDTest):
             assert status == '711 Form Not Allowed'
 
             when('Try to sort the response', query=dict(sort='id'))
-            assert len(response.json) == 4
+            assert len(response.json) == 5
             assert response.json[0]['id'] == 1
 
             when('Sorting the response descending', query=dict(sort='-id'))
-            assert response.json[0]['id'] == 4
+            assert response.json[0]['id'] == 5
 
             when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
-            assert response.json[0]['body'] == 'This is message 3'
+            assert response.json[0]['body'] == self.message6.body
 
             when(
                 'Sorting befor pagination',
                 query=dict(sort='-id', take=2, skip=1)
             )
             assert len(response.json) == 2
-            assert response.json[0]['id'] == 3
+            assert response.json[0]['id'] == 4
 
             when('Filtering the response', query=dict(id=self.message1.id))
             assert len(response.json) == 1
+            assert response.json[0]['body'] == self.message1.body
+
+            when(
+                'Filtering message by isMine',
+                query=dict(isMine='true')
+            )
+            assert status == 200
+            assert len(response.json) == 3
             assert response.json[0]['body'] == 'This is message 1'
 
             when('Try to pass an Unauthorized request', authorization=None)
