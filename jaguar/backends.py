@@ -71,7 +71,7 @@ class DolphinClient:
         response = requests.request(
             'UNSEE',
             f'{settings.dolphin.url}/apiv1/issues',
-            params=dict(roomID=room_id)
+            params=dict(roomId=room_id)
         )
 
         if response.status_code == 618:
