@@ -1,7 +1,8 @@
 import json
 
 import requests
-from nanohttp import settings, HTTPFound, HTTPForbidden, HTTPUnauthorized
+from nanohttp import settings, HTTPFound, HTTPForbidden, HTTPUnauthorized, \
+    HTTPStatus
 
 from .exceptions import CASServerNotAvailable, CASServerNotFound, \
     CASInternallError
@@ -62,4 +63,26 @@ class CASClient:
 
         member = json.loads(response.text)
         return member
+
+
+class DolphinClient:
+
+    def unsee_issue(self, room_id):
+        response = requests.request(
+            'UNSEE',
+            f'{settings.dolphin.url}/apiv1/issues',
+            params=dict(roomId=room_id)
+        )
+
+        if response.status_code == 618:
+            raise HTTPStatus(f'802 Issue With target id {room_id} Not Found')
+        elif response.status_code == 779:
+            raise HTTPStatus('803 Target Id Is None')
+        elif response.status_code == 780:
+            raise HTTPStatus('804 Target Id Not In Form')
+        elif response.status_code == 781:
+            raise HTTPStatus('805 Invalid Target Id type')
+
+        issue = json.loads(response.text)
+        return issue
 
