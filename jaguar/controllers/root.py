@@ -19,7 +19,6 @@ from .oauth2 import OAUTHController
 from .subscribetarget import SubscribeTargetController
 from .mention import MentionController
 from .envelop import EnvelopController
-from ..backends import DolphinClient
 
 
 here = abspath(dirname(__file__))

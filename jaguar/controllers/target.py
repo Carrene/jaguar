@@ -8,7 +8,6 @@ from ..models import Target, Room
 from .message import MessageController
 from .mention import MentionController
 from .member import MemberController
-from ..backends import DolphinClient
 
 
 class TargetController(ModelRestController):
