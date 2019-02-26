@@ -20,7 +20,7 @@ SUPPORTED_TEXT_MIME_TYPES = ['text/plain', 'application/x-auditlog']
 
 class MessageController(ModelRestController):
 
-    def __init__(self, dolphin_client: DolphinClient = DolphinClient()):
+    def __init__(self, dolphin_client: DolphinClient=DolphinClient()):
         self.dolphin_client = dolphin_client
 
     __model__ = Message
