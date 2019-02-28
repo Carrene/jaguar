@@ -140,10 +140,7 @@ class MessageController(ModelRestController):
     @commit
     def reply(self, message_id):
         id = int_or_notfound(message_id)
-
         mimetype = context.form.get('mimetype')
-        if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
-            raise HTTPUnsupportedMediaType()
 
         requested_message = DBSession.query(Message).get(id)
         if requested_message is None:
@@ -152,10 +149,29 @@ class MessageController(ModelRestController):
         if requested_message.is_deleted:
             raise HTTPStatus('616 Message Already Deleted')
 
-        message = Message(body=context.form.get('body'), mimetype=mimetype)
-        message.target_id = requested_message.target_id
-        message.sender_id = Member.current().id
-        message.reply_to = requested_message
+        message = Message(
+            body=context.form.get('body'),
+            target_id = requested_message.target_id,
+            sender_id = Member.current().id,
+            reply_to = requested_message,
+        )
+
+        if 'attachment' in context.form:
+            message.attachment = context.form.get('attachment')
+            message.mimetype = message.attachment.content_type
+
+            if message.attachment.content_type in BLACKLIST_MIME_TYPES:
+                raise HTTPUnsupportedMediaType()
+
+        elif mimetype:
+            if mimetype not in SUPPORTED_TEXT_MIME_TYPES:
+                raise HTTPUnsupportedMediaType()
+
+            message.mimetype = mimetype
+
+        else:
+            message.mimetype = 'text/plain'
+
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())

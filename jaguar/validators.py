@@ -76,9 +76,6 @@ reply_message_validator = validate(
         max_length=(65536, '702 Must be less than 65536 charecters'),
         required='712 Message Body Required',
     ),
-    mimetype=dict(
-        required='713 Message Mimetype Required'
-    )
 )
 
 

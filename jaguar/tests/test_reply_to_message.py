@@ -3,6 +3,7 @@ from os.path import abspath, join, dirname
 
 from bddrest.authoring import when, status, response, Update, Remove
 from sqlalchemy_media import StoreManager
+from nanohttp import settings
 
 from jaguar.models import Member, Message, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
@@ -10,6 +11,8 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 THIS_DIR = abspath(join(dirname(__file__)))
 IMAGE_PATH = join(THIS_DIR, 'stuff', '150x150.png')
+DLL_PATH = join(THIS_DIR, 'stuff', 'file.dll')
+MAXIMUM_IMAGE_PATH = join(THIS_DIR, 'stuff', 'maximum-length.jpg')
 
 
 class TestReplyMessage(AutoDocumentationBDDTest):
@@ -57,9 +60,8 @@ class TestReplyMessage(AutoDocumentationBDDTest):
             f'Reply message 1',
             f'/apiv1/messages/id:{self.message1.id}',
             f'REPLY',
-            form=dict(
+            multipart=dict(
                 body='This is a reply to message1',
-                mimetype='text/plain'
             )
         ):
             assert status == 200
@@ -78,27 +80,46 @@ class TestReplyMessage(AutoDocumentationBDDTest):
 
             when(
                 'Try to reply with unsopported media type',
-                form=Update(mimetype='video/3gpp')
+                multipart=Update(mimetype='video/3gpp')
             )
             assert status == 415
 
             when(
                 'Try to send reply with long text',
-                form=Update(body=(65536 + 1) * 'a')
+                multipart=Update(body=(65536 + 1) * 'a')
             )
             assert status == '702 Must be less than 65536 charecters'
 
-            when('Remove body from the form', form=Remove('body'))
+            when('Remove body from the form', multipart=Remove('body'))
             assert status == '712 Message Body Required'
-
-            when('Remove mimetype from the form', form=Remove('mimetype'))
-            assert status == '713 Message Mimetype Required'
 
             when(
                 'Requested message is already deleted',
                 url_parameters=Update(id=self.message2.id)
             )
             assert status == '616 Message Already Deleted'
+
+            with open(IMAGE_PATH, 'rb') as f:
+                when(
+                    'Replay message with attachment',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == 200
+
+            with open(MAXIMUM_IMAGE_PATH, 'rb') as f:
+                when(
+                    'Attachment is more than maximum length',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == 413
+
+            settings.attachements.messages.files.max_length = 800
+            with open(DLL_PATH, 'rb') as f:
+                when(
+                    'Replay a message with unsupported media type attachment',
+                    multipart=Update(attachment=io.BytesIO(f.read()))
+                )
+                assert status == '415 Unsupported Media Type'
 
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
