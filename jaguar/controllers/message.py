@@ -151,10 +151,10 @@ class MessageController(ModelRestController):
 
         message = Message(
             body=context.form.get('body'),
+            target_id = requested_message.target_id,
+            sender_id = Member.current().id,
+            reply_to = requested_message,
         )
-        message.target_id = requested_message.target_id
-        message.sender_id = Member.current().id
-        message.reply_to = requested_message
 
         if 'attachment' in context.form:
             message.attachment = context.form.get('attachment')
