@@ -11,6 +11,7 @@ from ..models import Envelop, Message, TargetMember, Member, Target, \
 from ..validators import send_message_validator, edit_message_validator, \
     reply_message_validator
 from ..exceptions import HTTPUnsupportedMediaType
+from ..webhooks import Webhook
 
 
 BLACKLIST_MIME_TYPES = ['application/x-dosexec']
@@ -52,6 +53,8 @@ class MessageController(ModelRestController):
         DBSession.add(message)
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
+        webhook = Webhook()
+        webhook.sent_message(target_id)
         return message
 
     @authorize
