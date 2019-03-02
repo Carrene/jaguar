@@ -22,6 +22,19 @@ class Webhook:
         except Exception as ex:
             self._handle_exception(ex)
 
+    def mentioned_member(self, room_id, member_id):
+        try:
+            response = request(
+                settings.webhooks.mentioned.verb,
+                settings.webhooks.mentioned.url,
+                params=dict(roomId=room_id, memberId=member_id)
+            )
+            if response.code != 200:
+                self._bad_thirdparty_response(response.code)
+
+        except Exception as ex:
+            self._handle_exception(ex)
+
     def _handle_exception(self, ex):
         if isinstance(ex, ConnectionError):
             logger.exception('Connection Error')
