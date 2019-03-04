@@ -59,6 +59,9 @@ class Jaguar(Application):
       sent:
         url: http://localhost:8081/apiv1/issues
         verb: SENT
+      mentioned:
+        url: http://localhost:8081/apiv1/issues
+        verb: MENTIONED
 
     '''
 

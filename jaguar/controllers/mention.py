@@ -7,6 +7,7 @@ from restfulpy.orm import DBSession, commit
 from ..messaging import queues
 from ..models import Mention, Member, Direct, TargetMember, Target
 from ..validators import mention_validator
+from ..webhooks import Webhook
 
 
 class MentionController(ModelRestController):
@@ -77,6 +78,8 @@ class MentionController(ModelRestController):
                 {'mentionedMember': mentioned.id, 'type': 'mention'}
             )
             queues.push(settings.messaging.workers_queue, mention_message)
+            webhook = Webhook()
+            webhook.mentioned_member(mention.target_id, mentioned.id)
 
         return mention
 
