@@ -55,6 +55,11 @@ class Jaguar(Application):
             password: ~
             db: 1
 
+    webhooks:
+      sent:
+        url: http://localhost:8081/apiv1/issues
+        verb: SENT
+
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):
