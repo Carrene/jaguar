@@ -1,7 +1,7 @@
 from nanohttp import settings
 from restfulpy.logging_ import get_logger
 from requests import request
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 
 logger = get_logger('webhook')
