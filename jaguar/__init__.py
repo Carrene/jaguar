@@ -59,12 +59,12 @@ class Jaguar(Application):
       sent:
         url: http://localhost:8081/apiv1/issues
         verb: SENT
+        timeout: 30
       mentioned:
         url: http://localhost:8081/apiv1/issues
         verb: MENTIONED
-
-    request:
         timeout: 30
+
     '''
 
     def __init__(self, application_name='jaguar', root=Root()):

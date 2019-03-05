@@ -15,7 +15,7 @@ class Webhook:
                 settings.webhooks.sent.verb,
                 settings.webhooks.sent.url,
                 params=dict(roomId=room_id),
-                timeout=settings.request.timeout,
+                timeout=settings.webhooks.sent.timeout,
             )
             if response.status_code != 200:
                 self._bad_thirdparty_response(response.code)
@@ -29,7 +29,7 @@ class Webhook:
                 settings.webhooks.mentioned.verb,
                 settings.webhooks.mentioned.url,
                 params=dict(roomId=room_id, memberId=member_id),
-                timeout=settings.request.timeout,
+                timeout=settings.webhooks.mentioned.timeout,
             )
             if response.status_code != 200:
                 self._bad_thirdparty_response(response.code)

@@ -73,11 +73,11 @@ class TestSendMessage(AutoDocumentationBDDTest):
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
 
-            settings.request.timeout = 0.1
+            settings.webhooks.sent.timeout = 0.1
             when('Request to Dolphin is timeout')
             assert status == 200
 
-            settings.request.timeout = 30
+            settings.webhooks.sent.timeout = 30
             settings.webhooks.sent.url = 'http://localhost:1'
             when('Connection is failed')
             assert status == 200
