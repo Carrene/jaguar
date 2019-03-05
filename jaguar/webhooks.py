@@ -14,9 +14,10 @@ class Webhook:
             response = request(
                 settings.webhooks.sent.verb,
                 settings.webhooks.sent.url,
-                params=dict(roomId=room_id)
+                params=dict(roomId=room_id),
+                timeout=settings.request.timeout,
             )
-            if response.code != 200:
+            if response.status_code != 200:
                 self._bad_thirdparty_response(response.code)
 
         except Exception as ex:
@@ -27,9 +28,10 @@ class Webhook:
             response = request(
                 settings.webhooks.mentioned.verb,
                 settings.webhooks.mentioned.url,
-                params=dict(roomId=room_id, memberId=member_id)
+                params=dict(roomId=room_id, memberId=member_id),
+                timeout=settings.request.timeout,
             )
-            if response.code != 200:
+            if response.status_code != 200:
                 self._bad_thirdparty_response(response.code)
 
         except Exception as ex:

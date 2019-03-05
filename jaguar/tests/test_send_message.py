@@ -1,8 +1,10 @@
 import ujson
+from nanohttp import settings
 from bddrest.authoring import when, Update, status, response, Remove
 
 from jaguar.models import Member, Room
-from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
+from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server, \
+    maestro_mockup_server, maestro_server_status
 
 
 class TestSendMessage(AutoDocumentationBDDTest):
@@ -35,7 +37,7 @@ class TestSendMessage(AutoDocumentationBDDTest):
     def test_send_message_to_target(self):
         self.login(self.user1.email)
 
-        with cas_mockup_server(), self.given(
+        with cas_mockup_server(), maestro_mockup_server(), self.given(
             f'Send a message to a target',
             f'/apiv1/targets/id:{self.room.id}/messages',
             f'SEND',
@@ -70,6 +72,15 @@ class TestSendMessage(AutoDocumentationBDDTest):
 
             when('Try to pass an unauthorized request', authorization=None)
             assert status == 401
+
+            settings.request.timeout = 0.1
+            when('Request to Dolphin is timeout')
+            assert status == 200
+
+            settings.request.timeout = 30
+            settings.webhooks.sent.url = 'http://localhost:1'
+            when('Connection is failed')
+            assert status == 200
 
     def test_send_message_as_auditlog(self):
         self.login(self.user1.email)

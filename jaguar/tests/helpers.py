@@ -1,18 +1,15 @@
-import asyncio
-from os import path, makedirs
+import time
 from contextlib import contextmanager
+from os import path
 
-from restfulpy.application import Application
-from bddrest.authoring import response
-from restfulpy.testing import ApplicableTestCase
-from restfulpy.orm import DBSession
-from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
+from restfulpy.application import Application
+from restfulpy.mockup import mockup_http_server
 from restfulpy.orm.metadata import FieldInfo
+from restfulpy.testing import ApplicableTestCase
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
-from jaguar.controllers.root import Root
 from jaguar.models import Member, Room, Message
 
 
@@ -21,6 +18,7 @@ DATA_DIRECTORY = path.abspath(path.join(HERE, '../../data'))
 
 
 _cas_server_status = 'idle'
+_maestro_server_status = 'idle'
 
 
 query=FieldInfo(type_=str, required=True, not_none=True).to_json()
@@ -118,6 +116,44 @@ def cas_server_status(status):
     _cas_server_status = status
     yield
     _cas_server_status = 'idle'
+
+
+@contextmanager
+def maestro_mockup_server():
+
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self.send),
+            ])
+
+        @json(verbs=['send', 'mention'])
+        def send(self):
+            time.sleep(0.5)
+
+    app = MockupApplication('maestro-mockup', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          webhooks:
+            sent:
+              url: {url}/apiv1/issues
+              verb: send
+
+            mentioned:
+              url: {url}/apiv1/issues
+              verb: mention
+        ''')
+
+        yield app
+
+
+@contextmanager
+def maestro_server_status(status):
+    global _maestro_server_status
+    _maestro_server_status = status
+    yield
+    _maestro_server_status = 'idle'
 
 
 class MockupApplication(Application):
