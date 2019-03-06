@@ -7,7 +7,8 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
+from nanohttp import RegexRouteController, json, settings, context, \
+    HTTPStatus, RestController
 from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
@@ -140,4 +141,41 @@ class Authorization(Authenticator):
 
     def authenticate_request(self):
         pass
+
+
+@contextmanager
+def thirdparty_mockup_server():
+
+    class Root(RestController, RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self),
+            ])
+
+        @json
+        def sent(self):
+            if context.query['roomId'] == 'bad':
+                raise HTTPStatus('800 Some Exceprion')
+
+            return {}
+
+        @json
+        def mentioned(self):
+            if context.query['roomId'] == 'bad':
+                raise HTTPStatus('800 Some Exceprion')
+
+            return {}
+
+    app = MockupApplication('thirdparty-mockup', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          webhooks:
+            sent:
+              url: {url}
+            mentioned:
+              url: {url}
+        ''')
+
+        yield app
 
