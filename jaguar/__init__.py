@@ -59,11 +59,11 @@ class Jaguar(Application):
       sent:
         url: http://localhost:8081/apiv1/issues
         verb: SENT
-        timeout: 30
+        timeout: 0.1 # Second
       mentioned:
         url: http://localhost:8081/apiv1/issues
         verb: MENTIONED
-        timeout: 30
+        timeout: 0.1 # Second
 
     '''
 
