@@ -67,7 +67,7 @@ class TestListMembers(AutoDocumentationBDDTest):
 
             when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
-            assert response.json[0]['title'] == self.user2.title
+            assert response.json[0]['title'] == self.user3.title
 
             when(
                 'Sorting befor pagination',

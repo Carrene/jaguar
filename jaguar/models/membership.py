@@ -95,6 +95,16 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
     )
     show_email = Field(Boolean, default=False)
     show_phone = Field(Boolean, default=False)
+    avatar = Field(
+        Unicode(200),
+        label='Avatar',
+        nullable=True,
+        unique=False,
+        not_none=False,
+        required=False,
+        example='Lorem Ipsum'
+    )
+
     messages = relationship('Envelop')
     contacts = relationship(
         'Member',
@@ -121,7 +131,8 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
             email=self.email,
             name=self.title,
             referenceId=self.reference_id,
-            sessionId=session_id
+            sessionId=session_id,
+            avatar=self.avatar,
         ))
 
     def create_refresh_principal(self):

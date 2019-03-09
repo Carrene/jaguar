@@ -9,19 +9,19 @@ class TestSearchMember(AutoDocumentationBDDTest):
     @classmethod
     def mockup(cls):
         session = cls.create_session()
-        user1 = Member(
+        cls.user1 = Member(
             email='user1@example.com',
             title='user1',
             access_token='access token1',
             reference_id=2
         )
-        user2 = Member(
+        cls.user2 = Member(
             email='user2@gmail.com',
             title='user2',
             access_token='access token2',
             reference_id=3
         )
-        session.add_all([user1, user2])
+        session.add_all([cls.user1, cls.user2])
         session.commit()
 
     def test_search_user(self):
@@ -34,7 +34,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
             form=dict(query='Use'),
         ):
             assert status == 200
-            assert response.json[0]['title'] == 'user1'
+            assert response.json[0]['title'] == self.user2.title
             assert len(response.json) == 2
 
             when('Search using email', form=Update(query='exam'))
@@ -76,7 +76,7 @@ class TestSearchMember(AutoDocumentationBDDTest):
 
             when('Testing pagination', query=dict(take=1, skip=1))
             assert len(response.json) == 1
-            assert response.json[0]['title'] == 'user2'
+            assert response.json[0]['title'] == self.user1.title
 
             when(
                 'Sort before pagination',

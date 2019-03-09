@@ -78,26 +78,43 @@ def cas_mockup_server():
                 raise HTTPStatus(_cas_server_status)
 
             if 'access token1' in access_token:
-                return dict(id=2, email='user1@example.com', title='user1')
+                return dict(
+                    id=2,
+                    email='user1@example.com',
+                    title='user1',
+                    avatar='avatar2',
+                )
 
             if 'access token2' in access_token:
-                return dict(id=3, email='user2@example.com', title='user2')
+                return dict(
+                    id=3,
+                    email='user2@example.com',
+                    title='user2',
+                    avatar='avatar3',
+                )
 
             if 'access token3' in access_token:
                 return dict(
                     id=4,
                     email='blocked1@example.com',
-                    title='blocked1'
+                    title='blocked1',
+                    avatar='avatar4',
                 )
 
             if 'access token4' in access_token:
                 return dict(
                     id=5,
                     email='blocker@example.com',
-                    title='blocker'
+                    title='blocker',
+                    avatar='avatar5',
                 )
 
-            return dict(id=1, email='user@example.com', title='user')
+            return dict(
+                id=1,
+                email='user@example.com',
+                title='user',
+                avatar='avatar1',
+            )
 
     app = MockupApplication('cas-mockup', Root())
     with mockup_http_server(app) as (server, url):

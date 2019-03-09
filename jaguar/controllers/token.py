@@ -3,7 +3,7 @@ import json as json_library
 from nanohttp import RestController, json, context, HTTPBadRequest, validate, \
     HTTPForbidden, settings
 from restfulpy.authorization import authorize
-from restfulpy.orm import DBSession
+from restfulpy.orm import DBSession, commit
 
 from ..backends import CASClient
 from ..models import Member
@@ -20,11 +20,12 @@ class TokenController(RestController):
     @json(prevent_form='711 Form Not Allowed')
     def request(self):
         return dict(
-            scopes=['email', 'title'],
+            scopes=['email', 'title', 'avatar'],
             applicationId=settings.oauth['application_id'],
         )
 
     @json
+    @commit
     def obtain(self):
         # FIXME: Validation and prevent form.
         cas_server = CASClient()
@@ -41,13 +42,21 @@ class TokenController(RestController):
                 email=member['email'],
                 title=member['title'],
                 access_token=access_token,
-                reference_id=member['id']
+                reference_id=member['id'],
+                avatar=member['avatar'],
             )
-        else:
+
+        if user.title != member['title']:
+            user.title = member['title']
+
+        if user.avatar != member['avatar']:
+            user.avatar = member['avatar']
+
+        if user.access_token != access_token:
             user.access_token = access_token
 
         DBSession.add(user)
-        DBSession.commit()
+        DBSession.flush()
         principal = user.create_jwt_principal()
         context.response_headers.add_header(
             'X-New-JWT-Token',
