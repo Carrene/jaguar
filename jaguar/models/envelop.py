@@ -180,7 +180,7 @@ class Message(Envelop):
     # selecin loding is chosen for this relationship.
     seen_by = relationship(
         'Member',
-        protected=False,
+        protected=True,
         secondary='member_message_seen',
         lazy='selectin'
     )
@@ -215,6 +215,17 @@ class Message(Envelop):
         )
 
     def to_dict(self):
+        seen_by_list = []
+        for member in self.seen_by:
+            seen_by_list.append({
+                'id': member.id,
+                'referenceId': member.reference_id,
+                'email': member.email,
+                'title': member.title,
+                'avatar': member.avatar,
+                'phone': member.phone,
+            })
+
         message_dictionary = super().to_dict()
         message_dictionary.update(
             isMine=self.is_mine,
@@ -222,7 +233,8 @@ class Message(Envelop):
             attachment=self.attachment.locate() \
                 if self.attachment and not self.is_deleted else None,
             body=ujson.loads(self.body) \
-                if self.mimetype in JSON_MIMETYPE else self.body
+                if self.mimetype in JSON_MIMETYPE else self.body,
+            seenBy=seen_by_list,
         )
         return message_dictionary
 
