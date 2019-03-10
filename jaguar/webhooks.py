@@ -17,7 +17,7 @@ class Webhook:
                 params=dict(roomId=room_id),
                 timeout=settings.webhooks.mentioned.timeout,
             )
-            if response.status_code != 200:
+            if response.status_code != 204:
                 self._bad_thirdparty_response(response.status_code)
 
         except Exception as ex:
@@ -31,7 +31,7 @@ class Webhook:
                 params=dict(roomId=room_id, memberId=member_id),
                 timeout=settings.webhooks.mentioned.timeout,
             )
-            if response.status_code != 200:
+            if response.status_code != 204:
                 self._bad_thirdparty_response(response.status_code)
 
         except Exception as ex:
