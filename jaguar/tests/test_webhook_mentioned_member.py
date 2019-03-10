@@ -1,9 +1,8 @@
 
-import pytest
 from nanohttp import settings
-from jaguar.webhooks import Webhook
 from requests import RequestException
 
+from jaguar.webhooks import Webhook
 from jaguar.tests.helpers import thirdparty_mockup_server, \
     AutoDocumentationBDDTest
 

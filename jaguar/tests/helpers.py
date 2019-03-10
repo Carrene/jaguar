@@ -8,7 +8,7 @@ from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, \
-    HTTPStatus, RestController, action
+    HTTPStatus, RestController
 from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
@@ -153,16 +153,15 @@ def thirdparty_mockup_server():
                 ('/apiv1/issues', self),
             ])
 
-        @action
+        @json
         def sent(self):
             if context.query['roomId'] == 'bad':
                 raise HTTPStatus('800 Some Exceprion')
 
             raise HTTPStatus('204 No Content')
 
-        @action
+        @json
         def mentioned(self):
-            from pudb import set_trace; set_trace()
             if context.query['roomId'] == 'bad':
                 raise HTTPStatus('800 Some Exceprion')
 

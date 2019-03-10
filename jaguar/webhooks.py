@@ -39,7 +39,7 @@ class Webhook:
 
     def _handle_exception(self, ex):
         if isinstance(ex, RequestException):
-            logger.exception('Request Error')
+            logger.exception(f'Request Error: {ex}')
 
     def _bad_thirdparty_response(self, code):
         logger.exception(
