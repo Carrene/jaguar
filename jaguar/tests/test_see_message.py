@@ -141,6 +141,12 @@ class TestSeeMessage(AutoDocumentationBDDTest):
             assert response.json['seenAt'] is not None
             assert response.json['attachment'] is not None
             assert response.json['modifiedAt'] is None
+            assert response.json['seenBy'][0]['id'] is not None
+            assert response.json['seenBy'][0]['referenceId'] is not None
+            assert response.json['seenBy'][0]['title'] is not None
+            assert response.json['seenBy'][0]['avatar'] is not None
+            assert response.json['seenBy'][0]['email'] is not None
+            assert response.json['seenBy'][0]['phone'] is None
 
             context.identity = Identity(self.user1)
             session = self.create_session()
