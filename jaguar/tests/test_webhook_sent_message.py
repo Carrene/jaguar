@@ -17,7 +17,7 @@ class TestSentWebhook(AutoDocumentationBDDTest):
         with thirdparty_mockup_server():
             webhook.sent_message(1)
 
-            # When thirdparty response with status != 200
+            # When thirdparty response with status != 204
             webhook.sent_message('bad')
 
             # When a request error occur

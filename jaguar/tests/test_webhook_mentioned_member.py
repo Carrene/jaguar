@@ -17,7 +17,7 @@ class TestMentionedWebhook(AutoDocumentationBDDTest):
         with thirdparty_mockup_server():
             webhook.mentioned_member(1, 1)
 
-            # When thirdparty response with status != 200
+            # When thirdparty response with status != 202
             webhook.mentioned_member('bad', 'bad')
 
             # When a request error occur
