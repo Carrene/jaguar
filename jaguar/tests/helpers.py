@@ -146,20 +146,15 @@ class Authorization(Authenticator):
 @contextmanager
 def thirdparty_mockup_server():
 
-    class Root(RestController, RegexRouteController):
+    class Root(RegexRouteController):
 
         def __init__(self):
-            super().__init__([('/apiv1/issues', self)])
+            super().__init__([
+                ('/apiv1/issues', self.handler),
+            ])
 
-        @json
-        def sent(self):
-            if context.query['roomId'] == 'bad':
-                raise HTTPBadRequest()
-
-            raise HTTPNoContent()
-
-        @json
-        def mentioned(self):
+        @json(verbs=['sent', 'mentioned'])
+        def handler(self):
             if context.query['roomId'] == 'bad':
                 raise HTTPBadRequest()
 
