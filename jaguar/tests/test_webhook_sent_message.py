@@ -9,21 +9,21 @@ from jaguar.tests.helpers import thirdparty_mockup_server, \
 
 class TestSentWebhook(AutoDocumentationBDDTest):
 
-    def test_webhook_sent_message(self, request):
+    def test_webhook_sent_message(self):
         webhook = Webhook()
 
-        # No raise
         with thirdparty_mockup_server():
-            webhook.sent_message(1)
+            # No raise
+            assert webhook.sent_message(1) is None
 
-            # When thirdparty response with status != 204
-            webhook.sent_message('bad')
+            # When thirdparty response with status != HTTPNoContent
+            assert webhook.sent_message('bad') is None
 
-            # When a request error occur
+            # When a request error occurs
             settings.merge(f'''
               webhooks:
                 sent:
                   url: invalid-url
             ''')
-            webhook.sent_message(1)
+            assert webhook.sent_message(1) is None
 

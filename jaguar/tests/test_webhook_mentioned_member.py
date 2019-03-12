@@ -9,15 +9,16 @@ from jaguar.tests.helpers import thirdparty_mockup_server, \
 
 class TestMentionedWebhook(AutoDocumentationBDDTest):
 
-    def test_webhook_mentioned_message(self, request):
+    def test_webhook_mentioned_message(self):
         webhook = Webhook()
 
-        # No raise
         with thirdparty_mockup_server():
-            webhook.mentioned_member(1, 1)
+            # No raise
+            assert webhook.mentioned_member(room_id=1, member_id=1) is None
 
-            # When thirdparty response with status != 202
-            webhook.mentioned_member('bad', 'bad')
+            # When thirdparty response with status != HTTPNoContent
+            assert webhook.mentioned_member(room_id='bad', member_id='bad') \
+                is None
 
             # When a request error occur
             settings.merge(f'''
@@ -25,5 +26,5 @@ class TestMentionedWebhook(AutoDocumentationBDDTest):
                 mentioned:
                   url: invalid-url
             ''')
-            webhook.mentioned_member(1, 1)
+            assert webhook.mentioned_member(room_id=1, member_id=1) is None
 

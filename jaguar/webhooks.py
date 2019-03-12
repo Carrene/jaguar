@@ -6,6 +6,8 @@ from requests.exceptions import RequestException
 
 logger = get_logger('webhook')
 
+HTTP_NO_CONTENT = 204
+
 
 class Webhook:
 
@@ -17,7 +19,7 @@ class Webhook:
                 params=dict(roomId=room_id),
                 timeout=settings.webhooks.mentioned.timeout,
             )
-            if response.status_code != 204:
+            if response.status_code != HTTP_NO_CONTENT:
                 self._bad_thirdparty_response(response.status_code)
 
         except Exception as ex:
@@ -31,7 +33,7 @@ class Webhook:
                 params=dict(roomId=room_id, memberId=member_id),
                 timeout=settings.webhooks.mentioned.timeout,
             )
-            if response.status_code != 204:
+            if response.status_code != HTTP_NO_CONTENT:
                 self._bad_thirdparty_response(response.status_code)
 
         except Exception as ex:

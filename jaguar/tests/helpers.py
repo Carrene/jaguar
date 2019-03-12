@@ -7,8 +7,8 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context, \
-    HTTPStatus, RestController
+from nanohttp import RegexRouteController, RestController, json, settings, context, \
+    HTTPStatus, HTTPBadRequest, HTTPNoContent
 from restfulpy.orm.metadata import FieldInfo
 
 from jaguar import Jaguar
@@ -149,25 +149,23 @@ def thirdparty_mockup_server():
     class Root(RestController, RegexRouteController):
 
         def __init__(self):
-            super().__init__([
-                ('/apiv1/issues', self),
-            ])
+            super().__init__([('/apiv1/issues', self)])
 
         @json
         def sent(self):
             if context.query['roomId'] == 'bad':
-                raise HTTPStatus('800 Some Exceprion')
+                raise HTTPBadRequest()
 
-            raise HTTPStatus('204 No Content')
+            raise HTTPNoContent()
 
         @json
         def mentioned(self):
             if context.query['roomId'] == 'bad':
-                raise HTTPStatus('800 Some Exceprion')
+                raise HTTPBadRequest()
 
-            raise HTTPStatus('204 No Content')
+            raise HTTPNoContent()
 
-    app = MockupApplication('thirdparty-mockup', Root())
+    app = MockupApplication('mockup-thirdparty', Root())
     with mockup_http_server(app) as (server, url):
         settings.merge(f'''
           webhooks:
