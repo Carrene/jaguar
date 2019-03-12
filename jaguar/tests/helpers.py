@@ -7,7 +7,7 @@ from bddrest.authoring import response
 from restfulpy.testing import ApplicableTestCase
 from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, RestController, json, settings, context, \
+from nanohttp import RegexRouteController, json, settings, context, \
     HTTPStatus, HTTPBadRequest, HTTPNoContent
 from restfulpy.orm.metadata import FieldInfo
 
