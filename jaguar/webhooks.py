@@ -11,12 +11,15 @@ HTTP_NO_CONTENT = 204
 
 class Webhook:
 
-    def sent_message(self, room_id):
+    def sent_message(self, room_id, member_reference_id):
         try:
             response = request(
                 settings.webhooks.sent.verb,
                 settings.webhooks.sent.url,
-                params=dict(roomId=room_id),
+                params=dict(
+                    roomId=room_id,
+                    memberReferenceId=member_reference_id
+                ),
                 timeout=settings.webhooks.mentioned.timeout,
             )
             if response.status_code != HTTP_NO_CONTENT:

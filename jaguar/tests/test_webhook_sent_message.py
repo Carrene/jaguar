@@ -14,10 +14,10 @@ class TestSentWebhook(AutoDocumentationBDDTest):
 
         with thirdparty_mockup_server():
             # No raise
-            assert webhook.sent_message(1) is None
+            assert webhook.sent_message(1, 1) is None
 
             # When thirdparty response with status != HTTPNoContent
-            assert webhook.sent_message('bad') is None
+            assert webhook.sent_message('bad', 'bad') is None
 
             # When a request error occurs
             settings.merge(f'''
@@ -25,5 +25,5 @@ class TestSentWebhook(AutoDocumentationBDDTest):
                 sent:
                   url: invalid-url
             ''')
-            assert webhook.sent_message(1) is None
+            assert webhook.sent_message(1, 1) is None
 
