@@ -2,9 +2,10 @@ import time
 from contextlib import contextmanager
 from os import path
 
-from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
 from restfulpy.application import Application
 from restfulpy.mockup import mockup_http_server
+from nanohttp import RegexRouteController, json, settings, context, \
+    HTTPStatus, HTTPBadRequest, HTTPNoContent
 from restfulpy.orm.metadata import FieldInfo
 from restfulpy.testing import ApplicableTestCase
 
@@ -193,4 +194,34 @@ class Authorization(Authenticator):
 
     def authenticate_request(self):
         pass
+
+
+@contextmanager
+def thirdparty_mockup_server():
+
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self.handler),
+            ])
+
+        @json(verbs=['sent', 'mentioned'])
+        def handler(self):
+            if context.query['roomId'] == 'bad':
+                raise HTTPBadRequest()
+
+            raise HTTPNoContent()
+
+    app = MockupApplication('mockup-thirdparty', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          webhooks:
+            sent:
+              url: {url}
+            mentioned:
+              url: {url}
+        ''')
+
+        yield app
 

@@ -29,10 +29,10 @@ class MessageController(ModelRestController):
     @commit
     def send(self, target_id):
         mimetype = context.form.get('mimetype')
-
+        sender = Member.current()
         message = Message(body=context.form.get('body'))
         message.target_id = int(target_id)
-        message.sender_id = Member.current().id
+        message.sender_id = sender.id
 
         if 'attachment' in context.form:
             message.attachment = context.form.get('attachment')
@@ -54,7 +54,7 @@ class MessageController(ModelRestController):
         DBSession.flush()
         queues.push(settings.messaging.workers_queue, message.to_dict())
         webhook = Webhook()
-        webhook.sent_message(target_id)
+        webhook.sent_message(target_id, sender.reference_id)
         return message
 
     @authorize
