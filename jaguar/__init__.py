@@ -25,7 +25,7 @@ class Jaguar(Application):
 
     activation:
       secret: activation-secret
-      max_age: 86400  # seconds
+      max_age: 86400  # Seconds
       url: http://example.com/activate
 
     oauth:
@@ -59,11 +59,11 @@ class Jaguar(Application):
       sent:
         url: http://localhost:8081/apiv1/issues
         verb: SENT
-        timeout: 30
+        timeout: 30 # Seconds
       mentioned:
         url: http://localhost:8081/apiv1/issues
         verb: MENTIONED
-        timeout: 30
+        timeout: 30 # Seconds
 
     '''
 
