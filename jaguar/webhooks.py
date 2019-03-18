@@ -28,12 +28,12 @@ class Webhook:
         except Exception as ex:
             self._handle_exception(ex)
 
-    def mentioned_member(self, room_id, member_id):
+    def mentioned_member(self, room_id, mentioned_reference_id):
         try:
             response = request(
                 settings.webhooks.mentioned.verb,
                 settings.webhooks.mentioned.url,
-                params=dict(roomId=room_id, memberId=member_id),
+                params=dict(roomId=room_id, memberId=mentioned_reference_id),
                 timeout=settings.webhooks.mentioned.timeout,
             )
             if response.status_code != HTTP_NO_CONTENT:
