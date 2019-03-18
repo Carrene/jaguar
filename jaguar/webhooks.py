@@ -33,7 +33,10 @@ class Webhook:
             response = request(
                 settings.webhooks.mentioned.verb,
                 settings.webhooks.mentioned.url,
-                params=dict(roomId=room_id, memberId=mentioned_reference_id),
+                params=dict(
+                    roomId=room_id,
+                    memberReferenceId=mentioned_reference_id
+                ),
                 timeout=settings.webhooks.mentioned.timeout,
             )
             if response.status_code != HTTP_NO_CONTENT:
