@@ -11,7 +11,7 @@ from .cli import EmailLauncher, MemberLauncher, TargetLauncher, \
     TokenLauncher, WebsocketLauncher, RouterLauncher
 
 
-__version__ = '0.15.3a3'
+__version__ = '0.11.2a3'
 
 
 class Jaguar(Application):
@@ -25,7 +25,7 @@ class Jaguar(Application):
 
     activation:
       secret: activation-secret
-      max_age: 86400  # Seconds
+      max_age: 86400  # seconds
       url: http://example.com/activate
 
     oauth:
@@ -59,12 +59,9 @@ class Jaguar(Application):
       sent:
         url: http://localhost:8081/apiv1/issues
         verb: SENT
-        timeout: 0.5  # Seconds
-
       mentioned:
         url: http://localhost:8081/apiv1/issues
         verb: MENTIONED
-        timeout: 0.5  # Seconds
 
     '''
 
