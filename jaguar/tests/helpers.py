@@ -1,18 +1,16 @@
-import asyncio
-from os import path, makedirs
+import time
 from contextlib import contextmanager
+from os import path
 
 from restfulpy.application import Application
-from bddrest.authoring import response
-from restfulpy.testing import ApplicableTestCase
-from restfulpy.orm import DBSession
 from restfulpy.mockup import mockup_http_server
-from nanohttp import RegexRouteController, json, settings, context, HTTPStatus
+from nanohttp import RegexRouteController, json, settings, context, \
+    HTTPStatus, HTTPBadRequest, HTTPNoContent
 from restfulpy.orm.metadata import FieldInfo
+from restfulpy.testing import ApplicableTestCase
 
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
-from jaguar.controllers.root import Root
 from jaguar.models import Member, Room, Message
 
 
@@ -21,6 +19,7 @@ DATA_DIRECTORY = path.abspath(path.join(HERE, '../../data'))
 
 
 _cas_server_status = 'idle'
+_maestro_server_status = 'idle'
 
 
 query=FieldInfo(type_=str, required=True, not_none=True).to_json()
@@ -79,26 +78,43 @@ def cas_mockup_server():
                 raise HTTPStatus(_cas_server_status)
 
             if 'access token1' in access_token:
-                return dict(id=2, email='user1@example.com', title='user1')
+                return dict(
+                    id=2,
+                    email='user1@example.com',
+                    title='user1',
+                    avatar='avatar2',
+                )
 
             if 'access token2' in access_token:
-                return dict(id=3, email='user2@example.com', title='user2')
+                return dict(
+                    id=3,
+                    email='user2@example.com',
+                    title='user2',
+                    avatar='avatar3',
+                )
 
             if 'access token3' in access_token:
                 return dict(
                     id=4,
                     email='blocked1@example.com',
-                    title='blocked1'
+                    title='blocked1',
+                    avatar='avatar4',
                 )
 
             if 'access token4' in access_token:
                 return dict(
                     id=5,
                     email='blocker@example.com',
-                    title='blocker'
+                    title='blocker',
+                    avatar='avatar5',
                 )
 
-            return dict(id=1, email='user@example.com', title='user')
+            return dict(
+                id=1,
+                email='user@example.com',
+                title='user',
+                avatar='avatar1',
+            )
 
     app = MockupApplication('cas-mockup', Root())
     with mockup_http_server(app) as (server, url):
@@ -118,6 +134,44 @@ def cas_server_status(status):
     _cas_server_status = status
     yield
     _cas_server_status = 'idle'
+
+
+@contextmanager
+def maestro_mockup_server():
+
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self.send),
+            ])
+
+        @json(verbs=['send', 'mention'])
+        def send(self):
+            time.sleep(0.5)
+
+    app = MockupApplication('maestro-mockup', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          webhooks:
+            sent:
+              url: {url}/apiv1/issues
+              verb: send
+
+            mentioned:
+              url: {url}/apiv1/issues
+              verb: mention
+        ''')
+
+        yield app
+
+
+@contextmanager
+def maestro_server_status(status):
+    global _maestro_server_status
+    _maestro_server_status = status
+    yield
+    _maestro_server_status = 'idle'
 
 
 class MockupApplication(Application):
@@ -140,4 +194,34 @@ class Authorization(Authenticator):
 
     def authenticate_request(self):
         pass
+
+
+@contextmanager
+def thirdparty_mockup_server():
+
+    class Root(RegexRouteController):
+
+        def __init__(self):
+            super().__init__([
+                ('/apiv1/issues', self.handler),
+            ])
+
+        @json(verbs=['sent', 'mentioned'])
+        def handler(self):
+            if context.query['roomId'] == 'bad':
+                raise HTTPBadRequest()
+
+            raise HTTPNoContent()
+
+    app = MockupApplication('mockup-thirdparty', Root())
+    with mockup_http_server(app) as (server, url):
+        settings.merge(f'''
+          webhooks:
+            sent:
+              url: {url}
+            mentioned:
+              url: {url}
+        ''')
+
+        yield app
 

@@ -38,7 +38,12 @@ def oauth_mockup_server():
                 raise HTTPStatus(_cas_server_status)
 
             if 'access token' in access_token:
-                return dict(id=1, title='manager1', email='manager1@example.com')
+                return dict(
+                    id=1,
+                    title='manager1',
+                    email='manager1@example.com',
+                    avatar='avatar1',
+                )
 
             raise HTTPForbidden()
 
@@ -78,7 +83,7 @@ class TestCASClient(AutoDocumentationBDDTest):
         ):
             assert status == 200
             assert len(response.json) == 2
-            assert response.json['scopes'] == ['email', 'title']
+            assert response.json['scopes'] == ['email', 'title', 'avatar']
 
             when('Trying to pass with the form patameter', form=dict(a='a'))
             assert status == '711 Form Not Allowed'

@@ -79,7 +79,7 @@ class MentionController(ModelRestController):
             )
             queues.push(settings.messaging.workers_queue, mention_message)
             webhook = Webhook()
-            webhook.mentioned_member(mention.target_id, mentioned.id)
+            webhook.mentioned_member(mention.target_id, mentioned.reference_id)
 
         return mention
 
