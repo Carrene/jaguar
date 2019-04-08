@@ -6,6 +6,7 @@ from requests.exceptions import RequestException
 
 logger = get_logger('webhook')
 
+
 HTTP_NO_CONTENT = 204
 
 

@@ -1,10 +1,8 @@
-
 from nanohttp import settings
-from requests import RequestException
 
-from jaguar.webhooks import Webhook
 from jaguar.tests.helpers import thirdparty_mockup_server, \
     AutoDocumentationBDDTest
+from jaguar.webhooks import Webhook
 
 
 class TestSentWebhook(AutoDocumentationBDDTest):
