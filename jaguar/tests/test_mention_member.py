@@ -29,6 +29,12 @@ class TestMention(AutoDocumentationBDDTest):
         )
         session.add(cls.member3)
 
+        cls.room = Room(
+            title='example',
+            members=[cls.member1]
+        )
+        session.add(cls.room)
+
         direct1 = Direct(
             members=[cls.member1, cls.member2]
         )
@@ -47,7 +53,7 @@ class TestMention(AutoDocumentationBDDTest):
             'Mention a target',
             f'/apiv1/members/member_id:{self.member2.id}/mentions',
             'MENTION',
-            form=dict(body='abc')
+            json=dict(body='abc', originTargetId=self.room.id)
         ):
             assert status == 200
             assert response.json['body'] == 'abc'

@@ -22,8 +22,11 @@ class MentionController(ModelRestController):
     @json
     @commit
     def mention(self):
+        form = context.form
         mention = Mention()
-        mention.body = context.form.get('body')
+        mention.body = form.get('body')
+        origin_target = DBSession.query(Target).get('originTargetId'))
+        mention.origin_target_id = origin_target.id
 
         if not (self.target or self.member):
             raise HTTPNotFound()
