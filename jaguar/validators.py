@@ -82,6 +82,10 @@ reply_message_validator = validate(
 mention_validator = validate(
     body=dict(
         max_length=(65536, '702 Must be less than 65536 charecters'),
-    )
+    ),
+    originTargetId=dict(
+        required='717 Origin Target Id Not In Form',
+        not_none='718 Origin Target Id Is Null',
+    ),
 )
 

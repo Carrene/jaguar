@@ -40,12 +40,15 @@ class TestJsonPatch(AutoDocumentationBDDTest):
                 dict(
                     op='MENTION',
                     path=f'targets/{self.room.id}/mentions',
-                    value={'body': 'sample message', 'mimetype': 'text/plain'}
+                    value={
+                        'body': 'sample message',
+                        'originTargetId': self.room.id
+                    }
                 ),
                 dict(
                     op='MENTION',
                     path=f'members/{self.user2.id}/mentions',
-                    value={'body': 'abc'}
+                    value={'body': 'abc', 'originTargetId': self.room.id}
                 ),
             ]
         ):
