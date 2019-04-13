@@ -8,6 +8,7 @@ from ..messaging import queues
 from ..models import Mention, Member, Direct, TargetMember, Target
 from ..validators import mention_validator
 from ..webhooks import Webhook
+from ..exceptions import HTTPTargetNotFound
 
 
 class MentionController(ModelRestController):
@@ -25,7 +26,13 @@ class MentionController(ModelRestController):
         form = context.form
         mention = Mention()
         mention.body = form.get('body')
-        origin_target = DBSession.query(Target).get('originTargetId'))
+
+        origin_target = DBSession.query(Target) \
+            .filter(Target.id == form.get('originTargetId')) \
+            .one_or_none()
+        if origin_target is None:
+            raise HTTPTargetNotFound()
+
         mention.origin_target_id = origin_target.id
 
         if not (self.target or self.member):
@@ -82,7 +89,10 @@ class MentionController(ModelRestController):
             )
             queues.push(settings.messaging.workers_queue, mention_message)
             webhook = Webhook()
-            webhook.mentioned_member(mention.target_id, mentioned.reference_id)
+            webhook.mentioned_member(
+                mention.origin_target_id,
+                mentioned.reference_id
+            )
 
         return mention
 

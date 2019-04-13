@@ -1,6 +1,6 @@
 from bddrest.authoring import status, when, given, response
 
-from jaguar.models import Member, Direct
+from jaguar.models import Member, Direct, Room
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 
 
@@ -51,7 +51,7 @@ class TestMention(AutoDocumentationBDDTest):
 
         with cas_mockup_server(), self.given(
             'Mention a target',
-            f'/apiv1/members/member_id:{self.member2.id}/mentions',
+            f'/apiv1/members/member_id: {self.member2.id}/mentions',
             'MENTION',
             json=dict(body='abc', originTargetId=self.room.id)
         ):
@@ -59,8 +59,26 @@ class TestMention(AutoDocumentationBDDTest):
             assert response.json['body'] == 'abc'
 
             when(
+                'Origin target id is null',
+                json=given | dict(originTargetId=None)
+            )
+            assert status == '718 Origin Target Id Is Null'
+
+            when(
+                'Origin target id is not in form',
+                json=given - 'originTargetId'
+            )
+            assert status == '717 Origin Target Id Not In Form'
+
+            when(
+                'Origin target id is not found',
+                json=given | dict(originTargetId=0)
+            )
+            assert status == '622 Target Not Found'
+
+            when(
                 'Body length is more than limit',
-                form=given | dict(body=(65536 + 1) * 'a')
+                json=given | dict(body=(65536 + 1) * 'a')
             )
             assert status == '702 Must be less than 65536 charecters'
 

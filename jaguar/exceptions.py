@@ -16,3 +16,7 @@ class CASInternallError(HTTPKnownStatus):
 class HTTPUnsupportedMediaType(HTTPKnownStatus):
     status = '415 Unsupported Media Type'
 
+
+class HTTPTargetNotFound(HTTPKnownStatus):
+    status = '622 Target Not Found'
+
