@@ -12,11 +12,12 @@ class Mention(Envelop):
         Integer,
         python_type=int,
         minimum=1,
+        nullable=True,
         required=True,
-        not_none=True,
-        watermark='Loerm Ipsum',
-        example='Loerm Ipsum',
-        message='Loerm Ipsum',
+        not_none=False,
+        watermark='Lorem Ipsum',
+        example='Lorem Ipsum',
+        message='Lorem Ipsum',
         label='Origin target',
     )
 

@@ -29,14 +29,32 @@ class TestMention(AutoDocumentationBDDTest):
             'Mention a target',
             f'/apiv1/targets/{self.room.id}/mentions',
             'MENTION',
-            form=dict(body='abc')
+            json=dict(body='abc', originTargetId=self.room.id)
         ):
             assert status == 200
             assert response.json['body'] == 'abc'
 
             when(
+                'Origin target id is null',
+                json=given | dict(originTargetId=None)
+            )
+            assert status == '718 Origin Target Id Is Null'
+
+            when(
+                'Origin target id is not in form',
+                json=given - 'originTargetId'
+            )
+            assert status == '717 Origin Target Id Not In Form'
+
+            when(
+                'Origin target id is not found',
+                json=given | dict(originTargetId=0)
+            )
+            assert status == '622 Target Not Found'
+
+            when(
                 'Body length is more than limit',
-                form=given | dict(body=(65536 + 1) * 'a')
+                json=given | dict(body=(65536 + 1) * 'a')
             )
             assert status == '702 Must be less than 65536 charecters'
 
