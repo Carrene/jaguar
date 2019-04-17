@@ -21,7 +21,7 @@ class Webhook:
                     roomId=room_id,
                     memberReferenceId=member_reference_id
                 ),
-                timeout=settings.webhooks.mentioned.timeout,
+                timeout=settings.webhooks.sent.timeout,
             )
             if response.status_code != HTTP_NO_CONTENT:
                 self._bad_thirdparty_response(response.status_code)
