@@ -13,9 +13,6 @@ from ..validators import search_member_validator, create_member_validator
 class MemberController(ModelRestController):
     __model__ = Member
 
-    def __init__(self, target=None):
-        self.target = target
-
     def __call__(self, *remaining_paths):
         if len(remaining_paths) > 1 and remaining_paths[1] == 'mentions':
             member = self._get_member(remaining_paths[0])
@@ -36,10 +33,7 @@ class MemberController(ModelRestController):
     @json(prevent_form='711 Form Not Allowed')
     @Member.expose
     def list(self):
-        query = DBSession.query(Member) \
-            .join(TargetMember, TargetMember.member_id == Member.id) \
-            .filter(TargetMember.target_id == self.target.id)
-        return query
+        return DBSession.query(Member)
 
     @authorize
     @search_member_validator
