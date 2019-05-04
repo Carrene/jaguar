@@ -120,6 +120,20 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         secondaryjoin=id == member_block.c.blocked_member_id,
         lazy='selectin'
     )
+    rooms = relationship(
+        'Target',
+        secondary='target_member',
+        back_populates='members',
+        lazy='selectin',
+        protected=True,
+    )
+    administrator_of = relationship(
+        'Room',
+        secondary='room_administrator',
+        back_populates='administrators',
+        protected=True,
+        lazy='selectin'
+    )
 
     def create_jwt_principal(self, session_id=None):
         if session_id is None:

@@ -38,7 +38,7 @@ class Target(ModifiedMixin, OrderingMixin, FilteringMixin, PaginationMixin,
     members = relationship(
         'Member',
         secondary='target_member',
-        backref='rooms',
+        back_populates='rooms',
         lazy='selectin',
         protected=True,
     )
@@ -68,7 +68,7 @@ class Room(Target):
     administrators = relationship(
         'Member',
         secondary=room_administrator,
-        backref='administrator_of',
+        back_populates='administrator_of',
         protected=True,
         lazy='selectin'
     )
