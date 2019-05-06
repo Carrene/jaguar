@@ -15,6 +15,7 @@ class TargetController(ModelRestController):
     __model__ = Target
 
     def __call__(self, *remaining_paths):
+        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         if len(remaining_paths) > 1 and remaining_paths[1] == 'messages':
             target = self._get_target(remaining_paths[0])
             return MessageController()(remaining_paths[0], *remaining_paths[2:])
