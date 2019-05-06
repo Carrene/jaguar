@@ -226,7 +226,6 @@ class MessageController(ModelRestController):
     @json
     @Message.expose
     def search(self, target_id):
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         query = context.form.get('query') or context.query.get('query')
         if query is None:
             raise FormQueryOrQueryStringIsRequired()
