@@ -89,3 +89,10 @@ mention_validator = validate(
     ),
 )
 
+
+search_message_validator = validate(
+    query=dict(
+        max_length=(50, '702 Must Be Less Than 50 Characters'),
+    )
+)
+
