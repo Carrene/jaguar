@@ -11,7 +11,7 @@ from .cli import EmailLauncher, MemberLauncher, TargetLauncher, \
     TokenLauncher, WebsocketLauncher, RouterLauncher
 
 
-__version__ = '0.18.0a6'
+__version__ = '0.19.0a7'
 
 
 class Jaguar(Application):
