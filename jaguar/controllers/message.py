@@ -221,6 +221,7 @@ class MessageController(ModelRestController):
         queues.push(settings.messaging.workers_queue, seen_message)
         return message
 
+    @store_manager(DBSession)
     @authorize
     @search_message_validator
     @json
