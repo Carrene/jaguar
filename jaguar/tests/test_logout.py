@@ -13,6 +13,7 @@ class TestLogout(AutoDocumentationBDDTest):
         user = Member(
             email='user@example.com',
             title='user',
+            name='user_name',
             access_token='access token',
             reference_id=1
         )

@@ -52,6 +52,9 @@ class Authenticator(StatefulAuthenticator):
             if member.title != cas_member['title']:
                 member.title = cas_member['title']
 
+            if member.name!= cas_member['name']:
+                member.name = cas_member['name']
+
             if member.avatar != cas_member['avatar']:
                 member.avatar = cas_member['avatar']
 

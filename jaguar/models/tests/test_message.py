@@ -45,6 +45,7 @@ def test_message_model(db):
     )
     member = Member(
         title='member',
+        name='member_name',
         email='member@example.com',
         access_token='access token',
         reference_id=1,

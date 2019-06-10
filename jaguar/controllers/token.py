@@ -41,6 +41,7 @@ class TokenController(RestController):
             user = Member(
                 email=member['email'],
                 title=member['title'],
+                name=member['name'],
                 access_token=access_token,
                 reference_id=member['id'],
                 avatar=member['avatar'],
@@ -48,6 +49,9 @@ class TokenController(RestController):
 
         if user.title != member['title']:
             user.title = member['title']
+
+        if user.name!= member['name']:
+            user.name = member['name']
 
         if user.avatar != member['avatar']:
             user.avatar = member['avatar']

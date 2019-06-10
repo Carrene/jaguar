@@ -12,6 +12,7 @@ class TestMention(AutoDocumentationBDDTest):
         member1 = Member(
             email='user1@example.com',
             title='user1',
+            name='user1_name',
             access_token='access token1',
             reference_id=2
         )

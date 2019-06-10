@@ -35,6 +35,7 @@ class TestGetMember(AutoDocumentationBDDTest):
                 user1 = Member(
                     email='user1@example.com',
                     title='user1',
+                    name='user1_name',
                     access_token='access token1',
                     reference_id=2,
                     messages=[cls.message1]
@@ -42,6 +43,7 @@ class TestGetMember(AutoDocumentationBDDTest):
                 user2 = Member(
                     email='user2@example.com',
                     title='user2',
+                    name='user2_name',
                     access_token='access token2',
                     reference_id=3,
                     messages=[cls.message3, cls.message2]

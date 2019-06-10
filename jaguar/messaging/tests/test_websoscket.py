@@ -14,12 +14,14 @@ class TestWebsocketConnection(AsyncTest):
         cls.member = Member(
             email='member@example.com',
             title='member',
+            name='member_name',
             access_token='access token',
             reference_id=1
         )
         contact1 = Member(
             email='contact1@example.com',
             title='contact1',
+            name='contact1_name',
             access_token='access token',
             reference_id=2
         )

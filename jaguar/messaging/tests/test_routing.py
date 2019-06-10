@@ -13,18 +13,21 @@ class TestMessageRouter(AsyncTest):
         cls.member1 = Member(
             email='member1@example.com',
             title='member1',
+            name='member1_name',
             access_token='access token',
             reference_id=1
         )
         cls.member2 = Member(
             email='member2@example.com',
             title='member2',
+            name='member2_name',
             access_token='access token',
             reference_id=2
         )
         cls.member3 = Member(
             email='member3@example.com',
             title='member3',
+            name='member3_name',
             access_token='access token',
             reference_id=3
         )

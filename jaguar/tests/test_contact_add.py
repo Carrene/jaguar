@@ -13,24 +13,28 @@ class TestAddToContact(AutoDocumentationBDDTest):
         user = Member(
             email='user@example.com',
             title='user',
+            name='user_name',
             access_token='access token',
             reference_id=1
         )
         user2 = Member(
             email='user2@example.com',
             title='user2',
+            name='user2_name',
             access_token='access token',
             reference_id=2
         )
         contact1 = Member(
             email='contact1@example.com',
             title='contact1',
+            name='contact1_name',
             access_token='access token',
             reference_id=3
         )
         contact2 = Member(
             email='contact2@example.com',
             title='contact2',
+            name='contact2_name',
             access_token='access token',
             reference_id=4
         )
