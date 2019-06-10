@@ -4,13 +4,15 @@ from restfulpy.controllers import ModelRestController
 from sqlalchemy_media import store_manager
 from nanohttp import json, context, HTTPStatus, validate, HTTPForbidden, \
     settings, HTTPNotFound, int_or_notfound
+from sqlalchemy import or_
 
 from ..messaging import queues
 from ..models import Envelop, Message, TargetMember, Member, Target, \
     MemberMessageSeen
 from ..validators import send_message_validator, edit_message_validator, \
-    reply_message_validator
-from ..exceptions import HTTPUnsupportedMediaType
+    reply_message_validator, search_message_validator
+from ..exceptions import HTTPUnsupportedMediaType, \
+    FormQueryOrQueryStringIsRequired
 from ..webhooks import Webhook
 
 
@@ -218,4 +220,25 @@ class MessageController(ModelRestController):
         seen_message.update({'type': 'seen'})
         queues.push(settings.messaging.workers_queue, seen_message)
         return message
+
+    @store_manager(DBSession)
+    @authorize
+    @search_message_validator
+    @json
+    @Message.expose
+    def search(self, target_id):
+        query = context.form.get('query') or context.query.get('query')
+        if query is None:
+            raise FormQueryOrQueryStringIsRequired()
+
+        query = f'%{query}%'
+        query = DBSession.query(Message) \
+            .join(Member, Member.id == Message.sender_id) \
+            .filter(or_(
+                Message.body.ilike(query),
+                Member.title.ilike(query),
+            )) \
+            .filter(Message.target_id == target_id)
+
+        return query
 

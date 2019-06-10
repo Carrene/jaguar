@@ -20,3 +20,7 @@ class HTTPUnsupportedMediaType(HTTPKnownStatus):
 class HTTPTargetNotFound(HTTPKnownStatus):
     status = '622 Target Not Found'
 
+
+class FormQueryOrQueryStringIsRequired(HTTPKnownStatus):
+    status = '715 Form Query Or Query String Is Required'
+
