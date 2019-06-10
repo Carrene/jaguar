@@ -16,6 +16,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         cls.user = Member(
             email='user@example.com',
             title='user',
+            name='user1_name',
             access_token='access token',
             reference_id=1
         )
@@ -23,6 +24,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         cls.user1 = Member(
             email='user1@example.com',
             title='user1',
+            name='user1_name',
             access_token='access token1',
             reference_id=2
         )
@@ -30,24 +32,28 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         cls.blocked1 = Member(
             email='blocked1@example.com',
             title='blocked1',
+            name='blocked1_name',
             access_token='access token3',
             reference_id=4
         )
         cls.blocked2 = Member(
             email='blocked2@example.com',
             title='blocked2',
+            name='blocked2_name',
             access_token='access token',
             reference_id=6
         )
         cls.room_member = Member(
             email='member@example.com',
             title='member',
+            name='member_name',
             access_token='access token',
             reference_id=3
         )
         cls.never = Member(
             email='never@example.com',
             title='never',
+            name='naver_name',
             access_token='access token',
             add_to_room=False,
             reference_id=7
@@ -56,6 +62,7 @@ class TestAddToRoom(AutoDocumentationBDDTest):
         cls.blocker = Member(
             email='blocker@example.com',
             title='blocker',
+            name='blocker_name',
             access_token='access token4',
             reference_id=5,
             blocked_members=[cls.blocked1, cls.blocked2]

@@ -12,6 +12,7 @@ class TestEmail(AutoDocumentationBDDTest):
         user = Member(
             email='already.added@example.com',
             title='example',
+            name='example_name',
             access_token='access token',
             reference_id=1
         )

@@ -79,6 +79,22 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         watermark='John_Doe',
         example='John_Doe',
     )
+    name = Field(
+        Unicode(20),
+        nullable=False,
+        not_none=True,
+        python_type=str,
+        min_length=3,
+        max_length=20,
+        required=True,
+        pattern=r'^[a-zA-Z]{1}[a-z-A-Z ,.\'-]{2,19}$',
+        pattern_description='Only alphabetical characters, ., \' and space are'
+            'valid',
+        example='John Doe',
+        label='Full Name',
+        message='Loerm Ipsum',
+        watermark='Loerm Ipsum',
+    )
     phone = Field(
         Unicode(50),
         nullable=True,
@@ -143,6 +159,7 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
             id=self.id,
             roles=self.roles,
             email=self.email,
+            title=self.title,
             name=self.title,
             referenceId=self.reference_id,
             sessionId=session_id,

@@ -20,6 +20,7 @@ class TestEnvelop(AutoDocumentationBDDTest):
         user1 = Member(
             email='user1@example.com',
             title='user',
+            name='user_name',
             access_token='access token1',
             reference_id=2,
             messages=[cls.envelop1, cls.envelop2, cls.envelop3, cls.envelop4]

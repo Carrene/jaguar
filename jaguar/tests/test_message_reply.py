@@ -32,6 +32,7 @@ class TestReplyMessage(AutoDocumentationBDDTest):
                 )
                 user = Member(
                     title='user',
+                    name='user_name',
                     email='user@example.com',
                     access_token='access token',
                     reference_id=1
@@ -39,6 +40,7 @@ class TestReplyMessage(AutoDocumentationBDDTest):
                 session.add(user)
                 user1 = Member(
                     title='user1',
+                    name='user1_name',
                     email='user1@example.com',
                     access_token='access token1',
                     reference_id=2,

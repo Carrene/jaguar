@@ -9,6 +9,7 @@ def insert():
         id=1,
         email='god@example.com',
         title='GOD',
+        name='GOD',
         access_token='access token',
         reference_id=1
     )
@@ -16,6 +17,7 @@ def insert():
         id=2,
         email='user1@example.com',
         title='user_1',
+        name='user1_name',
         access_token='access token1',
         reference_id=2
     )
@@ -23,6 +25,7 @@ def insert():
         id=3,
         email='user2@example.com',
         title='user_2',
+        name='user3_name',
         access_token='access token2',
         reference_id=3
     )
@@ -30,6 +33,7 @@ def insert():
         id=4,
         email='user3@example.com',
         title='user_3',
+        name='user3_name',
         access_token='access token3',
         reference_id=4
     )

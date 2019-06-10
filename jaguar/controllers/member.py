@@ -86,6 +86,7 @@ class MemberController(ModelRestController):
             member = Member(
                 email=context.identity.email,
                 title=context.identity.payload['title'],
+                name=context.identity.payload['name'],
                 reference_id=context.identity.reference_id,
                 access_token=access_token
             )

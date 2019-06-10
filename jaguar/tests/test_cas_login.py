@@ -33,6 +33,7 @@ class TestApplication(AutoDocumentationBDDTest):
         user1 = Member(
             email='user1@gmail.com',
             title='user1',
+            name='user1_name',
             reference_id=1,
             access_token='access token1'
         )
@@ -43,6 +44,7 @@ class TestApplication(AutoDocumentationBDDTest):
         token = JwtPrincipal(dict(
             email='user2@example.com',
             title='user2',
+            name='user2_name',
             referenceId=2
         )).dump().decode()
         self._authentication_token = token
@@ -88,6 +90,7 @@ class TestApplication(AutoDocumentationBDDTest):
                 member_token = JwtPrincipal(dict(
                     email='user1@example.com',
                     title='user1',
+                    name='user1_name',
                     referenceId=1
                 )).dump().decode()
                 when(

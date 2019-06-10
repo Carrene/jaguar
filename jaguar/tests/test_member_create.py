@@ -11,6 +11,7 @@ class TestAddToContact(AutoDocumentationBDDTest):
         token = JwtPrincipal(dict(
             email='user1@example.com',
             title='user1',
+            name='user1_name',
             referenceId=2
         )).dump().decode()
 
