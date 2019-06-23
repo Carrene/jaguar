@@ -1,31 +1,23 @@
 from nanohttp import settings
-from restfulpy.cli import Launcher, RequireSubCommand
+from easycli import SubCommand, Argument
 from restfulpy.orm import DBSession
 
 from ..models import Target
 
 
-class TargetListLauncher(Launcher):  # pragma: no cover
+class TargetListLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'List targets.'
+    __command__ = 'list'
 
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('list', help='List targets.')
-        return parser
-
-    def launch(self):
+    def __call__(self, args):
         for m in DBSession.query(Target):
             print(m)
 
 
-class TargetLauncher(Launcher, RequireSubCommand):  # pragma: no cover
-
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('target', help="Manage targets")
-        _subparsers = parser.add_subparsers(
-            title="Targets managements",
-            dest="target_command"
-        )
-        TargetListLauncher.register(_subparsers)
-        return parser
+class TargetLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'Manage targets.'
+    __command__ = 'target'
+    __arguments__ = [
+        TargetListLauncher,
+    ]
 

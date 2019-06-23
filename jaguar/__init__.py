@@ -75,13 +75,15 @@ class Jaguar(Application):
             version=__version__,
         )
 
-    def register_cli_launchers(self, subparsers):
-        EmailLauncher.register(subparsers)
-        WebsocketLauncher.register(subparsers)
-        RouterLauncher.register(subparsers)
-        MemberLauncher.register(subparsers)
-        TargetLauncher.register(subparsers)
-        TokenLauncher.register(subparsers)
+    def get_cli_arguments(self):
+        return [
+            EmailLauncher,
+            WebsocketLauncher,
+            RouterLauncher,
+            MemberLauncher,
+            TargetLauncher,
+            TokenLauncher,
+        ]
 
     def insert_mockup(self):
         from . import mockup

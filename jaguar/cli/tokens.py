@@ -1,31 +1,28 @@
 import sys
 
 from restfulpy.orm import DBSession
-from restfulpy.cli import Launcher, RequireSubCommand
+from easycli import SubCommand, Argument
 
 from ..models import Member
 
 
-class CreateTokenLauncher(Launcher):
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser(
-            'create',
-            help='Creates a jwt token.'
-        )
-        parser.add_argument(
+class CreateTokenLauncher(SubCommand):
+    __help__ = 'Create a jwt token.'
+    __command__ = 'create'
+    __arguments__ = [
+        Argument(
             'member_id',
             type=int,
             help='Member id'
-        )
-        parser.add_argument(
+        ),
+        Argument(
             'access_token',
             type=str,
             help='Access token'
-        )
-        return parser
+        ),
+    ]
 
-    def launch(self):
+    def __call__(self, args):
         member = DBSession.query(Member)\
             .filter(Member.id == self.args.member_id)\
             .one_or_none()
@@ -41,15 +38,10 @@ class CreateTokenLauncher(Launcher):
         print(token.dump().decode())
 
 
-class TokenLauncher(Launcher, RequireSubCommand):
-
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('token', help="Token related.")
-        _subparsers = parser.add_subparsers(
-            title="Token",
-            dest="token_command"
-        )
-        CreateTokenLauncher.register(_subparsers)
-        return parser
+class TokenLauncher(SubCommand):
+    __help__ = 'Token related.'
+    __command__ = 'token'
+    __arguments__ = [
+        CreateTokenLauncher,
+    ]
 

@@ -1,23 +1,23 @@
 import itsdangerous
 from nanohttp import settings
-from restfulpy.cli import Launcher, RequireSubCommand
+from easycli import SubCommand, Argument
 
 from jaguar.models import ActivationEmail
 
 
-class SendEmailLauncher(Launcher):  # pragma: no cover
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('send', help='Sends an email.')
-        parser.add_argument(
+class SendEmailLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'Sends an email.'
+    __command__ = 'send'
+    __arguments__ = [
+        Argument(
             '-e',
             '--email',
             required=True,
             help='Email to be claim'
-        )
-        return parser
+        ),
+    ]
 
-    def launch(self):
+    def __call__(self, args):
 
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
@@ -36,13 +36,10 @@ class SendEmailLauncher(Launcher):  # pragma: no cover
         email.do_({})
 
 
-class EmailLauncher(Launcher, RequireSubCommand):  # pragma: no cover
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('email', help="Manage emails")
-        user_subparsers = parser.add_subparsers(
-            title="Email managements",
-            dest="email_command"
-        )
-        SendEmailLauncher.register(user_subparsers)
-        return parser
+class EmailLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'Manage emails.'
+    __command__ = 'email'
+    __arguments__ = [
+        SendEmailLauncher,
+    ]
+

@@ -1,10 +1,7 @@
 from nanohttp import settings
-from restfulpy.logging_ import get_logger
+from restfulpy import logger
 from requests import request
 from requests.exceptions import RequestException
-
-
-logger = get_logger('webhook')
 
 
 HTTP_NO_CONTENT = 204
@@ -48,10 +45,10 @@ class Webhook:
 
     def _handle_exception(self, ex):
         if isinstance(ex, RequestException):
-            logger.exception(f'Request Error: {ex}')
+            logger.error(f'Request Error: {ex}')
 
     def _bad_thirdparty_response(self, code):
-        logger.exception(
+        logger.error(
             f'Third party exception with {code} status'
         )
 

@@ -1,31 +1,23 @@
 from nanohttp import settings
-from restfulpy.cli import Launcher, RequireSubCommand
+from easycli import SubCommand, Argument
 from restfulpy.orm import DBSession
 
 from ..models import Member
 
 
-class MemberListLauncher(Launcher):  # pragma: no cover
+class MemberListLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'List members.'
+    __command__ = 'list'
 
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('list', help='List members.')
-        return parser
-
-    def launch(self):
+    def __call__(self, args):
         for m in DBSession.query(Member):
             print(m)
 
 
-class MemberLauncher(Launcher, RequireSubCommand):  # pragma: no cover
-
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('member', help="Manage members")
-        _subparsers = parser.add_subparsers(
-            title="Members managements",
-            dest="member_command"
-        )
-        MemberListLauncher.register(_subparsers)
-        return parser
+class MemberLauncher(SubCommand):  # pragma: no cover
+    __help__ = 'Mamage member.'
+    __command__ = 'member'
+    __arguments__ = [
+        MemberListLauncher,
+    ]
 
