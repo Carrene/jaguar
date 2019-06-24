@@ -28,7 +28,7 @@ class CreateTokenSubSubCommand(SubCommand):
             .one_or_none()
 
         if member is None:
-            print(f'Invalid member id: {self.args.member_id}', file=sys.stderr)
+            print(f'Invalid member id: {args.member_id}', file=sys.stderr)
             return 1
 
         member.access_token = args.access_token
