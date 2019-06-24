@@ -1,11 +1,11 @@
 import itsdangerous
-from nanohttp import settings
 from easycli import SubCommand, Argument
+from nanohttp import settings
 
 from jaguar.models import ActivationEmail
 
 
-class SendEmailLauncher(SubCommand):  # pragma: no cover
+class SendEmailSubSubCommand(SubCommand):  # pragma: no cover
     __help__ = 'Sends an email.'
     __command__ = 'send'
     __arguments__ = [
@@ -13,7 +13,7 @@ class SendEmailLauncher(SubCommand):  # pragma: no cover
             '-e',
             '--email',
             required=True,
-            help='Email to be claim'
+            help='Email to be claim',
         ),
     ]
 
@@ -36,10 +36,10 @@ class SendEmailLauncher(SubCommand):  # pragma: no cover
         email.do_({})
 
 
-class EmailLauncher(SubCommand):  # pragma: no cover
+class EmailSubCommand(SubCommand):  # pragma: no cover
     __help__ = 'Manage emails.'
     __command__ = 'email'
     __arguments__ = [
-        SendEmailLauncher,
+        SendEmailSubSubCommand,
     ]
 

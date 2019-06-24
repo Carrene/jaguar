@@ -3,8 +3,8 @@ from contextlib import contextmanager
 from bddrest.authoring import status, when, Remove, Update, response
 from nanohttp import RestController, json, settings, context, HTTPForbidden, \
     HTTPStatus, RegexRouteController
-from restfulpy.mockup import mockup_http_server
 
+from .mockup import mockup_http_server
 from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication
 
 

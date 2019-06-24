@@ -1,24 +1,24 @@
 import sys
 
-from restfulpy.orm import DBSession
 from easycli import SubCommand, Argument
+from restfulpy.orm import DBSession
 
 from ..models import Member
 
 
-class CreateTokenLauncher(SubCommand):
+class CreateTokenSubSubCommand(SubCommand):
     __help__ = 'Create a jwt token.'
     __command__ = 'create'
     __arguments__ = [
         Argument(
             'member_id',
             type=int,
-            help='Member id'
+            help='Member id',
         ),
         Argument(
             'access_token',
             type=str,
-            help='Access token'
+            help='Access token',
         ),
     ]
 
@@ -38,10 +38,10 @@ class CreateTokenLauncher(SubCommand):
         print(token.dump().decode())
 
 
-class TokenLauncher(SubCommand):
+class TokenSubCommand(SubCommand):
     __help__ = 'Token related.'
     __command__ = 'token'
     __arguments__ = [
-        CreateTokenLauncher,
+        CreateTokenSubSubCommand,
     ]
 

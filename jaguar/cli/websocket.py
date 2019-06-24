@@ -3,10 +3,11 @@ from easycli import SubCommand, Argument
 
 from ..messaging.websocket import app
 
+
 DEFAULT_ADDRESS = '8085'
 
 
-class WebsocketStartLauncher(SubCommand): # pragma: no cover
+class WebsocketStartSubSubCommand(SubCommand): # pragma: no cover
     __help__ = 'Starts the websocket server.'
     __command__ = 'send'
     __arguments__ = [
@@ -15,7 +16,7 @@ class WebsocketStartLauncher(SubCommand): # pragma: no cover
             '--bind',
             default=DEFAULT_ADDRESS,
             metavar='{HOST:}PORT',
-            help='Bind Address. default: %s' % DEFAULT_ADDRESS
+            help='Bind Address. default: %s' % DEFAULT_ADDRESS,
         ),
     ]
 
@@ -32,10 +33,10 @@ class WebsocketStartLauncher(SubCommand): # pragma: no cover
         web.run_app(app, **kw)
 
 
-class WebsocketLauncher(SubCommand):  # pragma: no cover
+class WebsocketSubCommand(SubCommand):  # pragma: no cover
     __help__ = 'Websocket related.'
     __command__ = 'websocket'
     __arguments__ = [
-        WebsocketStartLauncher,
+        WebsocketStartSubSubCommand,
     ]
 

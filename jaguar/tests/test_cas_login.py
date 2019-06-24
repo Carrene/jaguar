@@ -2,11 +2,11 @@ from contextlib import contextmanager
 
 from bddrest.authoring import given, status, response, when, Update, Remove
 from restfulpy.principal import JwtPrincipal
-from restfulpy.mockup import mockup_http_server
 from restfulpy.authorization import authorize
 from nanohttp import settings, json, context, action
 from nanohttp import RegexRouteController
 
+from .mockup import mockup_http_server
 from jaguar.tests.helpers import AutoDocumentationBDDTest, MockupApplication, \
     cas_mockup_server, cas_server_status
 from jaguar.models import Member
