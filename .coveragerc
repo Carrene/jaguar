@@ -1,5 +1,5 @@
 [run]
 omit =
     jaguar/migration/*
-	jaguar/tests/mockup.py
+    jaguar/tests/mockup.py
 
