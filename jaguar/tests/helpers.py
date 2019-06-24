@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from os import path
 
 from restfulpy.application import Application
-from restfulpy.mockup import mockup_http_server
 from nanohttp import RegexRouteController, json, settings, context, \
     HTTPStatus, HTTPBadRequest, HTTPNoContent
 from restfulpy.orm.metadata import FieldInfo
@@ -12,6 +11,7 @@ from restfulpy.testing import ApplicableTestCase
 from jaguar import Jaguar
 from jaguar.authentication import Authenticator
 from jaguar.models import Member, Room, Message
+from .mockup import mockup_http_server
 
 
 HERE = path.abspath(path.dirname(__file__))

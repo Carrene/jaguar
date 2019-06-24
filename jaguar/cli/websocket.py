@@ -1,30 +1,28 @@
 from aiohttp import web
-from restfulpy.cli import Launcher, RequireSubCommand
+from easycli import SubCommand, Argument
 
 from ..messaging.websocket import app
+
 
 DEFAULT_ADDRESS = '8085'
 
 
-class WebsocketStartLauncher(Launcher): # pragma: no cover
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser(
-            'start',
-            help='Starts the websocket server.'
-        )
-        parser.add_argument(
+class WebsocketStartSubSubCommand(SubCommand): # pragma: no cover
+    __help__ = 'Starts the websocket server.'
+    __command__ = 'send'
+    __arguments__ = [
+        Argument(
             '-b',
             '--bind',
             default=DEFAULT_ADDRESS,
             metavar='{HOST:}PORT',
-            help='Bind Address. default: %s' % DEFAULT_ADDRESS
-        )
-        return parser
+            help='Bind Address. default: %s' % DEFAULT_ADDRESS,
+        ),
+    ]
 
-    def launch(self):
-        host, port = self.args.bind.split(':')\
-            if ':' in self.args.bind else ('', self.args.bind)
+    def __call__(self, args):
+        host, port = args.bind.split(':')\
+            if ':' in args.bind else ('', args.bind)
         kw = {}
         if port:
             kw['port'] = port
@@ -35,14 +33,10 @@ class WebsocketStartLauncher(Launcher): # pragma: no cover
         web.run_app(app, **kw)
 
 
-class WebsocketLauncher(Launcher, RequireSubCommand):  # pragma: no cover
-    @classmethod
-    def create_parser(cls, subparsers):
-        parser = subparsers.add_parser('websocket', help='Websocket related.')
-        websocket_subparsers = parser.add_subparsers(
-            title='Websocket server administration.',
-            dest='websocket_command'
-        )
-        WebsocketStartLauncher.register(websocket_subparsers)
-        return parser
+class WebsocketSubCommand(SubCommand):  # pragma: no cover
+    __help__ = 'Websocket related.'
+    __command__ = 'websocket'
+    __arguments__ = [
+        WebsocketStartSubSubCommand,
+    ]
 
