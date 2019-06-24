@@ -9,7 +9,7 @@ DEFAULT_ADDRESS = '8085'
 
 class WebsocketStartSubSubCommand(SubCommand): # pragma: no cover
     __help__ = 'Starts the websocket server.'
-    __command__ = 'send'
+    __command__ = 'start'
     __arguments__ = [
         Argument(
             '-b',
