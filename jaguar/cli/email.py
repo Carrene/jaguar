@@ -22,17 +22,17 @@ class SendEmailSubSubCommand(SubCommand):  # pragma: no cover
         serializer = \
             itsdangerous.URLSafeTimedSerializer(settings.activation.secret)
 
-        token = serializer.dumps(self.args.email)
+        token = serializer.dumps(args.email)
 
         email = ActivationEmail(
-                to=self.args.email,
+                to=args.email,
                 subject='Activate your Cucumber account',
                 body={
                     'activation_token': token,
                     'activation_url': settings.activation.url
                 }
         )
-        email.to = self.args.email
+        email.to = args.email
         email.do_({})
 
 

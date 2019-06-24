@@ -21,8 +21,8 @@ class WebsocketStartSubSubCommand(SubCommand): # pragma: no cover
     ]
 
     def __call__(self, args):
-        host, port = self.args.bind.split(':')\
-            if ':' in self.args.bind else ('', self.args.bind)
+        host, port = args.bind.split(':')\
+            if ':' in args.bind else ('', args.bind)
         kw = {}
         if port:
             kw['port'] = port

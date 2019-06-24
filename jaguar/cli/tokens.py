@@ -24,14 +24,14 @@ class CreateTokenSubSubCommand(SubCommand):
 
     def __call__(self, args):
         member = DBSession.query(Member)\
-            .filter(Member.id == self.args.member_id)\
+            .filter(Member.id == args.member_id)\
             .one_or_none()
 
         if member is None:
             print(f'Invalid member id: {self.args.member_id}', file=sys.stderr)
             return 1
 
-        member.access_token = self.args.access_token
+        member.access_token = args.access_token
         DBSession.commit()
 
         token = member.create_jwt_principal()
