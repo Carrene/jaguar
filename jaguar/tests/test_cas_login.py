@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from bddrest.authoring import given, status, response, when, Update, Remove
-from restfulpy.principal import JwtPrincipal
+from restfulpy.principal import JWTPrincipal
 from restfulpy.authorization import authorize
 from nanohttp import settings, json, context, action
 from nanohttp import RegexRouteController
@@ -41,7 +41,7 @@ class TestApplication(AutoDocumentationBDDTest):
         session.commit()
 
     def test_login_with_cas(self):
-        token = JwtPrincipal(dict(
+        token = JWTPrincipal(dict(
             email='user2@example.com',
             title='user2',
             name='user2_name',
@@ -63,7 +63,7 @@ class TestApplication(AutoDocumentationBDDTest):
                 headers={'X-Oauth2-Access-Token: access token2'}
             ):
                 assert status == 200
-                mismathc_token = JwtPrincipal(dict(
+                mismathc_token = JWTPrincipal(dict(
                     email='user3@example.com',
                     title='user3',
                     referenceId=3
@@ -87,7 +87,7 @@ class TestApplication(AutoDocumentationBDDTest):
                 )
                 assert status == 401
 
-                member_token = JwtPrincipal(dict(
+                member_token = JWTPrincipal(dict(
                     email='user1@example.com',
                     title='user1',
                     name='user1_name',

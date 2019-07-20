@@ -5,7 +5,7 @@ from nanohttp import context
 from restfulpy.orm import DeclarativeBase, Field, ModifiedMixin, \
     ActivationMixin, SoftDeleteMixin, relationship, DBSession, \
     FilteringMixin, PaginationMixin, OrderingMixin
-from restfulpy.principal import JwtRefreshToken
+from restfulpy.principal import JWTRefreshToken
 from sqlalchemy import Unicode, Integer, ForeignKey, Boolean, Table
 
 
@@ -167,7 +167,7 @@ class Member(OrderingMixin, FilteringMixin, PaginationMixin, DeclarativeBase):
         ))
 
     def create_refresh_principal(self):
-        return JwtRefreshToken(dict(
+        return JWTRefreshToken(dict(
             id=self.id
         ))
 

@@ -1,5 +1,5 @@
 import pytest
-from restfulpy.principal import JwtPrincipal
+from restfulpy.principal import JWTPrincipal
 
 from jaguar.messaging import sessions
 from jaguar.models import Member
@@ -35,7 +35,7 @@ class TestWebsocketConnection(AsyncTest):
         self.login('member@example.com')
 
         async with websocket_session(token=self._authentication_token) as ws:
-            token = JwtPrincipal.load(self._authentication_token)
+            token = JWTPrincipal.load(self._authentication_token)
             member_id = self.member.id
             session_id = token.session_id.encode()
 
