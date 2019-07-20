@@ -13,7 +13,7 @@ with open(join(dirname(__file__), 'jaguar', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'restfulpy >= 2.7.2',
+    'restfulpy >= 3.3.1a5',
     'sqlalchemy_media >= 0.17.1',
     'asyncpg',
 

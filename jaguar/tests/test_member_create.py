@@ -1,5 +1,5 @@
 from bddrest.authoring import when, Update, Remove, status, response
-from restfulpy.principal import JwtPrincipal
+from restfulpy.principal import JWTPrincipal
 
 from jaguar.models.membership import Member
 from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
@@ -8,7 +8,7 @@ from jaguar.tests.helpers import AutoDocumentationBDDTest, cas_mockup_server
 class TestAddToContact(AutoDocumentationBDDTest):
 
     def test_create_user(self):
-        token = JwtPrincipal(dict(
+        token = JWTPrincipal(dict(
             email='user1@example.com',
             title='user1',
             name='user1_name',

@@ -1,5 +1,4 @@
 pytest >= 4.6.3, < 5
-git+git://github.com/Carrene/restfulpy.git@master
 coverage
 coveralls
 pytest-cov
