@@ -11,7 +11,8 @@ class TestAddToContact(AutoDocumentationBDDTest):
         token = JWTPrincipal(dict(
             email='user1@example.com',
             title='user1',
-            name='user1_name',
+            firstName='user1_first_name',
+            lastName='user1_last_name',
             referenceId=2
         )).dump().decode()
 

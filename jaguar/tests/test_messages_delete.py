@@ -33,7 +33,8 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             user = Member(
                 email='user@example.com',
                 title='user',
-                name='user_name',
+                first_name='user_first_name',
+                last_name='user_last_name',
                 access_token='access token',
                 reference_id=1,
                 messages=[cls.message1, cls.message3]
@@ -41,7 +42,8 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             user1 = Member(
                 email='user1@example.com',
                 title='user1',
-                name='user1_name',
+                first_name='user1_first_name',
+                last_name='user1_last_name',
                 access_token='access token1',
                 reference_id=2,
                 messages=[cls.message2]
@@ -49,7 +51,8 @@ class TestDeleteMessage(AutoDocumentationBDDTest):
             user2 = Member(
                 email='user2@example.com',
                 title='user2',
-                name='user2_name',
+                first_name='user2_first_name',
+                last_name='user2_last_name',
                 access_token='access token2',
                 reference_id=3
             )

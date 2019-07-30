@@ -13,7 +13,8 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
         cls.user1 = Member(
             email='user1@example.com',
             title='user1',
-            name='user1_name',
+            first_name='user1_first_name',
+            last_name='user1_last_name',
             access_token='access token1',
             reference_id=2
         )
@@ -22,7 +23,8 @@ class TestSubscribeRoom(AutoDocumentationBDDTest):
         cls.user2 = Member(
             email='user2@example.com',
             title='user2',
-            name='user2_name',
+            first_name='user2_first_name',
+            last_name='user2_last_name',
             access_token='access token2',
             reference_id=3
         )

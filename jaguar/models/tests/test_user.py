@@ -11,7 +11,8 @@ def test_member_model(db):
     session = db()
     member = Member(
         title='example',
-        name='example_name',
+        first_name='example_first_name',
+        last_name='example_last_name',
         email='example@example.com',
         access_token='access token',
         reference_id=4
@@ -41,7 +42,8 @@ def test_member_model(db):
     # Testing relationship between Member and Member ( As contactlist)
     contact = Member(
         title='contact',
-        name='contact_name',
+        first_name='contact_first_name',
+        last_name='contact_last_name',
         email='contact@example.com',
         access_token='access token',
         reference_id=5

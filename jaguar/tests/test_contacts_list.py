@@ -13,21 +13,24 @@ class TestListContact(AutoDocumentationBDDTest):
         user = Member(
             email='user@example.com',
             title='user',
-            name='user_name',
+            first_name='user_first_name',
+            last_name='user_last_name',
             access_token='access token',
             reference_id=1
         )
         contact1 = Member(
             email='contact1@example.com',
             title='contact1',
-            name='contact1_name',
+            first_name='contact1_first_name',
+            last_name='contact1_last_name',
             access_token='access token',
             reference_id=2
         )
         contact2 = Member(
             email='contact2@example.com',
             title='contact2',
-            name='contact2_name',
+            first_name='contact2_first_name',
+            last_name='contact2_last_name',
             access_token='access token',
             reference_id=3
         )
@@ -36,7 +39,8 @@ class TestListContact(AutoDocumentationBDDTest):
         contact3 = Member(
             email='contact3@example.com',
             title='contact3',
-            name='contact3_name',
+            first_name='contact3_first_name',
+            last_name='contact3_last_name',
             access_token='access token',
             show_email=True,
             reference_id=4

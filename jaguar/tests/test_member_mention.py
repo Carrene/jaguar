@@ -12,21 +12,24 @@ class TestMention(AutoDocumentationBDDTest):
         cls.member1 = Member(
             email='user1@example.com',
             title='user1',
-            name='user1_name',
+            first_name='user1_first_name',
+            last_name='user1_last_name',
             access_token='access token1',
             reference_id=2
         )
         cls.member2 = Member(
             email='user2@example.com',
             title='user2',
-            name='user2_name',
+            first_name='user2_first_name',
+            last_name='user2_last_name',
             access_token='access token2',
             reference_id=3
         )
         cls.member3 = Member(
             email='user3@example.com',
             title='user3',
-            name='user3_name',
+            first_name='user3_first_name',
+            last_name='user3_last_name',
             access_token='access token3',
             reference_id=4
         )
