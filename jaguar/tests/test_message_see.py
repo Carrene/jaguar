@@ -25,7 +25,8 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 cls.user1 = Member(
                     email='user@example.com',
                     title='user',
-                    name='user_name',
+                    first_name='user_first_name',
+                    last_name='user_last_name',
                     access_token='access token',
                     reference_id=1,
                 )
@@ -34,7 +35,8 @@ class TestSeeMessage(AutoDocumentationBDDTest):
                 cls.user2 = Member(
                     email='user2@example.com',
                     title='user2',
-                    name='user2_name',
+                    first_name='user2_first_name',
+                    last_name='user2_last_name',
                     access_token='access token2',
                     reference_id=2,
                 )

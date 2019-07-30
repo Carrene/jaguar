@@ -13,7 +13,8 @@ def test_target_model(db):
     # Test members of a room
     member = Member(
         title='example',
-        name='example_name',
+        first_name='example_first_name',
+        last_name='example_last_name',
         email='example@example.com',
         access_token='access token',
         reference_id=2
@@ -29,7 +30,8 @@ def test_target_model(db):
     # Test administrators of a room
     administrator = Member(
         title='administrator',
-        name='administrator_name',
+        first_name='admin_first_name',
+        last_name='admin_last_name',
         email='administrator@example.com',
         access_token='access token',
         reference_id=3

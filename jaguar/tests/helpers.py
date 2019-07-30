@@ -82,7 +82,8 @@ def cas_mockup_server():
                     id=2,
                     email='user1@example.com',
                     title='user1',
-                    name='user1_name',
+                    firstName='user1_first_name',
+                    lastName='user1_last_name',
                     avatar='avatar2',
                 )
 
@@ -91,7 +92,8 @@ def cas_mockup_server():
                     id=3,
                     email='user2@example.com',
                     title='user2',
-                    name='user2_name',
+                    firstName='user2_first_name',
+                    lastName='user2_last_name',
                     avatar='avatar3',
                 )
 
@@ -100,7 +102,8 @@ def cas_mockup_server():
                     id=4,
                     email='blocked1@example.com',
                     title='blocked1',
-                    name='blocked1_name',
+                    firstName='blocked1_first_name',
+                    lastName='blocked1_last_name',
                     avatar='avatar4',
                 )
 
@@ -109,7 +112,8 @@ def cas_mockup_server():
                     id=5,
                     email='blocker@example.com',
                     title='blocker',
-                    name='blocker_name',
+                    firstName='blocker_first_name',
+                    lastName='blocker_last_name',
                     avatar='avatar5',
                 )
 
@@ -117,7 +121,8 @@ def cas_mockup_server():
                 id=1,
                 email='user@example.com',
                 title='user',
-                name='user_name',
+                firstName='user_first_name',
+                lastName='user_last_name',
                 avatar='avatar1',
             )
 

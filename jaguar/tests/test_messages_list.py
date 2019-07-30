@@ -45,7 +45,8 @@ class TestListMessages(AutoDocumentationBDDTest):
             user1 = Member(
                 email='user1@example.com',
                 title='user',
-                name='user_name',
+                first_name='user_first_name',
+                last_name='user_last_name',
                 access_token='access token1',
                 reference_id=2,
                 messages=[
@@ -58,7 +59,8 @@ class TestListMessages(AutoDocumentationBDDTest):
             user2 = Member(
                 email='user2@example.com',
                 title='user2',
-                name='user2_name',
+                first_name='user2_first_name',
+                last_name='user2_last_name',
                 access_token='access token2',
                 reference_id=3,
                 messages=[cls.message4, cls.message6]
@@ -67,7 +69,8 @@ class TestListMessages(AutoDocumentationBDDTest):
             user3 = Member(
                 email='user3@example.com',
                 title='user3',
-                name='user3_name',
+                first_name='user3_first_name',
+                last_name='user3_last_name',
                 access_token='access token3',
                 reference_id=4,
             )

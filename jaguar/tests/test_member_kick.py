@@ -11,21 +11,24 @@ class TestKickFromRoom(AutoDocumentationBDDTest):
         session = cls.create_session()
         user1 = Member(
             title='user1',
-            name='user1_name',
+            first_name='user1_first_name',
+            last_name='user1_last_name',
             email='user1@example.com',
             access_token='access token1',
             reference_id=2,
         )
         cls.user2 = Member(
             title='user2',
-            name='user2_name',
+            first_name='user2_first_name',
+            last_name='user2_last_name',
             email='user2@example.com',
             access_token='access token2',
             reference_id=3,
         )
         cls.user3 = Member(
             title='user3',
-            name='user3_name',
+            first_name='user3_first_name',
+            last_name='user3_last_name',
             email='user3@example.com',
             access_token='access token3',
             reference_id=4,

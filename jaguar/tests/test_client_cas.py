@@ -41,7 +41,8 @@ def oauth_mockup_server():
                 return dict(
                     id=1,
                     title='manager1',
-                    name='manager1_name',
+                    firstName='manager1_first_name',
+                    lastName='manager1_last_name',
                     email='manager1@example.com',
                     avatar='avatar1',
                 )

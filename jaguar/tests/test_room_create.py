@@ -12,7 +12,8 @@ class TestRoom(AutoDocumentationBDDTest):
         user = Member(
             email='user@example.com',
             title='user',
-            name='user_name',
+            first_name='user_first_name',
+            last_name='user_last_name',
             access_token='access token',
             reference_id=1
         )
